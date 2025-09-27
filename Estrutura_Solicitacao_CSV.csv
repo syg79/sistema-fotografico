@@ -1,0 +1,140 @@
+Field Name;Field Type;Field Slug;Field ID
+Auto Increment;Number;auto_increment;
+Record ID;Id;id;
+Created At;Date/Time;created_at;
+ID Solicitacao;Auto Increment;field_85;53GN69vrzx
+Link EMAIL (solicitacao);Link;field_137;kOGQ3JGNln
+Status;Select;field_114;L5MjKewN0k
+Rede;Connection;field_175;mloNLRnjM8
+Data da Solicitacao (email);Date;field_103;5m9N07brzq
+Nome Cliente;Connection;field_86;4AXQvvaQLY
+Data/Hora inclusao;Date/Time;field_89;DVWQW2RNZ4
+Referencia do Cliente;Text;field_139;LX6QaB7jZk
+Tipo do Imovel;Select;field_92;4PzQ40GQJG
+Condicao de Habitacao;Radio;field_93;oaANB91r1b
+Bairro/Localidade;Connection;field_142;4AXQvOxjLY
+Endereco do Imovel;Address;field_94;o6WQba5NnB
+Street View A;Text Formula;field_271;m72Npg7rwv
+Street View B;Text Formula;field_272;l5nQxExjxY
+Street View - Formula;Equation;field_270;4Z9Q2yyN2m
+Complemento;Text;field_136;JawrR1qj5k
+m2;Number;field_95;lGArg97QmR
+Nome do Condominio;Text;field_96;eykNODvQDY
+Descricao do Imovel;Rich Text;field_97;K2ejlvONo9
+Contato para agendar 01;Text;field_177;W4yQkw3QgP
+Contato para agendar 02;Text;field_178;W0VNqo0jml
+Observacao para o Agendamento;Rich Text;field_276;B8qQPB0r16
+Corretor Responsavel;Connection;field_179;kVXr7gbrJe
+Data do agendamento;Date;field_106;o6WQbadNnB
+Horario da Sessao;Text;field_183;LX6QaR7jZk
+Tipo do Servico;Checkbox;field_110;698rdOnjZw
+Fotografo;Connection;field_111;q3kjZDEN6V
+Fazer Area Comum;Radio;field_124;ObEjEo3NK5
+Referencias a serem copiadas;Text;field_206;o6WQbOBjnB
+Observacao para o Fotografo;Rich Text;field_112;JDXQ8MPjYR
+Data Realizada;Date;field_113;VX9QoW0QwY
+Feedback da Sessao (fotografo, gestor e/ou editor);Rich Text;field_115;DVarwRmjOR
+Quilometragem;Number;field_116;K68j9W8N2V
+Tour 360;Number;field_117;6b1rALdjKk
+Quantidade de sess�es FOTO;Number;field_118;3GDN1yqNeq
+Quantidade de inclusoes;Number;field_186;4AXQvKxjLY
+Quantidade Drone (video);Number;field_188;ka6jMPMQ75
+Quantidade video;Number;field_187;P74QYvLjBE
+Codigo Vitrine;Number;field_119;X9EjV2kjo2
+Cobranca;Select;field_184;M03rz2Ar69
+Observacao para o CLIENTE;Rich Text;field_189;DVWQWy3rZ4
+Pre-Solicitacao;Radio;field_219;X9EjVyMQo2
+Publicar Agenda;Radio;field_223;4YZjn7mrPv
+Diretorio;Text Formula;field_233;W4yQkm6rgP
+Formato Apolar;Text Formula;field_234;W0VNq2xQml
+"Mensagem - ""Ola, conforme contato, a sess�o fotografica do imovel""";Text Formula;field_215;DVarwO3rOR
+"msg 1 - ""Ficou agenada para""";Text Formula;field_277;W4yQkJ6NgP
+"msg 2 - ""A previs�o de chegada do fot�grafo no local est� entre""";Text Formula;field_242;4AXQv2ZQLY
+"msg 3 - ""IMPORTANTE o imovel estar organizado e pronto....""";Text Formula;field_243;P74QYREjBE
+msg 4 - At.te;Text Formula;field_244;ka6jMY9j75
+Download da sessao FOTOS;Link;field_245;DVWQWq4rZ4
+Download da sessao VIDEO;Link;field_246;4MXQJwKjZ6
+Download da sessao TOUR 360;Link;field_247;5m9N0ExQzq
+Download da sess�o 04;Link;field_248;4PzQ4mgjJG
+Grupo tipo;Radio;field_249;oaANB1Zr1b
+Chaves;Radio;field_250;o6WQbpBrnB
+Editado;Radio;field_251;lGArg3PrmR
+A imagem do Street View, est� mostrando corretamente o im�vel?;Radio;field_273;3xPjXRpNKG
+Outros - Street View (Croqui da Localiza?�o);Long Text;field_274;oGWN5oRjlA
+Endere?o Fotografo;Radio;field_275;mloNLWYrM8
+Status Fotografo;Radio;field_304;4PzQ489QJG
+Status TAREFA;Radio;field_305;oaANBDvj1b
+Impresso;Radio;field_306;o6WQb5VNnB
+Anexo;File;field_310;698rd7OjZw
+Copiar EMAIL original;Rich Text;field_330;oGWN5B8QlA
+Equacao endereco;Equation;field_331;mloNLz7jM8
+Equacao bairro;Equation;field_333;W4yQk7EQgP
+Formula endere?o para mensagem de confirmacao;Text Formula;field_332;B8qQPzVr16
+Mensagem envio das fotos por email;Text Formula;field_340;M03rz8qQ69
+Mensagem - Ola;Text Formula;field_341;53GN6b6Nzx
+Mensagem de envio das fotos - Titulo;Text Formula;field_342;4AXQvEANLY
+Data Entregue;Date;field_358;L5MjK4Mr0k
+Email adicional;Email;field_375;mloNLB7jM8
+Fone Corretor 01 - para msgs de email;Text Formula;field_376;B8qQPvVr16
+formula: Endereco e complemento;Text Formula;field_345;DVWQW7GQZ4
+EMAIL: Titulo - Endereco e complemento;Equation;field_384;M03rzAqj69
+Observacao feedback - sem quebrar;Text Formula;field_385;53GN6g6Qzx
+Status NOVO radio;Radio;field_386;4AXQvgAjLY
+Codigo Vitrine - Automatico;Connection;field_388;4YZjnDNPvl
+Livro Impresso;Radio;field_391;5m9N0WBrzq
+Contagem validar Livro vitrine;Complex Formula;field_395;lGArgXqNmR
+Aten?�o fotografo;Long Text;field_398;698rdMONZw
+Observa?�o para o agendamento (2021);Text;field_399;q3kjZL5N6V
+Horario Sessao list;Select;field_400;ka6jMEPj75
+Horario Sessao - Lista Completa;Select;field_408;eykNOeJjDY
+Horario Sessao - formato Agenda;Time;field_406;o6WQbg3jnB
+Date/Time - completo;Date/Time;field_407;lGArg0ONmR
+Hora PARTIU;Time;field_401;DVWQW9qrZ4
+Hora CHEGOU;Time;field_402;4MXQJeqNZ6
+Hora FINALIZOU;Time;field_403;5m9N0VMjzq
+Equation;Equation;field_404;4PzQ47BNJG
+N�o Possui Complemento;Checkbox;field_405;oaANBddj1b
+Equation mais 15;Equation;field_410;698rdMDNZw
+Horario intervalo para mensagem;Equation;field_411;q3kjZL0N6V
+RFC 3339 - Google Calendar;Text;field_412;JDXQ8GbNYR
+ID Event - Google Calendar;Long Text;field_413;VX9QoElrwY
+Corretor acompanhou?;Radio;field_414;L5MjKZRQ0k
+Corretor ajudou?;Radio;field_415;DVarwakQOR
+Possui OBS para o Editor?;Decision Box;field_416;K68j9R0r2V
+Quantidade Drone (fotos);Number;field_417;6b1rA1OrKk
+Distancia;Number;field_418;3GDN1VOQeq
+Diretorio_Lopes;Text Formula;field_419;X9EjV17Qo2
+Rede - para Text Formula;Text Formula;field_420;DkMjmEMjvV
+Diretorio Equation;Equation;field_421;pPEry3oQOn
+Equation - Ano;Equation;field_425;7oOjDGoQB9
+Equation - Mes;Equation;field_426;4Z9Q2VqQ2m
+Equation - Nome Cliente;Text Formula;field_427;m72NpEzQwv
+Formular Nome do Fotografo;Text Formula;field_428;l5nQx3qNxY
+Data Pretendida (Cliente);Date;field_429;3xPjXp1jKG
+Hor�rio Preferencial para a Sess�o - lista Cliente 1;Select;field_430;oGWN5DYrlA
+gestor;Connection;field_431;mloNL8KNM8
+Link - Google Maps;Text;field_434;W0VNqEPNml
+Equation - Gerar Link endere?o do imovel para o Whataspp;Equation;field_435;kVXr7w8rJe
+Link - Google Maps (text);Text Formula;field_436;JawrR9bj5k
+fechar agenda;Date Range;field_437;kOGQ3VvNln
+Processado;Radio;field_447;5m9N0RMjzq
+Origem;Radio;field_448;4PzQ4RBrJG
+Valor do im�vel Apolar;Number;field_449;oaANBJdN1b
+Situa?�o Apolar;Text;field_450;o6WQb33jnB
+Data Angaria?�o Apolar;Date;field_451;lGArgoOrmR
+Data Vencimeto angaria?�o Apolar;Date;field_452;eykNOmJjDY
+Descritivo Apolar;Long Text;field_453;K2ejl4ajo9
+Quantidade Dormitorios Apolar;Number;field_454;698rd2DQZw
+Vagas de Garagem Apolar;Number;field_455;q3kjZv0j6V
+Observa?�es Internas Apolar;Long Text;field_456;JDXQ8ybjYR
+Endere?o AGENDA;Address;field_459;DVarwVkjOR
+emoji PINO;Rich Text;field_465;pPEry9orOn
+Emoji - calendario;Rich Text;field_466;PblNezwQxw
+emoji - Relogio;Rich Text;field_467;4YZjnbZjPv
+emoji - atencao;Rich Text;field_468;ObEjEBErK5
+emoji - mapa;Rich Text;field_469;7oOjD4ojB9
+emji - confirmada;Rich Text;field_470;4Z9Q2RqQ2m
+Conferido;Radio;field_474;oGWN5RYQlA
+url_galeria_fotos_ApolarNet;Link;field_475;mloNLmKQM8
+Link_ApolarNet_cadastro_fotos;Link;field_487;P74QYL1NBE
+Arquivado - Google Drive;Radio;field_489;DVWQWVqNZ4

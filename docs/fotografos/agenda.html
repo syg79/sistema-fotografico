@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Agenda - Sistema Fotográfico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../assets/css/main.css" rel="stylesheet">
+    <link href="../assets/css/components.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="mt-3">Carregando agenda...</p>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <i class="fas fa-camera"></i> Sistema Fotográfico
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html"><i class="fas fa-home"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="agenda.html"><i class="fas fa-calendar"></i> Minha Agenda</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> <span id="user-name">Fotógrafo</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="authManager.logout()">
+                                <i class="fas fa-sign-out-alt"></i> Sair
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Cabeçalho -->
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="display-6 text-primary">
+                            <i class="fas fa-calendar-alt"></i> Minha Agenda
+                        </h1>
+                        <p class="text-muted">Visualize seus agendamentos e sessões fotográficas</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="refreshAgenda()">
+                            <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas do Fotógrafo -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Hoje</h6>
+                                <h3 id="stat-hoje">0</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-calendar-day fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Esta Semana</h6>
+                                <h3 id="stat-semana">0</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-calendar-week fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Confirmados</h6>
+                                <h3 id="stat-confirmados">0</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Realizados</h6>
+                                <h3 id="stat-realizados">0</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-camera fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Período</label>
+                                <select class="form-select" id="filter-periodo">
+                                    <option value="hoje">Hoje</option>
+                                    <option value="semana" selected>Esta Semana</option>
+                                    <option value="mes">Este Mês</option>
+                                    <option value="todos">Todos</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" id="filter-status">
+                                    <option value="">Todos</option>
+                                    <option value="Agendado">Agendado</option>
+                                    <option value="Confirmado">Confirmado</option>
+                                    <option value="Realizado">Realizado</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Data Específica</label>
+                                <input type="date" class="form-control" id="filter-data">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Buscar</label>
+                                <input type="text" class="form-control" id="filter-search" placeholder="Cliente, endereço...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agenda -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-list"></i> Agendamentos</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="agenda-container">
+                            <!-- Conteúdo será inserido via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes -->
+    <div class="modal fade" id="detailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalhes do Agendamento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- Conteúdo será inserido via JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-success" id="btn-confirmar" onclick="confirmarAgendamento()">
+                        <i class="fas fa-check"></i> Confirmar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btn-realizado" onclick="marcarRealizado()">
+                        <i class="fas fa-camera"></i> Marcar como Realizado
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../config/config.js"></script>
+    <script src="../assets/js/google-sheets-api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        let agendamentos = [];
+        let filteredAgendamentos = [];
+        let currentAgendamento = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Verificar autenticação e role
+            if (!requireAuth(['fotografo'])) {
+                return;
+            }
+
+            // Configurar interface
+            setupUserInterface();
+            
+            // Carregar agenda
+            await loadAgenda();
+            
+            // Configurar event listeners
+            setupEventListeners();
+            
+            hideLoading();
+        });
+
+        function setupUserInterface() {
+            const user = authManager.getCurrentUser();
+            document.getElementById('user-name').textContent = user.nome;
+        }
+
+        async function loadAgenda() {
+            try {
+                showLoading();
+                
+                const user = authManager.getCurrentUser();
+                const fotografoNome = user.nome;
+                
+                // Carregar agendamentos do fotógrafo
+                const filters = {
+                    'Fotografo': fotografoNome
+                };
+                
+                agendamentos = await googleSheetsAPI.getSolicitacoes(filters);
+                
+                // Aplicar filtros iniciais
+                applyFilters();
+                
+                // Atualizar estatísticas
+                updateStatistics();
+                
+            } catch (error) {
+                console.error('Erro ao carregar agenda:', error);
+                showError('Erro ao carregar agenda. Verifique sua conexão.');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function updateStatistics() {
+            const hoje = new Date().toISOString().split('T')[0];
+            const inicioSemana = getStartOfWeek(new Date());
+            const fimSemana = getEndOfWeek(new Date());
+            
+            const stats = {
+                hoje: 0,
+                semana: 0,
+                confirmados: 0,
+                realizados: 0
+            };
+            
+            agendamentos.forEach(item => {
+                const dataAgendamento = item['Data do agendamento'];
+                if (!dataAgendamento) return;
+                
+                // Hoje
+                if (dataAgendamento.includes(hoje)) {
+                    stats.hoje++;
+                }
+                
+                // Esta semana
+                const dataItem = new Date(dataAgendamento);
+                if (dataItem >= inicioSemana && dataItem <= fimSemana) {
+                    stats.semana++;
+                }
+                
+                // Por status
+                const status = item['Status'];
+                if (status === 'Confirmado') stats.confirmados++;
+                if (status === 'Realizado') stats.realizados++;
+            });
+            
+            document.getElementById('stat-hoje').textContent = stats.hoje;
+            document.getElementById('stat-semana').textContent = stats.semana;
+            document.getElementById('stat-confirmados').textContent = stats.confirmados;
+            document.getElementById('stat-realizados').textContent = stats.realizados;
+        }
+
+        function renderAgenda() {
+            const container = document.getElementById('agenda-container');
+            
+            if (filteredAgendamentos.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-calendar-times fa-3x mb-3"></i>
+                        <h5>Nenhum agendamento encontrado</h5>
+                        <p>Não há agendamentos para os filtros selecionados.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Agrupar por data
+            const groupedByDate = groupByDate(filteredAgendamentos);
+            
+            let html = '';
+            Object.keys(groupedByDate).sort().forEach(date => {
+                const items = groupedByDate[date];
+                const formattedDate = formatDate(date);
+                
+                html += `
+                    <div class="agenda-date-group mb-4">
+                        <h6 class="text-primary border-bottom pb-2 mb-3">
+                            <i class="fas fa-calendar"></i> ${formattedDate}
+                            <span class="badge bg-primary ms-2">${items.length}</span>
+                        </h6>
+                        <div class="row g-3">
+                `;
+                
+                items.forEach(item => {
+                    const statusColor = CONFIG.UI.STATUS_COLORS[item['Status']] || '#6c757d';
+                    const horario = item['Horario da Sessao'] || 'Não informado';
+                    
+                    html += `
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card agenda-card h-100" onclick="showDetails('${item['Record ID']}')">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <span class="badge" style="background-color: ${statusColor}">${item['Status']}</span>
+                                        <small class="text-muted">${horario}</small>
+                                    </div>
+                                    <h6 class="card-title">${item['Nome Cliente'] || 'Cliente não informado'}</h6>
+                                    <p class="card-text small text-muted mb-2">
+                                        <i class="fas fa-map-marker-alt"></i> 
+                                        ${item['Endereco do Imovel'] || 'Endereço não informado'}
+                                    </p>
+                                    <p class="card-text small">
+                                        <i class="fas fa-phone"></i> 
+                                        ${item['Referencia do Cliente'] || 'Contato não informado'}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function groupByDate(items) {
+            const grouped = {};
+            items.forEach(item => {
+                const date = item['Data do agendamento'];
+                if (date) {
+                    const dateKey = date.split(' ')[0]; // Pegar apenas a data, sem horário
+                    if (!grouped[dateKey]) {
+                        grouped[dateKey] = [];
+                    }
+                    grouped[dateKey].push(item);
+                }
+            });
+            return grouped;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const hoje = new Date();
+            const amanha = new Date(hoje);
+            amanha.setDate(hoje.getDate() + 1);
+            
+            if (dateStr === hoje.toISOString().split('T')[0]) {
+                return 'Hoje';
+            } else if (dateStr === amanha.toISOString().split('T')[0]) {
+                return 'Amanhã';
+            } else {
+                return date.toLocaleDateString('pt-BR', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            }
+        }
+
+        function showDetails(recordId) {
+            currentAgendamento = agendamentos.find(item => item['Record ID'] === recordId);
+            if (!currentAgendamento) return;
+            
+            const modalBody = document.getElementById('modal-body');
+            const status = currentAgendamento['Status'];
+            
+            modalBody.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Informações do Cliente</h6>
+                        <p><strong>Nome:</strong> ${currentAgendamento['Nome Cliente'] || 'Não informado'}</p>
+                        <p><strong>Contato:</strong> ${currentAgendamento['Referencia do Cliente'] || 'Não informado'}</p>
+                        <p><strong>Rede:</strong> ${currentAgendamento['Rede'] || 'Não informado'}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Agendamento</h6>
+                        <p><strong>Data:</strong> ${currentAgendamento['Data do agendamento'] || 'Não informado'}</p>
+                        <p><strong>Horário:</strong> ${currentAgendamento['Horario da Sessao'] || 'Não informado'}</p>
+                        <p><strong>Status:</strong> 
+                            <span class="badge" style="background-color: ${CONFIG.UI.STATUS_COLORS[status] || '#6c757d'}">${status}</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6>Endereço</h6>
+                        <p>${currentAgendamento['Endereco do Imovel'] || 'Não informado'}</p>
+                        
+                        <h6>Observações</h6>
+                        <p>${currentAgendamento['Observacoes'] || 'Nenhuma observação'}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Configurar botões baseado no status
+            const btnConfirmar = document.getElementById('btn-confirmar');
+            const btnRealizado = document.getElementById('btn-realizado');
+            
+            btnConfirmar.style.display = status === 'Agendado' ? 'inline-block' : 'none';
+            btnRealizado.style.display = status === 'Confirmado' ? 'inline-block' : 'none';
+            
+            new bootstrap.Modal(document.getElementById('detailsModal')).show();
+        }
+
+        async function confirmarAgendamento() {
+            if (!currentAgendamento) return;
+            
+            try {
+                // Simular atualização (implementar com Google Apps Script)
+                await googleSheetsAPI.updateRecord(currentAgendamento['Record ID'], {
+                    'Status': 'Confirmado'
+                });
+                
+                // Atualizar localmente
+                currentAgendamento['Status'] = 'Confirmado';
+                
+                // Recarregar agenda
+                await loadAgenda();
+                
+                // Fechar modal
+                bootstrap.Modal.getInstance(document.getElementById('detailsModal')).hide();
+                
+                showSuccess('Agendamento confirmado com sucesso!');
+                
+            } catch (error) {
+                console.error('Erro ao confirmar agendamento:', error);
+                showError('Erro ao confirmar agendamento.');
+            }
+        }
+
+        async function marcarRealizado() {
+            if (!currentAgendamento) return;
+            
+            try {
+                // Simular atualização (implementar com Google Apps Script)
+                await googleSheetsAPI.updateRecord(currentAgendamento['Record ID'], {
+                    'Status': 'Realizado',
+                    'Data da Realizacao': new Date().toISOString().split('T')[0]
+                });
+                
+                // Atualizar localmente
+                currentAgendamento['Status'] = 'Realizado';
+                
+                // Recarregar agenda
+                await loadAgenda();
+                
+                // Fechar modal
+                bootstrap.Modal.getInstance(document.getElementById('detailsModal')).hide();
+                
+                showSuccess('Sessão marcada como realizada!');
+                
+            } catch (error) {
+                console.error('Erro ao marcar como realizado:', error);
+                showError('Erro ao atualizar status.');
+            }
+        }
+
+        function setupEventListeners() {
+            document.getElementById('filter-periodo').addEventListener('change', applyFilters);
+            document.getElementById('filter-status').addEventListener('change', applyFilters);
+            document.getElementById('filter-data').addEventListener('change', applyFilters);
+            document.getElementById('filter-search').addEventListener('input', applyFilters);
+        }
+
+        function applyFilters() {
+            const periodo = document.getElementById('filter-periodo').value;
+            const status = document.getElementById('filter-status').value;
+            const dataEspecifica = document.getElementById('filter-data').value;
+            const search = document.getElementById('filter-search').value.toLowerCase();
+            
+            filteredAgendamentos = agendamentos.filter(item => {
+                // Filtro por período
+                if (periodo !== 'todos') {
+                    const dataAgendamento = item['Data do agendamento'];
+                    if (!dataAgendamento) return false;
+                    
+                    const hoje = new Date();
+                    const dataItem = new Date(dataAgendamento);
+                    
+                    switch (periodo) {
+                        case 'hoje':
+                            if (dataItem.toDateString() !== hoje.toDateString()) return false;
+                            break;
+                        case 'semana':
+                            const inicioSemana = getStartOfWeek(hoje);
+                            const fimSemana = getEndOfWeek(hoje);
+                            if (dataItem < inicioSemana || dataItem > fimSemana) return false;
+                            break;
+                        case 'mes':
+                            if (dataItem.getMonth() !== hoje.getMonth() || dataItem.getFullYear() !== hoje.getFullYear()) return false;
+                            break;
+                    }
+                }
+                
+                // Filtro por status
+                if (status && item['Status'] !== status) return false;
+                
+                // Filtro por data específica
+                if (dataEspecifica && !item['Data do agendamento']?.includes(dataEspecifica)) return false;
+                
+                // Filtro por busca
+                if (search) {
+                    const searchableFields = ['Nome Cliente', 'Endereco do Imovel', 'Referencia do Cliente'];
+                    const matchesSearch = searchableFields.some(field => 
+                        item[field]?.toLowerCase().includes(search)
+                    );
+                    if (!matchesSearch) return false;
+                }
+                
+                return true;
+            });
+            
+            renderAgenda();
+        }
+
+        async function refreshAgenda() {
+            await loadAgenda();
+        }
+
+        // Funções utilitárias
+        function getStartOfWeek(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day;
+            return new Date(d.setDate(diff));
+        }
+
+        function getEndOfWeek(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + 6;
+            return new Date(d.setDate(diff));
+        }
+
+        function showLoading() {
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        function showError(message) {
+            alert(message); // Implementar toast
+        }
+
+        function showSuccess(message) {
+            alert(message); // Implementar toast
+        }
+    </script>
+
+    <style>
+        .agenda-card {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .agenda-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .agenda-date-group {
+            border-left: 3px solid var(--bs-primary);
+            padding-left: 1rem;
+        }
+    </style>
+</body>
+</html>

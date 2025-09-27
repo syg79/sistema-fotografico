@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conferência - Sistema Fotográfico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../assets/css/main.css" rel="stylesheet">
+    <link href="../assets/css/components.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="mt-3">Carregando relatórios...</p>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <i class="fas fa-camera"></i> Sistema Fotográfico
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html"><i class="fas fa-home"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="dashboard.html"><i class="fas fa-chart-bar"></i> Conferência</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> <span id="user-name">Gestor</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="authManager.logout()">
+                                <i class="fas fa-sign-out-alt"></i> Sair
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Cabeçalho -->
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="display-6 text-primary">
+                            <i class="fas fa-chart-bar"></i> Conferência e Relatórios
+                        </h1>
+                        <p class="text-muted">Análise completa do desempenho do sistema fotográfico</p>
+                    </div>
+                    <div>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-primary" onclick="exportReport('pdf')">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="exportReport('excel')">
+                                <i class="fas fa-file-excel"></i> Excel
+                            </button>
+                            <button class="btn btn-primary" onclick="refreshData()">
+                                <i class="fas fa-sync-alt"></i> Atualizar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros de Período -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Período</label>
+                                <select class="form-select" id="filter-periodo">
+                                    <option value="7">Últimos 7 dias</option>
+                                    <option value="30" selected>Últimos 30 dias</option>
+                                    <option value="90">Últimos 90 dias</option>
+                                    <option value="365">Último ano</option>
+                                    <option value="custom">Personalizado</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3" id="custom-dates" style="display: none;">
+                                <label class="form-label">Data Início</label>
+                                <input type="date" class="form-control" id="data-inicio">
+                            </div>
+                            <div class="col-md-3" id="custom-dates-end" style="display: none;">
+                                <label class="form-label">Data Fim</label>
+                                <input type="date" class="form-control" id="data-fim">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Fotógrafo</label>
+                                <select class="form-select" id="filter-fotografo">
+                                    <option value="">Todos os Fotógrafos</option>
+                                    <!-- Opções serão carregadas via JavaScript -->
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Rede</label>
+                                <select class="form-select" id="filter-rede">
+                                    <option value="">Todas as Redes</option>
+                                    <!-- Opções serão carregadas via JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas Gerais -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Total Solicitações</h6>
+                                <h3 id="stat-total">0</h3>
+                                <small id="stat-total-change">+0% vs período anterior</small>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clipboard-list fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Realizadas</h6>
+                                <h3 id="stat-realizadas">0</h3>
+                                <small id="stat-realizadas-change">+0% vs período anterior</small>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Pendentes</h6>
+                                <h3 id="stat-pendentes">0</h3>
+                                <small id="stat-pendentes-change">+0% vs período anterior</small>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clock fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Taxa Sucesso</h6>
+                                <h3 id="stat-taxa">0%</h3>
+                                <small id="stat-taxa-change">+0% vs período anterior</small>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-percentage fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-line"></i> Evolução Temporal</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="timelineChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Status das Solicitações</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance por Fotógrafo -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-camera"></i> Performance por Fotógrafo</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="fotografoChart" height="150"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-network-wired"></i> Distribuição por Rede</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="redeChart" height="150"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela de Performance Detalhada -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-table"></i> Performance Detalhada por Fotógrafo</h5>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <input type="radio" class="btn-check" name="sort-performance" id="sort-total" checked>
+                            <label class="btn btn-outline-primary" for="sort-total">Total</label>
+                            <input type="radio" class="btn-check" name="sort-performance" id="sort-taxa">
+                            <label class="btn btn-outline-primary" for="sort-taxa">Taxa</label>
+                            <input type="radio" class="btn-check" name="sort-performance" id="sort-tempo">
+                            <label class="btn btn-outline-primary" for="sort-tempo">Tempo Médio</label>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Fotógrafo</th>
+                                        <th>Total</th>
+                                        <th>Realizadas</th>
+                                        <th>Pendentes</th>
+                                        <th>Canceladas</th>
+                                        <th>Taxa Sucesso</th>
+                                        <th>Tempo Médio</th>
+                                        <th>Última Atividade</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="performance-table">
+                                    <!-- Conteúdo será inserido via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alertas e Problemas -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Alertas e Problemas</h5>
+                    </div>
+                    <div class="card-body" id="alerts-container">
+                        <!-- Alertas serão inseridos via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../config/config.js"></script>
+    <script src="../assets/js/google-sheets-api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        let allData = [];
+        let filteredData = [];
+        let charts = {};
+        let currentPeriod = 30;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Verificar autenticação e role
+            if (!requireAuth(['gestor', 'admin'])) {
+                return;
+            }
+
+            // Configurar interface
+            setupUserInterface();
+            
+            // Carregar dados
+            await loadData();
+            
+            // Configurar event listeners
+            setupEventListeners();
+            
+            hideLoading();
+        });
+
+        function setupUserInterface() {
+            const user = authManager.getCurrentUser();
+            document.getElementById('user-name').textContent = user.nome;
+        }
+
+        async function loadData() {
+            try {
+                showLoading();
+                
+                // Carregar todas as solicitações
+                allData = await googleSheetsAPI.getSolicitacoes();
+                
+                // Carregar filtros
+                await loadFilters();
+                
+                // Aplicar filtros e gerar relatórios
+                applyFilters();
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                showError('Erro ao carregar dados. Verifique sua conexão.');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function loadFilters() {
+            try {
+                // Carregar fotógrafos
+                const fotografos = await googleSheetsAPI.getFotografos();
+                const selectFotografo = document.getElementById('filter-fotografo');
+                
+                fotografos.forEach(foto => {
+                    const option = document.createElement('option');
+                    option.value = foto.Nome || foto.nome;
+                    option.textContent = foto.Nome || foto.nome;
+                    selectFotografo.appendChild(option);
+                });
+
+                // Carregar redes
+                const redes = await googleSheetsAPI.getRedes();
+                const selectRede = document.getElementById('filter-rede');
+                
+                redes.forEach(rede => {
+                    const option = document.createElement('option');
+                    option.value = rede.Nome || rede.nome;
+                    option.textContent = rede.Nome || rede.nome;
+                    selectRede.appendChild(option);
+                });
+                
+            } catch (error) {
+                console.warn('Erro ao carregar filtros:', error);
+            }
+        }
+
+        function applyFilters() {
+            const periodo = document.getElementById('filter-periodo').value;
+            const fotografo = document.getElementById('filter-fotografo').value;
+            const rede = document.getElementById('filter-rede').value;
+            
+            // Calcular datas do período
+            let dataInicio, dataFim;
+            const hoje = new Date();
+            
+            if (periodo === 'custom') {
+                dataInicio = new Date(document.getElementById('data-inicio').value);
+                dataFim = new Date(document.getElementById('data-fim').value);
+            } else {
+                dataFim = new Date(hoje);
+                dataInicio = new Date(hoje);
+                dataInicio.setDate(dataInicio.getDate() - parseInt(periodo));
+            }
+            
+            // Filtrar dados
+            filteredData = allData.filter(item => {
+                // Filtro por data
+                const dataItem = new Date(item['Data do agendamento'] || item['Data da Realizacao']);
+                if (dataItem < dataInicio || dataItem > dataFim) return false;
+                
+                // Filtro por fotógrafo
+                if (fotografo && item['Fotografo'] !== fotografo) return false;
+                
+                // Filtro por rede
+                if (rede && item['Rede'] !== rede) return false;
+                
+                return true;
+            });
+            
+            currentPeriod = parseInt(periodo) || 30;
+            
+            // Atualizar relatórios
+            updateStatistics();
+            updateCharts();
+            updatePerformanceTable();
+            updateAlerts();
+        }
+
+        function updateStatistics() {
+            const stats = calculateStatistics(filteredData);
+            const previousStats = calculatePreviousStatistics();
+            
+            // Atualizar valores
+            document.getElementById('stat-total').textContent = stats.total;
+            document.getElementById('stat-realizadas').textContent = stats.realizadas;
+            document.getElementById('stat-pendentes').textContent = stats.pendentes;
+            document.getElementById('stat-taxa').textContent = stats.taxaSucesso + '%';
+            
+            // Calcular e exibir mudanças
+            const changes = {
+                total: calculateChange(stats.total, previousStats.total),
+                realizadas: calculateChange(stats.realizadas, previousStats.realizadas),
+                pendentes: calculateChange(stats.pendentes, previousStats.pendentes),
+                taxa: calculateChange(stats.taxaSucesso, previousStats.taxaSucesso)
+            };
+            
+            document.getElementById('stat-total-change').textContent = formatChange(changes.total);
+            document.getElementById('stat-realizadas-change').textContent = formatChange(changes.realizadas);
+            document.getElementById('stat-pendentes-change').textContent = formatChange(changes.pendentes);
+            document.getElementById('stat-taxa-change').textContent = formatChange(changes.taxa) + 'pp';
+        }
+
+        function calculateStatistics(data) {
+            const total = data.length;
+            const realizadas = data.filter(item => item['Status'] === 'Realizado').length;
+            const pendentes = data.filter(item => ['Agendado', 'Confirmado'].includes(item['Status'])).length;
+            const taxaSucesso = total > 0 ? Math.round((realizadas / total) * 100) : 0;
+            
+            return { total, realizadas, pendentes, taxaSucesso };
+        }
+
+        function calculatePreviousStatistics() {
+            // Calcular estatísticas do período anterior para comparação
+            const hoje = new Date();
+            const dataFim = new Date(hoje);
+            dataFim.setDate(dataFim.getDate() - currentPeriod);
+            const dataInicio = new Date(dataFim);
+            dataInicio.setDate(dataInicio.getDate() - currentPeriod);
+            
+            const previousData = allData.filter(item => {
+                const dataItem = new Date(item['Data do agendamento'] || item['Data da Realizacao']);
+                return dataItem >= dataInicio && dataItem <= dataFim;
+            });
+            
+            return calculateStatistics(previousData);
+        }
+
+        function calculateChange(current, previous) {
+            if (previous === 0) return current > 0 ? 100 : 0;
+            return Math.round(((current - previous) / previous) * 100);
+        }
+
+        function formatChange(change) {
+            const sign = change >= 0 ? '+' : '';
+            return `${sign}${change}%`;
+        }
+
+        function updateCharts() {
+            updateTimelineChart();
+            updateStatusChart();
+            updateFotografoChart();
+            updateRedeChart();
+        }
+
+        function updateTimelineChart() {
+            const ctx = document.getElementById('timelineChart').getContext('2d');
+            
+            // Agrupar dados por dia
+            const dailyData = groupDataByDay(filteredData);
+            
+            if (charts.timeline) {
+                charts.timeline.destroy();
+            }
+            
+            charts.timeline = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dailyData.labels,
+                    datasets: [
+                        {
+                            label: 'Solicitações',
+                            data: dailyData.solicitacoes,
+                            borderColor: '#0d6efd',
+                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Realizadas',
+                            data: dailyData.realizadas,
+                            borderColor: '#198754',
+                            backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateStatusChart() {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            
+            const statusCount = {};
+            filteredData.forEach(item => {
+                const status = item['Status'] || 'Não informado';
+                statusCount[status] = (statusCount[status] || 0) + 1;
+            });
+            
+            if (charts.status) {
+                charts.status.destroy();
+            }
+            
+            charts.status = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(statusCount),
+                    datasets: [{
+                        data: Object.values(statusCount),
+                        backgroundColor: [
+                            '#198754', // Realizado - Verde
+                            '#ffc107', // Agendado - Amarelo
+                            '#0d6efd', // Confirmado - Azul
+                            '#dc3545', // Cancelado - Vermelho
+                            '#6c757d'  // Outros - Cinza
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true
+                }
+            });
+        }
+
+        function updateFotografoChart() {
+            const ctx = document.getElementById('fotografoChart').getContext('2d');
+            
+            const fotografoStats = {};
+            filteredData.forEach(item => {
+                const fotografo = item['Fotografo'] || 'Não informado';
+                if (!fotografoStats[fotografo]) {
+                    fotografoStats[fotografo] = { total: 0, realizadas: 0 };
+                }
+                fotografoStats[fotografo].total++;
+                if (item['Status'] === 'Realizado') {
+                    fotografoStats[fotografo].realizadas++;
+                }
+            });
+            
+            const labels = Object.keys(fotografoStats);
+            const totals = labels.map(f => fotografoStats[f].total);
+            const realizadas = labels.map(f => fotografoStats[f].realizadas);
+            
+            if (charts.fotografo) {
+                charts.fotografo.destroy();
+            }
+            
+            charts.fotografo = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total',
+                            data: totals,
+                            backgroundColor: 'rgba(13, 110, 253, 0.8)'
+                        },
+                        {
+                            label: 'Realizadas',
+                            data: realizadas,
+                            backgroundColor: 'rgba(25, 135, 84, 0.8)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateRedeChart() {
+            const ctx = document.getElementById('redeChart').getContext('2d');
+            
+            const redeCount = {};
+            filteredData.forEach(item => {
+                const rede = item['Rede'] || 'Não informado';
+                redeCount[rede] = (redeCount[rede] || 0) + 1;
+            });
+            
+            if (charts.rede) {
+                charts.rede.destroy();
+            }
+            
+            charts.rede = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(redeCount),
+                    datasets: [{
+                        label: 'Solicitações',
+                        data: Object.values(redeCount),
+                        backgroundColor: 'rgba(255, 193, 7, 0.8)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function groupDataByDay(data) {
+            const dailyStats = {};
+            
+            data.forEach(item => {
+                const date = new Date(item['Data do agendamento'] || item['Data da Realizacao']);
+                const dateStr = date.toISOString().split('T')[0];
+                
+                if (!dailyStats[dateStr]) {
+                    dailyStats[dateStr] = { solicitacoes: 0, realizadas: 0 };
+                }
+                
+                dailyStats[dateStr].solicitacoes++;
+                if (item['Status'] === 'Realizado') {
+                    dailyStats[dateStr].realizadas++;
+                }
+            });
+            
+            const sortedDates = Object.keys(dailyStats).sort();
+            
+            return {
+                labels: sortedDates.map(date => new Date(date).toLocaleDateString('pt-BR')),
+                solicitacoes: sortedDates.map(date => dailyStats[date].solicitacoes),
+                realizadas: sortedDates.map(date => dailyStats[date].realizadas)
+            };
+        }
+
+        function updatePerformanceTable() {
+            const tbody = document.getElementById('performance-table');
+            
+            // Calcular performance por fotógrafo
+            const fotografoStats = {};
+            
+            filteredData.forEach(item => {
+                const fotografo = item['Fotografo'] || 'Não informado';
+                if (!fotografoStats[fotografo]) {
+                    fotografoStats[fotografo] = {
+                        total: 0,
+                        realizadas: 0,
+                        pendentes: 0,
+                        canceladas: 0,
+                        tempos: [],
+                        ultimaAtividade: null
+                    };
+                }
+                
+                const stats = fotografoStats[fotografo];
+                stats.total++;
+                
+                const status = item['Status'];
+                if (status === 'Realizado') {
+                    stats.realizadas++;
+                    
+                    // Calcular tempo entre agendamento e realização
+                    const dataAgendamento = new Date(item['Data do agendamento']);
+                    const dataRealizacao = new Date(item['Data da Realizacao']);
+                    if (dataAgendamento && dataRealizacao) {
+                        const tempo = Math.ceil((dataRealizacao - dataAgendamento) / (1000 * 60 * 60 * 24));
+                        stats.tempos.push(tempo);
+                    }
+                } else if (['Agendado', 'Confirmado'].includes(status)) {
+                    stats.pendentes++;
+                } else if (status === 'Cancelado') {
+                    stats.canceladas++;
+                }
+                
+                // Atualizar última atividade
+                const dataAtividade = new Date(item['Data da Realizacao'] || item['Data do agendamento']);
+                if (!stats.ultimaAtividade || dataAtividade > stats.ultimaAtividade) {
+                    stats.ultimaAtividade = dataAtividade;
+                }
+            });
+            
+            // Converter para array e ordenar
+            const fotografos = Object.keys(fotografoStats).map(nome => {
+                const stats = fotografoStats[nome];
+                const taxaSucesso = stats.total > 0 ? Math.round((stats.realizadas / stats.total) * 100) : 0;
+                const tempoMedio = stats.tempos.length > 0 ? 
+                    Math.round(stats.tempos.reduce((a, b) => a + b, 0) / stats.tempos.length) : 0;
+                
+                return {
+                    nome,
+                    ...stats,
+                    taxaSucesso,
+                    tempoMedio
+                };
+            });
+            
+            // Ordenar baseado na seleção
+            const sortBy = document.querySelector('input[name="sort-performance"]:checked').id;
+            fotografos.sort((a, b) => {
+                switch (sortBy) {
+                    case 'sort-taxa':
+                        return b.taxaSucesso - a.taxaSucesso;
+                    case 'sort-tempo':
+                        return a.tempoMedio - b.tempoMedio;
+                    default:
+                        return b.total - a.total;
+                }
+            });
+            
+            // Renderizar tabela
+            tbody.innerHTML = fotografos.map(foto => `
+                <tr>
+                    <td><strong>${foto.nome}</strong></td>
+                    <td>${foto.total}</td>
+                    <td><span class="badge bg-success">${foto.realizadas}</span></td>
+                    <td><span class="badge bg-warning">${foto.pendentes}</span></td>
+                    <td><span class="badge bg-danger">${foto.canceladas}</span></td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="progress flex-grow-1 me-2" style="height: 20px;">
+                                <div class="progress-bar" style="width: ${foto.taxaSucesso}%"></div>
+                            </div>
+                            <span class="small">${foto.taxaSucesso}%</span>
+                        </div>
+                    </td>
+                    <td>${foto.tempoMedio > 0 ? foto.tempoMedio + ' dias' : 'N/A'}</td>
+                    <td>${foto.ultimaAtividade ? foto.ultimaAtividade.toLocaleDateString('pt-BR') : 'N/A'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateAlerts() {
+            const container = document.getElementById('alerts-container');
+            const alerts = [];
+            
+            // Verificar solicitações em atraso
+            const hoje = new Date();
+            const atrasadas = filteredData.filter(item => {
+                if (item['Status'] !== 'Agendado' && item['Status'] !== 'Confirmado') return false;
+                
+                const dataAgendamento = new Date(item['Data do agendamento']);
+                const diasAtraso = Math.ceil((hoje - dataAgendamento) / (1000 * 60 * 60 * 24));
+                
+                return diasAtraso > 3;
+            });
+            
+            if (atrasadas.length > 0) {
+                alerts.push({
+                    type: 'danger',
+                    icon: 'fas fa-exclamation-triangle',
+                    title: 'Solicitações em Atraso',
+                    message: `${atrasadas.length} solicitações estão com mais de 3 dias de atraso.`,
+                    action: 'Ver Detalhes'
+                });
+            }
+            
+            // Verificar fotógrafos inativos
+            const fotografoStats = {};
+            filteredData.forEach(item => {
+                const fotografo = item['Fotografo'];
+                if (fotografo) {
+                    if (!fotografoStats[fotografo]) {
+                        fotografoStats[fotografo] = { ultimaAtividade: null };
+                    }
+                    
+                    const dataAtividade = new Date(item['Data da Realizacao'] || item['Data do agendamento']);
+                    if (!fotografoStats[fotografo].ultimaAtividade || dataAtividade > fotografoStats[fotografo].ultimaAtividade) {
+                        fotografoStats[fotografo].ultimaAtividade = dataAtividade;
+                    }
+                }
+            });
+            
+            const inativos = Object.keys(fotografoStats).filter(fotografo => {
+                const ultimaAtividade = fotografoStats[fotografo].ultimaAtividade;
+                if (!ultimaAtividade) return true;
+                
+                const diasInativo = Math.ceil((hoje - ultimaAtividade) / (1000 * 60 * 60 * 24));
+                return diasInativo > 7;
+            });
+            
+            if (inativos.length > 0) {
+                alerts.push({
+                    type: 'warning',
+                    icon: 'fas fa-user-clock',
+                    title: 'Fotógrafos Inativos',
+                    message: `${inativos.length} fotógrafos não têm atividade há mais de 7 dias.`,
+                    action: 'Ver Lista'
+                });
+            }
+            
+            // Verificar taxa de sucesso baixa
+            const stats = calculateStatistics(filteredData);
+            if (stats.taxaSucesso < 80 && stats.total > 10) {
+                alerts.push({
+                    type: 'info',
+                    icon: 'fas fa-chart-line',
+                    title: 'Taxa de Sucesso Baixa',
+                    message: `A taxa de sucesso atual é de ${stats.taxaSucesso}%, abaixo do esperado (80%).`,
+                    action: 'Analisar'
+                });
+            }
+            
+            // Renderizar alertas
+            if (alerts.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <strong>Tudo funcionando bem!</strong> Não há alertas no momento.
+                    </div>
+                `;
+            } else {
+                container.innerHTML = alerts.map(alert => `
+                    <div class="alert alert-${alert.type} d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="${alert.icon} fa-2x"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="alert-heading">${alert.title}</h6>
+                            <p class="mb-0">${alert.message}</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <button class="btn btn-outline-${alert.type} btn-sm">${alert.action}</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function setupEventListeners() {
+            // Filtros
+            document.getElementById('filter-periodo').addEventListener('change', (e) => {
+                const customDates = document.getElementById('custom-dates');
+                const customDatesEnd = document.getElementById('custom-dates-end');
+                
+                if (e.target.value === 'custom') {
+                    customDates.style.display = 'block';
+                    customDatesEnd.style.display = 'block';
+                } else {
+                    customDates.style.display = 'none';
+                    customDatesEnd.style.display = 'none';
+                    applyFilters();
+                }
+            });
+            
+            document.getElementById('filter-fotografo').addEventListener('change', applyFilters);
+            document.getElementById('filter-rede').addEventListener('change', applyFilters);
+            document.getElementById('data-inicio').addEventListener('change', applyFilters);
+            document.getElementById('data-fim').addEventListener('change', applyFilters);
+            
+            // Ordenação da tabela de performance
+            document.querySelectorAll('input[name="sort-performance"]').forEach(radio => {
+                radio.addEventListener('change', updatePerformanceTable);
+            });
+        }
+
+        async function refreshData() {
+            await loadData();
+        }
+
+        function exportReport(format) {
+            // Implementar exportação
+            alert(`Exportando relatório em formato ${format.toUpperCase()}...`);
+        }
+
+        function showLoading() {
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        function showError(message) {
+            alert(message); // Implementar toast
+        }
+    </script>
+</body>
+</html>

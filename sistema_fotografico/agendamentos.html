@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamentos - Sistema Fotográfico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-camera me-2"></i>Sistema Fotográfico
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="fas fa-home"></i> Início</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-plus"></i> Novos Pedidos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="novos-pedidos.html">Novo Pedido Completo</a></li>
+                            <li><a class="dropdown-item" href="novos-pedidos.html">Edição de Imagens</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pendentes.html"><i class="fas fa-clock"></i> Pendentes</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-calendar"></i> Agendamentos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="agendamentos.html">Interno</a></li>
+                            <li><a class="dropdown-item" href="agendamentos-publico.html">Fotógrafos</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="registro.html"><i class="fas fa-book"></i> Registro</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="conferencia.html"><i class="fas fa-check-double"></i> Conferência</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="realizados.html"><i class="fas fa-history"></i> Realizados</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Cabeçalho -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="welcome-header">
+                    <h2><i class="fas fa-calendar-alt me-2"></i>Agendamentos</h2>
+                    <p class="mb-0">Gerencie os agendamentos de sessões fotográficas</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros e Ações -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- Filtros de Data -->
+                            <div class="col-md-3">
+                                <label for="filtroDataInicio" class="form-label">Data Início</label>
+                                <input type="date" class="form-control" id="filtroDataInicio">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="filtroDataFim" class="form-label">Data Fim</label>
+                                <input type="date" class="form-control" id="filtroDataFim">
+                            </div>
+                            
+                            <!-- Filtro por Fotógrafo -->
+                            <div class="col-md-3">
+                                <label for="filtroFotografo" class="form-label">Fotógrafo</label>
+                                <select class="form-select" id="filtroFotografo">
+                                    <option value="">Todos os fotógrafos</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Filtro por Status -->
+                            <div class="col-md-3">
+                                <label for="filtroStatus" class="form-label">Status</label>
+                                <select class="form-select" id="filtroStatus">
+                                    <option value="">Todos os status</option>
+                                    <option value="Agendado">Agendado</option>
+                                    <option value="Confirmado">Confirmado</option>
+                                    <option value="Em Andamento">Em Andamento</option>
+                                    <option value="Reagendar">Reagendar</option>
+                                    <option value="Cancelado">Cancelado</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3 mt-2">
+                            <!-- Busca Geral -->
+                            <div class="col-md-6">
+                                <label for="buscaGeral" class="form-label">Busca Geral</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="buscaGeral" 
+                                           placeholder="Buscar por cliente, endereço, corretor...">
+                                    <button class="btn btn-outline-secondary" type="button" id="btnBuscar">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Ações -->
+                            <div class="col-md-6 d-flex align-items-end">
+                                <button type="button" class="btn btn-secondary me-2" id="btnLimparFiltros">
+                                    <i class="fas fa-eraser me-1"></i>Limpar Filtros
+                                </button>
+                                <button type="button" class="btn btn-success me-2" id="btnNovoAgendamento">
+                                    <i class="fas fa-plus me-1"></i>Novo Agendamento
+                                </button>
+                                <button type="button" class="btn btn-info" id="btnExportar">
+                                    <i class="fas fa-download me-1"></i>Exportar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas Rápidas -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stats-card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Total Agendados</h6>
+                                <h3 class="mb-0" id="totalAgendados">0</h3>
+                            </div>
+                            <div class="stats-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Hoje</h6>
+                                <h3 class="mb-0" id="agendadosHoje">0</h3>
+                            </div>
+                            <div class="stats-icon">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Esta Semana</h6>
+                                <h3 class="mb-0" id="agendadosSemana">0</h3>
+                            </div>
+                            <div class="stats-icon">
+                                <i class="fas fa-calendar-week"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Próximo Mês</h6>
+                                <h3 class="mb-0" id="agendadosProximoMes">0</h3>
+                            </div>
+                            <div class="stats-icon">
+                                <i class="fas fa-calendar-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualização em Calendário -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-calendar me-2"></i>Calendário de Agendamentos
+                        </h5>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-primary btn-sm active" id="btnVisualizacaoCalendario">
+                                <i class="fas fa-calendar me-1"></i>Calendário
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="btnVisualizacaoLista">
+                                <i class="fas fa-list me-1"></i>Lista
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Calendário Simples -->
+                        <div id="calendarioView">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <button class="btn btn-outline-secondary btn-sm" id="btnMesAnterior">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <h4 id="mesAnoAtual">Janeiro 2024</h4>
+                                <button class="btn btn-outline-secondary btn-sm" id="btnProximoMes">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <div id="calendarioGrid" class="calendario-grid">
+                                <!-- Calendário será gerado dinamicamente -->
+                            </div>
+                        </div>
+
+                        <!-- Lista de Agendamentos -->
+                        <div id="listaView" style="display: none;">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="tabelaAgendamentos">
+                                    <thead>
+                                        <tr>
+                                            <th>Data/Hora</th>
+                                            <th>Cliente</th>
+                                            <th>Endereço</th>
+                                            <th>Fotógrafo</th>
+                                            <th>Tipo Serviço</th>
+                                            <th>Status</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Dados serão carregados dinamicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paginação -->
+        <div class="row" id="paginacaoContainer" style="display: none;">
+            <div class="col-12">
+                <nav aria-label="Navegação de páginas">
+                    <ul class="pagination justify-content-center" id="paginacao">
+                        <!-- Paginação será gerada dinamicamente -->
+                    </ul>
+                </nav>
+                <div class="text-center">
+                    <small class="text-muted" id="infoPaginacao">
+                        Mostrando 0 de 0 agendamentos
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Novo Agendamento -->
+    <div class="modal fade" id="modalNovoAgendamento" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-calendar-plus me-2"></i>Novo Agendamento
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formNovoAgendamento">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="pedidoAgendamento" class="form-label">Pedido *</label>
+                                <select class="form-select" id="pedidoAgendamento" name="pedido_id" required>
+                                    <option value="">Selecione o pedido...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="fotografoAgendamento" class="form-label">Fotógrafo *</label>
+                                <select class="form-select" id="fotografoAgendamento" name="fotografo_id" required>
+                                    <option value="">Selecione o fotógrafo...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="dataAgendamento" class="form-label">Data *</label>
+                                <input type="date" class="form-control" id="dataAgendamento" name="data_agendamento" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="horaAgendamento" class="form-label">Horário *</label>
+                                <input type="time" class="form-control" id="horaAgendamento" name="hora_agendamento" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="observacoesAgendamento" class="form-label">Observações</label>
+                                <textarea class="form-control" id="observacoesAgendamento" name="observacoes" rows="3"
+                                          placeholder="Observações adicionais para o agendamento..."></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnSalvarAgendamento">
+                        <i class="fas fa-save me-1"></i>Salvar Agendamento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalhes do Agendamento -->
+    <div class="modal fade" id="modalDetalhesAgendamento" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-info-circle me-2"></i>Detalhes do Agendamento
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="detalhesAgendamentoContent">
+                    <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-warning" id="btnReagendarModal">
+                        <i class="fas fa-calendar-alt me-1"></i>Reagendar
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btnCancelarModal">
+                        <i class="fas fa-times me-1"></i>Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/excel-integration.js"></script>
+    <script src="js/excel-writer.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/agendamentos.js"></script>
+</body>
+</html>

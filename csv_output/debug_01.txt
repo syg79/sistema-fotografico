@@ -1,0 +1,1217 @@
+PS D:\Projetos\Excel> powershell -ExecutionPolicy Bypass -File .\scripts\teste_dicionario.ps1
+--- INICIANDO TESTE DE DICIONÃRIO PARA A TABELA 'Regioes' ---
+Baixando 5 registros para teste...
+    Buscando pÃ¡gina 1... 100 registros.
+
+--- Processando 100 registros baixados ---
+
+=================================
+Processando Registro ID: DVWQWRNZ49
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Agua verde
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Agua verde'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 4MXQJdrZ6v
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Abranches
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Abranches'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 5m9N0njzqk
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): A Verde
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'A Verde'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 4PzQ4GNJGV
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Ahu
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Ahu'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: oaANB1r1by
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): A Boqueirao
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'A Boqueirao'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: o6WQb5NnBZ
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Alto XV
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Alto XV'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: lGArg7rmR6
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): A Gloria
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'A Gloria'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: eykNOvrDY3
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Atuba
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Atuba'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: K2ejlOQo9B
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Augusta
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Augusta'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 698rd2QZwd
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Bacacheri
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Bacacheri'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: q3kjZVj6Vb
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): B Alto
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'B Alto'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: JDXQ80QYRl
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Batel
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Batel'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: VX9QoerwYv
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Bigorrilho
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Bigorrilho'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: L5MjKxr0kq
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): B Vista
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'B Vista'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: DVarwJjORP
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): B Retiro
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'B Retiro'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: K68j9gN2V7
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Butiatuvinha
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Butiatuvinha'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 6b1rAKQKkA
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Cabral
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Cabral'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 3GDN1mNeqP
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Cachoeira
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Cachoeira'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: X9EjVXNo2K
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Cajuru
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Cajuru'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: DkMjmwNvV6
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): C Siqueira
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'C Siqueira'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: pPEryWQOnV
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): C Comprido
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'C Comprido'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: PblNe6QxwL
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): C Santana
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'C Santana'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 4YZjnDNPvl
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): C Imbuia
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'C Imbuia'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: ObEjEONK5p
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): C Raso
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'C Raso'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 7oOjDdjB9A
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Cascatinha
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Cascatinha'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 4Z9Q29N2mo
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Caximba
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Caximba'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: m72NporwvZ
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Centro
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Centro'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: l5nQxLQxYX
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): C Cívico
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'C Cívico'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 3xPjXYrKGE
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): CIC
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'CIC'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: oGWN5qNlAe
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): C Rei
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'C Rei'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: mloNLGrM8p
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Fanny
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Fanny'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: B8qQPZr16n
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Fazendinha
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Fazendinha'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: W4yQk4jgPK
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Ganchinho
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Ganchinho'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: W0VNq8rmlK
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Guaira
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Guaira'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: kVXr7xNJed
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Hauer
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Hauer'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: JawrRJr5kq
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): H Lange
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'H Lange'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: kOGQ3gQlnA
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): J Americas
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'J Americas'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 0DzjGaNYp1
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): J Botanico
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'J Botanico'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: LX6QawrZk4
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): J Social
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'J Social'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: M03rzbr69d
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Juveve
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Juveve'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 53GN6vNzxo
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): L Pequena
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'L Pequena'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 4AXQvaNLYp
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Lindoia
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Lindoia'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: P74QYbjBEm
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Merces
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Merces'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: ka6jMnor75
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Mossungue
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Mossungue'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: DVWQWRRNZ4
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Ecoville
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Ecoville'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 4MXQJEdNZ6
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): N Mundo
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'N Mundo'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 5m9N0onrzq
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Orleans
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Orleans'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 4PzQ4yGjJG
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Parolin
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Parolin'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: oaANBE1r1b
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Pilarzinho
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Pilarzinho'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: o6WQbJ5QnB
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Pinheirinho
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Pinheirinho'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: lGArg57QmR
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Portao
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Portao'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: eykNOwvNDY
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): P Velho
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'P Velho'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: K2ejl6ONo9
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Champagnat
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Champagnat'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 698rd32jZw
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Rebouças
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Rebouças'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: q3kjZ2Vj6V
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Riviera
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Riviera'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: JDXQ8E0jYR
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): S Candida
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'S Candida'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: VX9QoZeNwY
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): S Felicidade
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'S Felicidade'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: L5MjKqxN0k
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): S Quiteria
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'S Quiteria'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: DVarwKJrOR
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): S Inacio
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'S Inacio'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: K68j92gr2V
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): S Bras
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'S Bras'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 6b1rA8KjKk
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): S Francisco
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'S Francisco'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 3GDN1ZmQeq
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): S Joao
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'S Joao'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: X9EjVzXjo2
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): S Lourenco
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'S Lourenco'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: DkMjmvwrvV
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): S Miguel
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'S Miguel'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: pPErydWjOn
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Seminario
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Seminario'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: PblNe86rxw
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): S Cercado
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'S Cercado'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 4YZjnnDjPv
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Taboao
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Taboao'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: ObEjEpOQK5
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Taruma
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Taruma'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 7oOjD1drB9
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Tatuquara
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Tatuquara'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 4Z9Q2G9j2m
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Tingui
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Tingui'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: m72NpJojwv
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Tangua
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Tangua'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: l5nQx1LjxY
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Umbara
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Umbara'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 3xPjX7YQKG
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): V Izabel
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'V Izabel'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: oGWN5eqNlA
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): V Alegre
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'V Alegre'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: mloNL2GjM8
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Xaxim
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Xaxim'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: B8qQPyZj16
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Boqueirao
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Boqueirao'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: W4yQk34QgP
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Barreirinha
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Barreirinha'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: W0VNqy8Nml
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): São Jose dos Pinhais
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'São Jose dos Pinhais'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: kVXr7nxjJe
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Pinhais
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Pinhais'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: JawrRRJr5k
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Araucária
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Araucária'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: kOGQ3ogQln
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Colombo
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Colombo'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 0DzjGXarYp
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): A Tamandaré
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'A Tamandaré'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: LX6QaLwNZk
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): C Gde Sul
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'C Gde Sul'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: M03rzEbj69
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Campina Grande do Sul
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Campina Grande do Sul'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 53GN69vrzx
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Piraquara
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Piraquara'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 4AXQvvaQLY
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Fazenda Rio Grande
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Fazenda Rio Grande'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: P74QY8bNBE
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Campo Largo
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Campo Largo'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: ka6jMGoN75
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Campo Magro
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Campo Magro'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: DVWQW2RNZ4
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Quatro Barras
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Quatro Barras'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 4MXQJddrZ6
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Litoral
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Litoral'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 5m9N07nrzq
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Curitiba
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Curitiba'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 4PzQ40GQJG
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Sul
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Sul'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: oaANB91r1b
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Central
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Central'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: o6WQba5NnB
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Nordeste/Norte
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Nordeste/Norte'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: lGArg97QmR
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Oeste
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Oeste'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: eykNODvQDY
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Noroeste/Oeste
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Noroeste/Oeste'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: K2ejlvONo9
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): C Largo
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'C Largo'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: 698rdO2jZw
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): B Nova
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'B Nova'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: q3kjZDVN6V
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Lapa
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Lapa'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+=================================
+Processando Registro ID: ka6jMGMN75
+--- Dentro de Convert-TadabaseFieldToString ---
+DEBUG: Tipo do valor de entrada: [System.String]
+DEBUG: Valor de entrada (via Out-String): Araucaria
+
+DEBUG: CondiÃ§Ã£o 'is [string]' satisfeita. Retornando valor diretamente.
+-> TÃ­tulo extraÃ­do final: 'Araucaria'
+-> SUCESSO: Adicionado ao mapa.
+=================================
+
+
+--- TESTE CONCLUÃDO ---
+Total de itens no mapa final: 100
+ConteÃºdo do mapa:
+
+Name                           Value
+----                           -----
+q3kjZ2Vj6V                     Riviera
+X9EjVzXjo2                     S Lourenco
+B8qQPZr16n                     Fazendinha
+X9EjVXNo2K                     Cajuru
+4Z9Q29N2mo                     Caximba
+pPEryWQOnV                     C Comprido
+JawrRJr5kq                     H Lange
+5m9N07nrzq                     Curitiba
+VX9QoZeNwY                     S Felicidade
+B8qQPyZj16                     Boqueirao
+mloNLGrM8p                     Fanny
+3GDN1ZmQeq                     S Joao
+K2ejl6ONo9                     Champagnat
+4MXQJEdNZ6                     N Mundo
+698rd2QZwd                     Bacacheri
+4PzQ40GQJG                     Sul
+4MXQJddrZ6                     Litoral
+eykNODvQDY                     Noroeste/Oeste
+q3kjZDVN6V                     Lapa
+q3kjZVj6Vb                     B Alto
+kVXr7nxjJe                     Pinhais
+ka6jMnor75                     Mossungue
+eykNOvrDY3                     Atuba
+P74QYbjBEm                     Merces
+l5nQxLQxYX                     C Cívico
+DVWQWRRNZ4                     Ecoville
+DVarwJjORP                     B Retiro
+DVWQW2RNZ4                     Quatro Barras
+4PzQ4GNJGV                     Ahu
+4MXQJdrZ6v                     Abranches
+698rdO2jZw                     B Nova
+4AXQvvaQLY                     Fazenda Rio Grande
+0DzjGXarYp                     A Tamandaré
+ka6jMGoN75                     Campo Magro
+oGWN5qNlAe                     C Rei
+l5nQx1LjxY                     Umbara
+LX6QaLwNZk                     C Gde Sul
+mloNL2GjM8                     Xaxim
+pPErydWjOn                     Seminario
+PblNe6QxwL                     C Santana
+5m9N0njzqk                     A Verde
+m72NpJojwv                     Tangua
+DkMjmwNvV6                     C Siqueira
+W4yQk4jgPK                     Ganchinho
+ObEjEONK5p                     C Raso
+K2ejlvONo9                     C Largo
+P74QY8bNBE                     Campo Largo
+LX6QawrZk4                     J Social
+K68j9gN2V7                     Butiatuvinha
+lGArg97QmR                     Oeste
+DVWQWRNZ49                     Agua verde
+K2ejlOQo9B                     Augusta
+6b1rAKQKkA                     Cabral
+M03rzEbj69                     Campina Grande do Sul
+7oOjD1drB9                     Tatuquara
+3xPjX7YQKG                     V Izabel
+M03rzbr69d                     Juveve
+lGArg57QmR                     Portao
+4PzQ4yGjJG                     Parolin
+L5MjKqxN0k                     S Quiteria
+VX9QoerwYv                     Bigorrilho
+K68j92gr2V                     S Bras
+DkMjmvwrvV                     S Miguel
+JawrRRJr5k                     Araucária
+m72NporwvZ                     Centro
+oaANBE1r1b                     Pilarzinho
+DVarwKJrOR                     S Inacio
+L5MjKxr0kq                     B Vista
+kOGQ3gQlnA                     J Americas
+W0VNqy8Nml                     São Jose dos Pinhais
+0DzjGaNYp1                     J Botanico
+4Z9Q2G9j2m                     Tingui
+3xPjXYrKGE                     CIC
+4AXQvaNLYp                     Lindoia
+JDXQ80QYRl                     Batel
+oaANB1r1by                     A Boqueirao
+5m9N0onrzq                     Orleans
+o6WQb5NnBZ                     Alto XV
+6b1rA8KjKk                     S Francisco
+oGWN5eqNlA                     V Alegre
+53GN6vNzxo                     L Pequena
+53GN69vrzx                     Piraquara
+o6WQba5NnB                     Nordeste/Norte
+W0VNq8rmlK                     Guaira
+ka6jMGMN75                     Araucaria
+698rd32jZw                     Rebouças
+7oOjDdjB9A                     Cascatinha
+W4yQk34QgP                     Barreirinha
+4YZjnDNPvl                     C Imbuia
+o6WQbJ5QnB                     Pinheirinho
+3GDN1mNeqP                     Cachoeira
+JDXQ8E0jYR                     S Candida
+kOGQ3ogQln                     Colombo
+lGArg7rmR6                     A Gloria
+eykNOwvNDY                     P Velho
+4YZjnnDjPv                     Taboao
+ObEjEpOQK5                     Taruma
+kVXr7xNJed                     Hauer
+PblNe86rxw                     S Cercado
+oaANB91r1b                     Central
+
+
+PS D:\Projetos\Excel>

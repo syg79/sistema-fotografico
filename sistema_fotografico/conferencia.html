@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conferência e Ajustes - Sistema Fotográfico</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS Personalizado -->
+    <link href="css/style.css" rel="stylesheet">
+    
+    <style>
+        .conferencia-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #007bff;
+        }
+        
+        .conferencia-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .status-pendente { border-left-color: #ffc107; }
+        .status-em-revisao { border-left-color: #17a2b8; }
+        .status-aprovado { border-left-color: #28a745; }
+        .status-rejeitado { border-left-color: #dc3545; }
+        
+        .preview-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .preview-item .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .preview-item:hover .overlay {
+            opacity: 1;
+        }
+        
+        .rating-stars {
+            color: #ffc107;
+        }
+        
+        .rating-stars .far {
+            color: #dee2e6;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #dee2e6;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -23px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #007bff;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 2px #007bff;
+        }
+        
+        .quality-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        
+        .quality-excelente { background: #d4edda; color: #155724; }
+        .quality-boa { background: #d1ecf1; color: #0c5460; }
+        .quality-regular { background: #fff3cd; color: #856404; }
+        .quality-ruim { background: #f8d7da; color: #721c24; }
+        
+        .revision-panel {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .revision-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .revision-controls .btn {
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .preview-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+            
+            .revision-controls {
+                flex-direction: column;
+            }
+            
+            .revision-controls .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-camera me-2"></i>Sistema Fotográfico
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="fas fa-home"></i> Início</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-plus"></i> Novos Pedidos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="novos-pedidos.html">Novo Pedido Completo</a></li>
+                            <li><a class="dropdown-item" href="novos-pedidos.html">Edição de Imagens</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pendentes.html"><i class="fas fa-clock"></i> Pendentes</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-calendar"></i> Agendamentos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="agendamentos.html">Interno</a></li>
+                            <li><a class="dropdown-item" href="agendamentos-publico.html">Fotógrafos</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="registro.html"><i class="fas fa-book"></i> Registro</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="conferencia.html"><i class="fas fa-check-double"></i> Conferência</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="realizados.html"><i class="fas fa-history"></i> Realizados</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-cog"></i> Admin
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Configurações</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-users"></i> Usuários</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cabeçalho -->
+    <div class="container-fluid bg-light py-3">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2 class="mb-0">
+                        <i class="fas fa-search me-2 text-primary"></i>
+                        Conferência e Ajustes
+                    </h2>
+                    <p class="text-muted mb-0">Revisão de qualidade dos serviços realizados</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-outline-primary" onclick="atualizarDados()">
+                        <i class="fas fa-sync-alt me-1"></i>Atualizar
+                    </button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRelatorio">
+                        <i class="fas fa-chart-bar me-1"></i>Relatório
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="container my-4">
+        <!-- Filtros e Busca -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-2">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" id="filtroStatus">
+                                    <option value="">Todos</option>
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Em Revisão">Em Revisão</option>
+                                    <option value="Aprovado">Aprovado</option>
+                                    <option value="Rejeitado">Rejeitado</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <label class="form-label">Fotógrafo</label>
+                                <select class="form-select" id="filtroFotografo">
+                                    <option value="">Todos</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <label class="form-label">Qualidade</label>
+                                <select class="form-select" id="filtroQualidade">
+                                    <option value="">Todas</option>
+                                    <option value="Excelente">Excelente</option>
+                                    <option value="Boa">Boa</option>
+                                    <option value="Regular">Regular</option>
+                                    <option value="Ruim">Ruim</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <label class="form-label">Período</label>
+                                <select class="form-select" id="filtroPeriodo">
+                                    <option value="">Todos</option>
+                                    <option value="hoje">Hoje</option>
+                                    <option value="semana">Esta Semana</option>
+                                    <option value="mes">Este Mês</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <label class="form-label">Busca Rápida</label>
+                                <input type="text" class="form-control" id="buscaRapida" 
+                                       placeholder="Cliente, endereço...">
+                            </div>
+                            
+                            <div class="col-md-1 d-flex align-items-end">
+                                <button class="btn btn-outline-secondary w-100" onclick="limparFiltros()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cards de Estatísticas -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-primary text-white rounded-circle p-3 me-3">
+                                <i class="fas fa-clipboard-list fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0" id="totalConferencia">0</h3>
+                                <small class="text-muted">Total</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-warning text-white rounded-circle p-3 me-3">
+                                <i class="fas fa-clock fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0" id="pendentesConferencia">0</h3>
+                                <small class="text-muted">Pendentes</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-info text-white rounded-circle p-3 me-3">
+                                <i class="fas fa-eye fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0" id="emRevisao">0</h3>
+                                <small class="text-muted">Em Revisão</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-success text-white rounded-circle p-3 me-3">
+                                <i class="fas fa-check-circle fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0" id="aprovados">0</h3>
+                                <small class="text-muted">Aprovados</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Serviços para Conferência -->
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Serviços para Conferência</h5>
+                    <span class="text-muted" id="totalFiltrados">0 serviços</span>
+                </div>
+                
+                <div id="listaConferencia">
+                    <!-- Serviços serão carregados aqui -->
+                </div>
+                
+                <!-- Mensagem quando não há dados -->
+                <div id="semServicos" class="text-center py-5" style="display: none;">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">Nenhum serviço encontrado</h5>
+                    <p class="text-muted">Tente ajustar os filtros ou aguarde novos serviços.</p>
+                </div>
+                
+                <!-- Loading -->
+                <div id="loadingConferencia" class="text-center py-5" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Carregando serviços...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paginação -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <nav aria-label="Paginação">
+                    <ul class="pagination justify-content-center" id="paginacao">
+                        <!-- Paginação será gerada aqui -->
+                    </ul>
+                </nav>
+                
+                <div class="text-center text-muted">
+                    <small id="infoPaginacao">Mostrando 0 de 0 serviços</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Revisão Detalhada -->
+    <div class="modal fade" id="modalRevisao" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-search me-2"></i>Revisão Detalhada
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Informações do Serviço -->
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informações</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="infoServico">
+                                        <!-- Informações serão carregadas aqui -->
+                                    </div>
+                                    
+                                    <!-- Timeline de Atividades -->
+                                    <h6 class="mt-4 mb-3"><i class="fas fa-history me-2"></i>Histórico</h6>
+                                    <div class="timeline" id="timelineServico">
+                                        <!-- Timeline será carregada aqui -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Galeria de Imagens -->
+                        <div class="col-md-8">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0"><i class="fas fa-images me-2"></i>Galeria</h6>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary" onclick="visualizarTodas()">
+                                            <i class="fas fa-expand me-1"></i>Ver Todas
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="baixarTodas()">
+                                            <i class="fas fa-download me-1"></i>Baixar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="preview-gallery" id="galeriaRevisao">
+                                        <!-- Imagens serão carregadas aqui -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Painel de Revisão -->
+                    <div class="revision-panel">
+                        <h6 class="mb-3"><i class="fas fa-clipboard-check me-2"></i>Avaliação de Qualidade</h6>
+                        
+                        <form id="formRevisao">
+                            <input type="hidden" id="servicoRevisaoId">
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Qualidade Geral</label>
+                                    <div class="rating-stars mb-2" id="avaliacaoGeral">
+                                        <i class="far fa-star" data-rating="1"></i>
+                                        <i class="far fa-star" data-rating="2"></i>
+                                        <i class="far fa-star" data-rating="3"></i>
+                                        <i class="far fa-star" data-rating="4"></i>
+                                        <i class="far fa-star" data-rating="5"></i>
+                                    </div>
+                                    <select class="form-select" id="qualidadeGeral" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="Excelente">Excelente</option>
+                                        <option value="Boa">Boa</option>
+                                        <option value="Regular">Regular</option>
+                                        <option value="Ruim">Ruim</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Status da Revisão</label>
+                                    <select class="form-select" id="statusRevisao" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="Aprovado">Aprovar</option>
+                                        <option value="Rejeitado">Rejeitar</option>
+                                        <option value="Em Revisão">Manter em Revisão</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Critérios de Avaliação -->
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Composição</label>
+                                    <div class="rating-stars mb-1" data-criterio="composicao">
+                                        <i class="far fa-star" data-rating="1"></i>
+                                        <i class="far fa-star" data-rating="2"></i>
+                                        <i class="far fa-star" data-rating="3"></i>
+                                        <i class="far fa-star" data-rating="4"></i>
+                                        <i class="far fa-star" data-rating="5"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label class="form-label">Iluminação</label>
+                                    <div class="rating-stars mb-1" data-criterio="iluminacao">
+                                        <i class="far fa-star" data-rating="1"></i>
+                                        <i class="far fa-star" data-rating="2"></i>
+                                        <i class="far fa-star" data-rating="3"></i>
+                                        <i class="far fa-star" data-rating="4"></i>
+                                        <i class="far fa-star" data-rating="5"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label class="form-label">Nitidez</label>
+                                    <div class="rating-stars mb-1" data-criterio="nitidez">
+                                        <i class="far fa-star" data-rating="1"></i>
+                                        <i class="far fa-star" data-rating="2"></i>
+                                        <i class="far fa-star" data-rating="3"></i>
+                                        <i class="far fa-star" data-rating="4"></i>
+                                        <i class="far fa-star" data-rating="5"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Observações da Revisão</label>
+                                <textarea class="form-control" id="observacoesRevisao" rows="4" 
+                                          placeholder="Comentários sobre a qualidade, sugestões de melhoria, etc."></textarea>
+                            </div>
+                            
+                            <!-- Campos condicionais para rejeição -->
+                            <div id="camposRejeicao" style="display: none;">
+                                <div class="alert alert-warning">
+                                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Motivos da Rejeição</h6>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="motivoQualidade">
+                                        <label class="form-check-label" for="motivoQualidade">
+                                            Qualidade técnica insatisfatória
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="motivoComposicao">
+                                        <label class="form-check-label" for="motivoComposicao">
+                                            Problemas de composição
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="motivoIluminacao">
+                                        <label class="form-check-label" for="motivoIluminacao">
+                                            Iluminação inadequada
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="motivoIncompleto">
+                                        <label class="form-check-label" for="motivoIncompleto">
+                                            Serviço incompleto
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Ações Necessárias</label>
+                                    <textarea class="form-control" id="acoesNecessarias" rows="3" 
+                                              placeholder="Descreva as correções necessárias..."></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="salvarRevisao()">
+                        <i class="fas fa-save me-1"></i>Salvar Revisão
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Relatório -->
+    <div class="modal fade" id="modalRelatorio" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-chart-bar me-2"></i>Relatório de Qualidade
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Período</label>
+                            <select class="form-select" id="periodoRelatorio">
+                                <option value="semana">Última Semana</option>
+                                <option value="mes">Último Mês</option>
+                                <option value="trimestre">Último Trimestre</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fotógrafo</label>
+                            <select class="form-select" id="fotografoRelatorio">
+                                <option value="">Todos</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="conteudoRelatorio">
+                        <!-- Conteúdo do relatório será carregado aqui -->
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" onclick="exportarRelatorio()">
+                        <i class="fas fa-download me-1"></i>Exportar PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Visualização de Imagem -->
+    <div class="modal fade" id="modalImagem" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tituloImagem">Visualizar Imagem</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                
+                <div class="modal-body text-center">
+                    <img id="imagemVisualizacao" class="img-fluid" alt="Imagem">
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" onclick="baixarImagem()">
+                        <i class="fas fa-download me-1"></i>Baixar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JavaScript Personalizado -->
+    <script src="js/excel-integration.js"></script>
+    <script src="js/excel-writer.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/conferencia.js"></script>
+</body>
+</html>

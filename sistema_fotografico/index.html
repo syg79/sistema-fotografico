@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão Fotográfica</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-camera"></i> Sistema Fotográfico
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="fas fa-home"></i> Início</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-plus"></i> Novos Pedidos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="novos-pedidos.html">Novo Pedido Completo</a></li>
+                            <li><a class="dropdown-item" href="novos-pedidos.html">Edição de Imagens</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pendentes.html"><i class="fas fa-clock"></i> Pendentes</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-calendar"></i> Agendamentos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="agendamentos.html">Interno</a></li>
+                            <li><a class="dropdown-item" href="agendamentos-publico.html">Fotógrafos</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-page="registro"><i class="fas fa-book"></i> Registro</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-page="conferencia"><i class="fas fa-check-double"></i> Conferência</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-page="realizados"><i class="fas fa-history"></i> Realizados</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="welcome-header text-center mb-5">
+                    <h1 class="display-4 text-primary">
+                        <i class="fas fa-camera-retro"></i>
+                        Sistema de Gestão Fotográfica
+                    </h1>
+                    <p class="lead text-muted">Gerencie pedidos, agendamentos e realizações de forma eficiente</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Novos Pedidos -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-success text-white rounded-circle mx-auto mb-3">
+                            <i class="fas fa-plus-circle fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Novos Pedidos</h5>
+                        <p class="card-text">Cadastre novos pedidos fotográficos com cópia automática de dados</p>
+                        <div class="d-grid gap-2">
+                            <a href="#" data-page="novos-pedidos" class="btn btn-success">Pedido Completo</a>
+                            <a href="#" data-page="novos-pedidos" class="btn btn-outline-success">Edição de Imagens</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pedidos Pendentes -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-warning text-white rounded-circle mx-auto mb-3">
+                            <i class="fas fa-clock fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Pedidos Pendentes</h5>
+                        <p class="card-text">Visualize e gerencie todos os pedidos aguardando execução</p>
+                        <div class="d-grid">
+                            <a href="#" data-page="pendentes" class="btn btn-warning">Ver Pendentes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agendamentos -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-info text-white rounded-circle mx-auto mb-3">
+                            <i class="fas fa-calendar-alt fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Agendamentos</h5>
+                        <p class="card-text">Gerencie imóveis agendados para fotografia</p>
+                        <div class="d-grid gap-2">
+                            <a href="#" data-page="agendamentos" class="btn btn-info">Visão Interna</a>
+                            <a href="#" data-page="agendamentos-publico" class="btn btn-outline-info">Para Fotógrafos</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Livro de Registro -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-primary text-white rounded-circle mx-auto mb-3">
+                            <i class="fas fa-book fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Livro de Registro</h5>
+                        <p class="card-text">Fotógrafos registram realizações, cancelamentos e pendências</p>
+                        <div class="d-grid">
+                            <a href="#" data-page="registro" class="btn btn-primary">Acessar Registro</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conferência -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-secondary text-white rounded-circle mx-auto mb-3">
+                            <i class="fas fa-check-double fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Conferência</h5>
+                        <p class="card-text">Confira e ajuste pedidos realizados</p>
+                        <div class="d-grid">
+                            <a href="#" data-page="conferencia" class="btn btn-secondary">Conferir</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Realizados -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-dark text-white rounded-circle mx-auto mb-3">
+                            <i class="fas fa-history fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Realizados</h5>
+                        <p class="card-text">Consulte histórico de pedidos realizados</p>
+                        <div class="d-grid">
+                            <a href="#" data-page="realizados" class="btn btn-dark">Ver Histórico</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas Rápidas -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="text-center mb-4">Estatísticas do Sistema</h3>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center p-3 bg-light rounded">
+                    <h4 class="text-success" id="stat-pendentes">-</h4>
+                    <p class="mb-0">Pendentes</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center p-3 bg-light rounded">
+                    <h4 class="text-info" id="stat-agendados">-</h4>
+                    <p class="mb-0">Agendados</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center p-3 bg-light rounded">
+                    <h4 class="text-warning" id="stat-em-andamento">-</h4>
+                    <p class="mb-0">Em Andamento</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center p-3 bg-light rounded">
+                    <h4 class="text-primary" id="stat-realizados">-</h4>
+                    <p class="mb-0">Realizados</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-light mt-5 py-4">
+        <div class="container text-center">
+            <p class="text-muted mb-0">
+                <i class="fas fa-camera"></i> Sistema de Gestão Fotográfica - 
+                Desenvolvido para otimizar o fluxo de trabalho fotográfico
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/csv-loader.js"></script>
+    <script src="js/excel-integration.js"></script>
+    <script src="js/excel-writer.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

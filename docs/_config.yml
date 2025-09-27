@@ -1,0 +1,168 @@
+# Configuração do GitHub Pages para Sistema Fotográfico
+title: "Sistema Fotográfico"
+description: "Sistema de gestão de solicitações fotográficas integrado com Google Sheets"
+baseurl: "" # subpath do site, ex: /blog
+url: "" # URL base do site, será preenchida automaticamente pelo GitHub Pages
+
+# Configurações do Jekyll
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Configurações de build
+safe: true
+incremental: false
+profile: false
+strict_front_matter: false
+
+# Configurações de servidor local
+host: 127.0.0.1
+port: 4000
+livereload_port: 35729
+
+# Diretórios
+source: .
+destination: ./_site
+plugins_dir: _plugins
+layouts_dir: _layouts
+data_dir: _data
+includes_dir: _includes
+
+# Arquivos e pastas a serem excluídos do build
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - README.md
+  - LICENSE
+  - CHANGELOG.md
+  - .gitignore
+  - .git/
+  - .github/
+  - scripts/
+  - csv_output/
+  - sistema_fotografico/
+  - config/
+  - tadabase_pages/
+  - "*.xlsx"
+  - "*.csv"
+  - "*.txt"
+  - "*.ps1"
+
+# Arquivos a serem incluídos no build
+include:
+  - .htaccess
+  - _pages
+
+# Configurações de permalink
+permalink: /:categories/:year/:month/:day/:title/
+
+# Configurações de paginação
+paginate: 10
+paginate_path: "/page:num/"
+
+# Configurações de timezone
+timezone: America/Sao_Paulo
+
+# Configurações de encoding
+encoding: utf-8
+
+# Configurações de Sass
+sass:
+  sass_dir: assets/css
+  style: compressed
+
+# Configurações de collections (se necessário no futuro)
+collections:
+  pages:
+    output: true
+    permalink: /:name/
+
+# Configurações padrão para front matter
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+  - scope:
+      path: "fotografos"
+    values:
+      layout: "default"
+      section: "fotografos"
+  - scope:
+      path: "editores"
+    values:
+      layout: "default"
+      section: "editores"
+  - scope:
+      path: "conferencia"
+    values:
+      layout: "default"
+      section: "conferencia"
+
+# Configurações específicas do sistema
+sistema:
+  nome: "Sistema Fotográfico"
+  versao: "2.0.0"
+  autor: "Equipe de Desenvolvimento"
+  contato: "suporte@sistemafotografico.com"
+
+# Configurações de SEO
+author: "Sistema Fotográfico"
+twitter:
+  username: sistemafotografico
+  card: summary
+
+social:
+  name: Sistema Fotográfico
+  links:
+    - https://github.com/sistemafotografico
+
+# Configurações de Google Analytics (opcional)
+# google_analytics: UA-XXXXXXXX-X
+
+# Configurações de Disqus (opcional)
+# disqus:
+#   shortname: sistemafotografico
+
+# Configurações de busca (opcional)
+search_enabled: true
+search:
+  heading_level: 2
+  previews: 3
+  preview_words_before: 5
+  preview_words_after: 10
+  tokenizer_separator: /[\s/]+/
+  rel_url: true
+  button: false
+
+# Configurações de navegação
+nav_links:
+  - title: "Início"
+    url: "/"
+  - title: "Fotógrafos"
+    url: "/fotografos/"
+  - title: "Editores"
+    url: "/editores/"
+  - title: "Conferência"
+    url: "/conferencia/"
+
+# Configurações de footer
+footer_links:
+  - title: "Documentação"
+    url: "/docs/"
+  - title: "Suporte"
+    url: "/suporte/"
+  - title: "GitHub"
+    url: "https://github.com/sistemafotografico"

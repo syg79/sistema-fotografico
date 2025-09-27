@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabalhos para Edição - Sistema Fotográfico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../assets/css/main.css" rel="stylesheet">
+    <link href="../assets/css/components.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="mt-3">Carregando trabalhos...</p>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <i class="fas fa-camera"></i> Sistema Fotográfico
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html"><i class="fas fa-home"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="trabalhos.html"><i class="fas fa-edit"></i> Trabalhos</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> <span id="user-name">Editor</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="authManager.logout()">
+                                <i class="fas fa-sign-out-alt"></i> Sair
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Cabeçalho -->
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="display-6 text-primary">
+                            <i class="fas fa-edit"></i> Trabalhos para Edição
+                        </h1>
+                        <p class="text-muted">Gerencie suas sessões fotográficas para edição</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="refreshTrabalhos()">
+                            <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas do Editor -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Pendentes</h6>
+                                <h3 id="stat-pendentes">0</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clock fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Em Edição</h6>
+                                <h3 id="stat-edicao">0</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-edit fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Editados</h6>
+                                <h3 id="stat-editados">0</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Este Mês</h6>
+                                <h3 id="stat-mes">0</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-calendar fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Status de Edição</label>
+                                <select class="form-select" id="filter-status-edicao">
+                                    <option value="">Todos</option>
+                                    <option value="Pendente" selected>Pendente</option>
+                                    <option value="Em Edição">Em Edição</option>
+                                    <option value="Editado">Editado</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Fotógrafo</label>
+                                <select class="form-select" id="filter-fotografo">
+                                    <option value="">Todos os Fotógrafos</option>
+                                    <!-- Opções serão carregadas via JavaScript -->
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Prioridade</label>
+                                <select class="form-select" id="filter-prioridade">
+                                    <option value="">Todas</option>
+                                    <option value="Alta">Alta</option>
+                                    <option value="Média">Média</option>
+                                    <option value="Baixa">Baixa</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Buscar</label>
+                                <input type="text" class="form-control" id="filter-search" placeholder="Cliente, endereço...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Trabalhos -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-list"></i> Trabalhos</h5>
+                        <div class="btn-group" role="group">
+                            <input type="radio" class="btn-check" name="view-mode" id="view-cards" checked>
+                            <label class="btn btn-outline-primary btn-sm" for="view-cards">
+                                <i class="fas fa-th-large"></i> Cards
+                            </label>
+                            <input type="radio" class="btn-check" name="view-mode" id="view-table">
+                            <label class="btn btn-outline-primary btn-sm" for="view-table">
+                                <i class="fas fa-table"></i> Tabela
+                            </label>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Visualização em Cards -->
+                        <div id="cards-container">
+                            <!-- Conteúdo será inserido via JavaScript -->
+                        </div>
+
+                        <!-- Visualização em Tabela -->
+                        <div id="table-container" style="display: none;">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Cliente</th>
+                                            <th>Fotógrafo</th>
+                                            <th>Data Realização</th>
+                                            <th>Status Edição</th>
+                                            <th>Prioridade</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-body">
+                                        <!-- Conteúdo será inserido via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Paginação -->
+                        <nav aria-label="Navegação dos trabalhos">
+                            <ul class="pagination justify-content-center" id="pagination">
+                                <!-- Paginação será inserida via JavaScript -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes -->
+    <div class="modal fade" id="detailsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalhes do Trabalho</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- Conteúdo será inserido via JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-warning" id="btn-iniciar" onclick="iniciarEdicao()">
+                        <i class="fas fa-play"></i> Iniciar Edição
+                    </button>
+                    <button type="button" class="btn btn-success" id="btn-finalizar" onclick="finalizarEdicao()">
+                        <i class="fas fa-check"></i> Finalizar Edição
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../config/config.js"></script>
+    <script src="../assets/js/google-sheets-api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        let trabalhos = [];
+        let filteredTrabalhos = [];
+        let currentTrabalho = null;
+        let currentPage = 1;
+        const itemsPerPage = 12;
+        let viewMode = 'cards';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Verificar autenticação e role
+            if (!requireAuth(['editor'])) {
+                return;
+            }
+
+            // Configurar interface
+            setupUserInterface();
+            
+            // Carregar trabalhos
+            await loadTrabalhos();
+            
+            // Configurar event listeners
+            setupEventListeners();
+            
+            hideLoading();
+        });
+
+        function setupUserInterface() {
+            const user = authManager.getCurrentUser();
+            document.getElementById('user-name').textContent = user.nome;
+        }
+
+        async function loadTrabalhos() {
+            try {
+                showLoading();
+                
+                // Carregar trabalhos realizados que precisam de edição
+                const filters = {
+                    'Status': 'Realizado'
+                };
+                
+                trabalhos = await googleSheetsAPI.getSolicitacoes(filters);
+                
+                // Carregar fotógrafos para filtro
+                await loadFotografosFilter();
+                
+                // Aplicar filtros iniciais
+                applyFilters();
+                
+                // Atualizar estatísticas
+                updateStatistics();
+                
+            } catch (error) {
+                console.error('Erro ao carregar trabalhos:', error);
+                showError('Erro ao carregar trabalhos. Verifique sua conexão.');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function loadFotografosFilter() {
+            try {
+                const fotografos = await googleSheetsAPI.getFotografos();
+                const select = document.getElementById('filter-fotografo');
+                
+                fotografos.forEach(foto => {
+                    const option = document.createElement('option');
+                    option.value = foto.Nome || foto.nome;
+                    option.textContent = foto.Nome || foto.nome;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.warn('Erro ao carregar fotógrafos:', error);
+            }
+        }
+
+        function updateStatistics() {
+            const stats = {
+                pendentes: 0,
+                edicao: 0,
+                editados: 0,
+                mes: 0
+            };
+            
+            const hoje = new Date();
+            const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+            
+            trabalhos.forEach(item => {
+                const statusEdicao = item['Editado'] || 'Pendente';
+                
+                // Por status de edição
+                if (statusEdicao === 'Pendente' || statusEdicao === 'Não') {
+                    stats.pendentes++;
+                } else if (statusEdicao === 'Em Edição') {
+                    stats.edicao++;
+                } else if (statusEdicao === 'Sim' || statusEdicao === 'Editado') {
+                    stats.editados++;
+                }
+                
+                // Este mês
+                const dataRealizacao = item['Data da Realizacao'];
+                if (dataRealizacao) {
+                    const dataItem = new Date(dataRealizacao);
+                    if (dataItem >= inicioMes) {
+                        stats.mes++;
+                    }
+                }
+            });
+            
+            document.getElementById('stat-pendentes').textContent = stats.pendentes;
+            document.getElementById('stat-edicao').textContent = stats.edicao;
+            document.getElementById('stat-editados').textContent = stats.editados;
+            document.getElementById('stat-mes').textContent = stats.mes;
+        }
+
+        function renderTrabalhos() {
+            if (viewMode === 'cards') {
+                renderCards();
+            } else {
+                renderTable();
+            }
+            renderPagination();
+        }
+
+        function renderCards() {
+            const container = document.getElementById('cards-container');
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = filteredTrabalhos.slice(startIndex, endIndex);
+            
+            if (pageData.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-edit fa-3x mb-3"></i>
+                        <h5>Nenhum trabalho encontrado</h5>
+                        <p>Não há trabalhos para os filtros selecionados.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '<div class="row g-4">';
+            
+            pageData.forEach(item => {
+                const statusEdicao = item['Editado'] || 'Pendente';
+                const prioridade = getPrioridade(item);
+                const diasAtraso = getDiasAtraso(item['Data da Realizacao']);
+                
+                let statusColor = '#6c757d';
+                let statusText = statusEdicao;
+                
+                if (statusEdicao === 'Pendente' || statusEdicao === 'Não') {
+                    statusColor = '#dc3545';
+                    statusText = 'Pendente';
+                } else if (statusEdicao === 'Em Edição') {
+                    statusColor = '#ffc107';
+                    statusText = 'Em Edição';
+                } else if (statusEdicao === 'Sim' || statusEdicao === 'Editado') {
+                    statusColor = '#198754';
+                    statusText = 'Editado';
+                }
+                
+                html += `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card trabalho-card h-100 ${diasAtraso > 3 ? 'border-danger' : ''}" onclick="showDetails('${item['Record ID']}')">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge" style="background-color: ${statusColor}">${statusText}</span>
+                                    <span class="badge bg-${getPrioridadeColor(prioridade)}">${prioridade}</span>
+                                </div>
+                                
+                                ${diasAtraso > 3 ? `<div class="alert alert-danger alert-sm mb-2">
+                                    <i class="fas fa-exclamation-triangle"></i> ${diasAtraso} dias de atraso
+                                </div>` : ''}
+                                
+                                <h6 class="card-title">${item['Nome Cliente'] || 'Cliente não informado'}</h6>
+                                <p class="card-text small text-muted mb-2">
+                                    <i class="fas fa-camera"></i> 
+                                    ${item['Fotografo'] || 'Fotógrafo não informado'}
+                                </p>
+                                <p class="card-text small text-muted mb-2">
+                                    <i class="fas fa-calendar"></i> 
+                                    Realizado: ${formatDate(item['Data da Realizacao']) || 'Não informado'}
+                                </p>
+                                <p class="card-text small">
+                                    <i class="fas fa-map-marker-alt"></i> 
+                                    ${item['Endereco do Imovel'] || 'Endereço não informado'}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = filteredTrabalhos.slice(startIndex, endIndex);
+            
+            if (pageData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">
+                            Nenhum trabalho encontrado
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = pageData.map(item => {
+                const statusEdicao = item['Editado'] || 'Pendente';
+                const prioridade = getPrioridade(item);
+                const diasAtraso = getDiasAtraso(item['Data da Realizacao']);
+                
+                let statusColor = '#6c757d';
+                let statusText = statusEdicao;
+                
+                if (statusEdicao === 'Pendente' || statusEdicao === 'Não') {
+                    statusColor = '#dc3545';
+                    statusText = 'Pendente';
+                } else if (statusEdicao === 'Em Edição') {
+                    statusColor = '#ffc107';
+                    statusText = 'Em Edição';
+                } else if (statusEdicao === 'Sim' || statusEdicao === 'Editado') {
+                    statusColor = '#198754';
+                    statusText = 'Editado';
+                }
+                
+                return `
+                    <tr ${diasAtraso > 3 ? 'class="table-danger"' : ''}>
+                        <td>${item['Nome Cliente'] || 'Não informado'}</td>
+                        <td>${item['Fotografo'] || 'Não informado'}</td>
+                        <td>${formatDate(item['Data da Realizacao']) || 'Não informado'}</td>
+                        <td>
+                            <span class="badge" style="background-color: ${statusColor}">${statusText}</span>
+                            ${diasAtraso > 3 ? `<br><small class="text-danger">${diasAtraso} dias atraso</small>` : ''}
+                        </td>
+                        <td><span class="badge bg-${getPrioridadeColor(prioridade)}">${prioridade}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" onclick="showDetails('${item['Record ID']}')">
+                                <i class="fas fa-eye"></i> Ver
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getPrioridade(item) {
+            const diasAtraso = getDiasAtraso(item['Data da Realizacao']);
+            if (diasAtraso > 7) return 'Alta';
+            if (diasAtraso > 3) return 'Média';
+            return 'Baixa';
+        }
+
+        function getPrioridadeColor(prioridade) {
+            switch (prioridade) {
+                case 'Alta': return 'danger';
+                case 'Média': return 'warning';
+                case 'Baixa': return 'success';
+                default: return 'secondary';
+            }
+        }
+
+        function getDiasAtraso(dataRealizacao) {
+            if (!dataRealizacao) return 0;
+            
+            const hoje = new Date();
+            const dataItem = new Date(dataRealizacao);
+            const diffTime = hoje - dataItem;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            return Math.max(0, diffDays);
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('pt-BR');
+        }
+
+        function showDetails(recordId) {
+            currentTrabalho = trabalhos.find(item => item['Record ID'] === recordId);
+            if (!currentTrabalho) return;
+            
+            const modalBody = document.getElementById('modal-body');
+            const statusEdicao = currentTrabalho['Editado'] || 'Pendente';
+            const diasAtraso = getDiasAtraso(currentTrabalho['Data da Realizacao']);
+            
+            modalBody.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Informações do Cliente</h6>
+                        <p><strong>Nome:</strong> ${currentTrabalho['Nome Cliente'] || 'Não informado'}</p>
+                        <p><strong>Contato:</strong> ${currentTrabalho['Referencia do Cliente'] || 'Não informado'}</p>
+                        <p><strong>Rede:</strong> ${currentTrabalho['Rede'] || 'Não informado'}</p>
+                        <p><strong>Endereço:</strong> ${currentTrabalho['Endereco do Imovel'] || 'Não informado'}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Informações da Sessão</h6>
+                        <p><strong>Fotógrafo:</strong> ${currentTrabalho['Fotografo'] || 'Não informado'}</p>
+                        <p><strong>Data Agendamento:</strong> ${formatDate(currentTrabalho['Data do agendamento']) || 'Não informado'}</p>
+                        <p><strong>Data Realização:</strong> ${formatDate(currentTrabalho['Data da Realizacao']) || 'Não informado'}</p>
+                        <p><strong>Status Edição:</strong> 
+                            <span class="badge bg-${statusEdicao === 'Sim' ? 'success' : statusEdicao === 'Em Edição' ? 'warning' : 'danger'}">${statusEdicao}</span>
+                        </p>
+                        ${diasAtraso > 3 ? `<p><strong>Atraso:</strong> <span class="text-danger">${diasAtraso} dias</span></p>` : ''}
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6>Links e Arquivos</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Link Fotos:</strong> 
+                                    ${currentTrabalho['Link das Fotos'] ? 
+                                        `<a href="${currentTrabalho['Link das Fotos']}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-external-link-alt"></i> Acessar Fotos
+                                        </a>` : 
+                                        'Não informado'
+                                    }
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Link Editadas:</strong> 
+                                    ${currentTrabalho['Link das Fotos Editadas'] ? 
+                                        `<a href="${currentTrabalho['Link das Fotos Editadas']}" target="_blank" class="btn btn-sm btn-outline-success">
+                                            <i class="fas fa-external-link-alt"></i> Ver Editadas
+                                        </a>` : 
+                                        'Não disponível'
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6>Observações</h6>
+                        <p>${currentTrabalho['Observacoes'] || 'Nenhuma observação'}</p>
+                        
+                        <h6>Observações de Edição</h6>
+                        <textarea class="form-control" id="obs-edicao" rows="3" placeholder="Adicione observações sobre a edição...">${currentTrabalho['Observacoes Edicao'] || ''}</textarea>
+                    </div>
+                </div>
+            `;
+            
+            // Configurar botões baseado no status
+            const btnIniciar = document.getElementById('btn-iniciar');
+            const btnFinalizar = document.getElementById('btn-finalizar');
+            
+            btnIniciar.style.display = (statusEdicao === 'Pendente' || statusEdicao === 'Não') ? 'inline-block' : 'none';
+            btnFinalizar.style.display = statusEdicao === 'Em Edição' ? 'inline-block' : 'none';
+            
+            new bootstrap.Modal(document.getElementById('detailsModal')).show();
+        }
+
+        async function iniciarEdicao() {
+            if (!currentTrabalho) return;
+            
+            try {
+                const user = authManager.getCurrentUser();
+                
+                // Simular atualização (implementar com Google Apps Script)
+                await googleSheetsAPI.updateRecord(currentTrabalho['Record ID'], {
+                    'Editado': 'Em Edição',
+                    'Editor': user.nome,
+                    'Data Inicio Edicao': new Date().toISOString().split('T')[0]
+                });
+                
+                // Atualizar localmente
+                currentTrabalho['Editado'] = 'Em Edição';
+                currentTrabalho['Editor'] = user.nome;
+                
+                // Recarregar trabalhos
+                await loadTrabalhos();
+                
+                // Fechar modal
+                bootstrap.Modal.getInstance(document.getElementById('detailsModal')).hide();
+                
+                showSuccess('Edição iniciada com sucesso!');
+                
+            } catch (error) {
+                console.error('Erro ao iniciar edição:', error);
+                showError('Erro ao iniciar edição.');
+            }
+        }
+
+        async function finalizarEdicao() {
+            if (!currentTrabalho) return;
+            
+            try {
+                const obsEdicao = document.getElementById('obs-edicao').value;
+                
+                // Simular atualização (implementar com Google Apps Script)
+                await googleSheetsAPI.updateRecord(currentTrabalho['Record ID'], {
+                    'Editado': 'Sim',
+                    'Data Fim Edicao': new Date().toISOString().split('T')[0],
+                    'Observacoes Edicao': obsEdicao
+                });
+                
+                // Atualizar localmente
+                currentTrabalho['Editado'] = 'Sim';
+                currentTrabalho['Observacoes Edicao'] = obsEdicao;
+                
+                // Recarregar trabalhos
+                await loadTrabalhos();
+                
+                // Fechar modal
+                bootstrap.Modal.getInstance(document.getElementById('detailsModal')).hide();
+                
+                showSuccess('Edição finalizada com sucesso!');
+                
+            } catch (error) {
+                console.error('Erro ao finalizar edição:', error);
+                showError('Erro ao finalizar edição.');
+            }
+        }
+
+        function setupEventListeners() {
+            // Filtros
+            document.getElementById('filter-status-edicao').addEventListener('change', applyFilters);
+            document.getElementById('filter-fotografo').addEventListener('change', applyFilters);
+            document.getElementById('filter-prioridade').addEventListener('change', applyFilters);
+            document.getElementById('filter-search').addEventListener('input', applyFilters);
+            
+            // Modo de visualização
+            document.getElementById('view-cards').addEventListener('change', () => {
+                viewMode = 'cards';
+                document.getElementById('cards-container').style.display = 'block';
+                document.getElementById('table-container').style.display = 'none';
+                renderTrabalhos();
+            });
+            
+            document.getElementById('view-table').addEventListener('change', () => {
+                viewMode = 'table';
+                document.getElementById('cards-container').style.display = 'none';
+                document.getElementById('table-container').style.display = 'block';
+                renderTrabalhos();
+            });
+        }
+
+        function applyFilters() {
+            const statusEdicao = document.getElementById('filter-status-edicao').value;
+            const fotografo = document.getElementById('filter-fotografo').value;
+            const prioridade = document.getElementById('filter-prioridade').value;
+            const search = document.getElementById('filter-search').value.toLowerCase();
+            
+            filteredTrabalhos = trabalhos.filter(item => {
+                // Filtro por status de edição
+                if (statusEdicao) {
+                    const itemStatus = item['Editado'] || 'Pendente';
+                    let normalizedStatus = itemStatus;
+                    
+                    if (itemStatus === 'Não' || itemStatus === 'Pendente') {
+                        normalizedStatus = 'Pendente';
+                    } else if (itemStatus === 'Sim') {
+                        normalizedStatus = 'Editado';
+                    }
+                    
+                    if (normalizedStatus !== statusEdicao) return false;
+                }
+                
+                // Filtro por fotógrafo
+                if (fotografo && item['Fotografo'] !== fotografo) return false;
+                
+                // Filtro por prioridade
+                if (prioridade && getPrioridade(item) !== prioridade) return false;
+                
+                // Filtro por busca
+                if (search) {
+                    const searchableFields = ['Nome Cliente', 'Endereco do Imovel', 'Fotografo'];
+                    const matchesSearch = searchableFields.some(field => 
+                        item[field]?.toLowerCase().includes(search)
+                    );
+                    if (!matchesSearch) return false;
+                }
+                
+                return true;
+            });
+            
+            currentPage = 1;
+            renderTrabalhos();
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredTrabalhos.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            
+            // Botão anterior
+            paginationHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Anterior</a>
+                </li>
+            `;
+            
+            // Números das páginas
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage || i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    paginationHTML += `
+                        <li class="page-item ${i === currentPage ? 'active' : ''}">
+                            <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                        </li>
+                    `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    paginationHTML += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                }
+            }
+            
+            // Botão próximo
+            paginationHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Próximo</a>
+                </li>
+            `;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredTrabalhos.length / itemsPerPage);
+            if (page < 1 || page > totalPages) return;
+            
+            currentPage = page;
+            renderTrabalhos();
+        }
+
+        async function refreshTrabalhos() {
+            await loadTrabalhos();
+        }
+
+        function showLoading() {
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        function showError(message) {
+            alert(message); // Implementar toast
+        }
+
+        function showSuccess(message) {
+            alert(message); // Implementar toast
+        }
+    </script>
+
+    <style>
+        .trabalho-card {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .trabalho-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .alert-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+    </style>
+</body>
+</html>

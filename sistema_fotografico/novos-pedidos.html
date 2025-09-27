@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novos Pedidos - Sistema Fotográfico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-camera me-2"></i>Sistema Fotográfico
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="fas fa-home"></i> Início</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-plus"></i> Novos Pedidos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="novos-pedidos.html">Novo Pedido Completo</a></li>
+                            <li><a class="dropdown-item" href="novos-pedidos.html">Edição de Imagens</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pendentes.html"><i class="fas fa-clock"></i> Pendentes</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-calendar"></i> Agendamentos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="agendamentos.html">Interno</a></li>
+                            <li><a class="dropdown-item" href="agendamentos-publico.html">Fotógrafos</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="registro.html"><i class="fas fa-book"></i> Registro</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="conferencia.html"><i class="fas fa-check-double"></i> Conferência</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="realizados.html"><i class="fas fa-history"></i> Realizados</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="fas fa-plus-circle text-primary me-2"></i>Novos Pedidos</h2>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary" id="btnPedidoNormal">
+                            <i class="fas fa-file-plus me-1"></i>Pedido Normal
+                        </button>
+                        <button type="button" class="btn btn-outline-success" id="btnEdicaoImagens">
+                            <i class="fas fa-edit me-1"></i>Edição de Imagens
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Formulário de Novo Pedido -->
+                <div class="card shadow-sm" id="formPedidoNormal">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-camera me-2"></i>Formulário de Novo Pedido</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="formNovoPedido" class="form-sistema" data-endpoint="pedidos" data-redirect="pendentes.html">
+                            <!-- Seção 1: Informações Básicas -->
+                            <div class="row mb-4">
+                                <div class="col-md-8">
+                                    <label for="linkEmail" class="form-label">Link EMAIL (solicitação)</label>
+                                    <input type="url" class="form-control" id="linkEmail" name="link_email">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="dataSolicitacao" class="form-label">Data da Solicitação (email) *</label>
+                                    <input type="date" class="form-control" id="dataSolicitacao" name="data_solicitacao" required>
+                                </div>
+                            </div>
+
+                            <!-- Seção 2: Cliente e Corretor -->
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <label for="rede" class="form-label">Rede *</label>
+                                    <select class="form-select" id="rede" name="rede" required>
+                                        <option value="">Selecione a rede...</option>
+                                        <option value="Apolar">Apolar</option>
+                                        <option value="Bee">Bee</option>
+                                        <option value="Nexus">Nexus</option>
+                                        <option value="Rede Imoveis">Rede Imóveis</option>
+                                        <option value="Outros">Outros</option>
+                                        <option value="Vitrine">Vitrine</option>
+                                        <option value="Experato">Experato</option>
+                                        <option value="Remax">Remax</option>
+                                        <option value="Lopes">Lopes</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="cliente" class="form-label">Cliente *</label>
+                                    <select class="form-select" id="cliente" name="cliente" required>
+                                        <option value="">Selecione o cliente...</option>
+                                    </select>
+                                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="btnNovoCliente">
+                                        <i class="fas fa-plus me-1"></i>Novo Cliente
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="corretor" class="form-label">Corretor Responsável</label>
+                                    <select class="form-select" id="corretor" name="corretor">
+                                        <option value="">Selecione o corretor...</option>
+                                    </select>
+                                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="btnNovoCorretor">
+                                        <i class="fas fa-plus me-1"></i>Novo Corretor
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Seção 3: Imóvel -->
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <label for="referenciaCliente" class="form-label">Referência do Cliente</label>
+                                    <input type="text" class="form-control" id="referenciaCliente" name="referencia_cliente">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="tipoImovel" class="form-label">Tipo do Imóvel</label>
+                                    <select class="form-select" id="tipoImovel" name="tipo_imovel">
+                                        <option value="">Selecione o tipo...</option>
+                                        <option value="Apartamento">Apartamento</option>
+                                        <option value="Cobertura">Cobertura</option>
+                                        <option value="Kitnet">Kitnet</option>
+                                        <option value="Casa">Casa</option>
+                                        <option value="Sobrado">Sobrado</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label">Condição de Habitação</label>
+                                    <div class="mt-2">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="condicao_habitacao" id="ocupado" value="Ocupado">
+                                            <label class="form-check-label" for="ocupado">Ocupado</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="condicao_habitacao" id="vazio" value="Vazio">
+                                            <label class="form-check-label" for="vazio">Vazio</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="condicao_habitacao" id="mobiliado" value="Mobiliado">
+                                            <label class="form-check-label" for="mobiliado">Mobiliado</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Seção 4: Endereço -->
+                            <div class="row mb-4">
+                                <div class="col-md-5">
+                                    <label for="endereco" class="form-label">Endereço do Imóvel *</label>
+                                    <input type="text" class="form-control" id="endereco" name="endereco" required placeholder="Rua, número">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="complemento" class="form-label">Complemento</label>
+                                    <input type="text" class="form-control" id="complemento" name="complemento" placeholder="Apto, bloco, etc.">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="bairro" class="form-label">Bairro/Localidade</label>
+                                    <input type="text" class="form-control" id="bairro" name="bairro">
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <label for="metragem" class="form-label">m²</label>
+                                    <input type="number" class="form-control" id="metragem" name="metragem" min="0" step="0.01">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="condominio" class="form-label">Nome do Condomínio</label>
+                                    <input type="text" class="form-control" id="condominio" name="condominio">
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="cep" class="form-label">CEP</label>
+                                    <input type="text" class="form-control mask-cep" id="cep" name="cep" placeholder="00000-000">
+                                </div>
+                            </div>
+
+                            <!-- Seção 5: Contatos e Agendamento -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="obsAgendamento" class="form-label">Observação do corretor para o agendamento</label>
+                                    <textarea class="form-control" id="obsAgendamento" name="obs_agendamento" rows="3"></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="contatoAgendar1" class="form-label">Contato para agendar 01 - NOME E TELEFONES *</label>
+                                    <input type="text" class="form-control" id="contatoAgendar1" name="contato_agendar_1" required placeholder="Nome e telefone">
+                                    
+                                    <label for="contatoAgendar2" class="form-label mt-2">Contato para agendar 02 - NOME E TELEFONE</label>
+                                    <input type="text" class="form-control" id="contatoAgendar2" name="contato_agendar_2" placeholder="Nome e telefone">
+                                </div>
+                            </div>
+
+                            <!-- Seção 6: Serviços -->
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label">Tipo do Serviço *</label>
+                                    <div class="mt-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="tipo_servico[]" id="fotos" value="Fotos">
+                                            <label class="form-check-label" for="fotos">Fotos</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="tipo_servico[]" id="video" value="Vídeo">
+                                            <label class="form-check-label" for="video">Vídeo</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="tipo_servico[]" id="drone" value="Drone">
+                                            <label class="form-check-label" for="drone">Drone</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="tipo_servico[]" id="planta" value="Planta">
+                                            <label class="form-check-label" for="planta">Planta</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label for="qtdFotos" class="form-label">Quantidade FOTOS</label>
+                                            <input type="number" class="form-control" id="qtdFotos" name="qtd_fotos" min="0" value="1">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="qtdVideo" class="form-label">Quantidade VÍDEO</label>
+                                            <input type="number" class="form-control" id="qtdVideo" name="qtd_video" min="0" value="0">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="qtdDrone" class="form-label">Quantidade DRONE</label>
+                                            <input type="number" class="form-control" id="qtdDrone" name="qtd_drone" min="0" value="0">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="qtdDroneFotos" class="form-label">Quantidade Drone (fotos)</label>
+                                            <input type="number" class="form-control" id="qtdDroneFotos" name="qtd_drone_fotos" min="0" value="0">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Seção 7: Observações -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <label for="obsFotografo" class="form-label">Observação para o Fotógrafo</label>
+                                    <textarea class="form-control" id="obsFotografo" name="obs_fotografo" rows="4" placeholder="Instruções especiais, detalhes importantes, etc."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Seção 8: Observação para Editor (condicional) -->
+                            <div class="row mb-4" id="secaoObsEditor" style="display: none;">
+                                <div class="col-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="possuiObsEditor" name="possui_obs_editor">
+                                        <label class="form-check-label fw-bold" for="possuiObsEditor">
+                                            Possui OBSERVAÇÃO para o Editor
+                                        </label>
+                                    </div>
+                                    <div id="campoObsEditor" style="display: none;">
+                                        <label for="obsEditor" class="form-label">Observação para o Editor</label>
+                                        <textarea class="form-control" id="obsEditor" name="obs_editor" rows="3" placeholder="Instruções específicas para edição..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botões de Ação -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <button type="button" class="btn btn-outline-secondary" id="btnSalvarRascunho">
+                                                <i class="fas fa-save me-1"></i>Salvar Rascunho
+                                            </button>
+                                            <button type="button" class="btn btn-outline-info" id="btnCarregarRascunho">
+                                                <i class="fas fa-upload me-1"></i>Carregar Rascunho
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button type="button" class="btn btn-secondary me-2" onclick="history.back()">
+                                                <i class="fas fa-arrow-left me-1"></i>Voltar
+                                            </button>
+                                            <button type="submit" class="btn btn-primary" data-original-text="Criar Pedido">
+                                                <i class="fas fa-plus me-1"></i>Criar Pedido
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Formulário de Edição de Imagens -->
+                <div class="card shadow-sm" id="formEdicaoImagens" style="display: none;">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Cadastro de Edição de Imagens</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Este formulário pula a etapa de pendente e vai direto para realizado (pendente de edição).
+                        </div>
+                        <form id="formEdicao" class="form-sistema" data-endpoint="edicao-imagens" data-redirect="realizados.html">
+                            <!-- Campos simplificados para edição -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="clienteEdicao" class="form-label">Cliente *</label>
+                                    <select class="form-select" id="clienteEdicao" name="cliente" required>
+                                        <option value="">Selecione o cliente...</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="referenciaEdicao" class="form-label">Referência do Cliente</label>
+                                    <input type="text" class="form-control" id="referenciaEdicao" name="referencia">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label for="enderecoEdicao" class="form-label">Endereço do Imóvel *</label>
+                                    <input type="text" class="form-control" id="enderecoEdicao" name="endereco" required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="tipoImovelEdicao" class="form-label">Tipo do Imóvel *</label>
+                                    <select class="form-select" id="tipoImovelEdicao" name="tipo_imovel" required>
+                                        <option value="">Selecione o tipo...</option>
+                                        <option value="Ap">Apartamento</option>
+                                        <option value="Casa">Casa</option>
+                                        <option value="Cob">Cobertura</option>
+                                        <option value="Kitnet">Kitnet</option>
+                                        <option value="Sobrado">Sobrado</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="metragemEdicao" class="form-label">Metragem (m²)</label>
+                                    <input type="number" class="form-control" id="metragemEdicao" name="metragem" min="0">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label class="form-label">Tipo de Edição *</label>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="edicaoFotos" name="tipo_edicao[]" value="Fotos">
+                                                <label class="form-check-label" for="edicaoFotos">
+                                                    <i class="fas fa-camera me-1"></i>Edição de Fotos
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="edicaoVideo" name="tipo_edicao[]" value="Video">
+                                                <label class="form-check-label" for="edicaoVideo">
+                                                    <i class="fas fa-video me-1"></i>Edição de Vídeo
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="edicaoDrone" name="tipo_edicao[]" value="Drone">
+                                                <label class="form-check-label" for="edicaoDrone">
+                                                    <i class="fas fa-helicopter me-1"></i>Edição Drone
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="edicaoPlanta" name="tipo_edicao[]" value="Planta">
+                                                <label class="form-check-label" for="edicaoPlanta">
+                                                    <i class="fas fa-drafting-compass me-1"></i>Planta Baixa
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="prioridadeEdicao" class="form-label">Prioridade</label>
+                                    <select class="form-select" id="prioridadeEdicao" name="prioridade">
+                                        <option value="Normal">Normal</option>
+                                        <option value="Alta">Alta</option>
+                                        <option value="Urgente">Urgente</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="prazoEdicao" class="form-label">Prazo de Entrega</label>
+                                    <input type="date" class="form-control" id="prazoEdicao" name="prazo_entrega">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label for="observacoesEdicao" class="form-label">Observações para Edição</label>
+                                    <textarea class="form-control" id="observacoesEdicao" name="observacoes_edicao" rows="3" 
+                                              placeholder="Descreva detalhes específicos para a edição..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label for="arquivosOriginais" class="form-label">Arquivos Originais</label>
+                                    <input type="file" class="form-control" id="arquivosOriginais" name="arquivos_originais" multiple 
+                                           accept="image/*,video/*,.raw,.cr2,.nef,.arw">
+                                    <div class="form-text">
+                                        Selecione os arquivos originais para edição (fotos, vídeos, RAW, etc.)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label for="obsEdicao" class="form-label">Observações para Edição *</label>
+                                    <textarea class="form-control" id="obsEdicao" name="obs_edicao" rows="4" required placeholder="Descreva as instruções para edição das imagens..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-secondary me-2" onclick="history.back()">
+                                    <i class="fas fa-arrow-left me-1"></i>Voltar
+                                </button>
+                                <button type="submit" class="btn btn-success" data-original-text="Cadastrar Edição">
+                                    <i class="fas fa-check me-1"></i>Cadastrar Edição
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Novo Cliente -->
+    <div class="modal fade" id="modalNovoCliente" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cadastrar Novo Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formNovoCliente">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="nomeCliente" class="form-label">Nome do Cliente *</label>
+                                <input type="text" class="form-control" id="nomeCliente" name="nome" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="emailCliente" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="emailCliente" name="email">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="telefoneCliente" class="form-label">Telefone</label>
+                                <input type="text" class="form-control mask-phone" id="telefoneCliente" name="telefone">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="redeCliente" class="form-label">Rede</label>
+                                <select class="form-select" id="redeCliente" name="rede">
+                                    <option value="">Selecione a rede...</option>
+                                    <option value="Apolar">Apolar</option>
+                                    <option value="Bee">Bee</option>
+                                    <option value="Nexus">Nexus</option>
+                                    <option value="Rede Imoveis">Rede Imóveis</option>
+                                    <option value="Outros">Outros</option>
+                                    <option value="Vitrine">Vitrine</option>
+                                    <option value="Experato">Experato</option>
+                                    <option value="Remax">Remax</option>
+                                    <option value="Lopes">Lopes</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnSalvarCliente">Salvar Cliente</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Novo Corretor -->
+    <div class="modal fade" id="modalNovoCorretor" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cadastrar Novo Corretor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formNovoCorretor">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="nomeCorretor" class="form-label">Nome do Corretor *</label>
+                                <input type="text" class="form-control" id="nomeCorretor" name="nome" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="emailCorretor" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="emailCorretor" name="email">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="telefoneCorretor" class="form-label">Telefone</label>
+                                <input type="text" class="form-control mask-phone" id="telefoneCorretor" name="telefone">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="imobiliariaCorretor" class="form-label">Imobiliária</label>
+                                <input type="text" class="form-control" id="imobiliariaCorretor" name="imobiliaria">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="obsCorretor" class="form-label">Observações</label>
+                                <textarea class="form-control" id="obsCorretor" name="observacoes" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnSalvarCorretor">Salvar Corretor</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/excel-integration.js"></script>
+    <script src="js/excel-writer.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/novos-pedidos.js"></script>
+</body>
+</html>
