@@ -18,8 +18,8 @@ const CONFIG = {
     
     // GitHub Pages Configuration
     GITHUB_PAGES: {
-        BASE_URL: 'https://usuario.github.io/sistema-fotografico', // ⚠️ SUBSTITUIR pela URL real
-        REPO: 'usuario/sistema-fotografico' // ⚠️ SUBSTITUIR pelo repositório real
+        BASE_URL: 'https://syg79.github.io/sistema-fotografico',
+        REPO: 'syg79/sistema-fotografico'
     },
     
     // Cache Configuration
