@@ -31,13 +31,19 @@ class CSVLoader {
     /**
      * Carrega dados de um arquivo CSV
      * @param {string} filename - Nome do arquivo CSV
+     * @param {Object} options - Opções de carregamento
      * @returns {Promise<Array>} Array de objetos com os dados
      */
-    async loadCSV(filename) {
+    async loadCSV(filename, options = {}) {
         const cacheKey = filename.replace('.csv', '').toLowerCase();
+        const { 
+            pageSize = 100, 
+            loadAll = false,
+            startRow = 0 
+        } = options;
         
         // Verificar cache
-        if (this.isCacheValid(cacheKey)) {
+        if (this.isCacheValid(cacheKey) && loadAll) {
             console.log(`📋 Dados de ${filename} carregados do cache`);
             return this.cache[cacheKey];
         }
@@ -55,13 +61,28 @@ class CSVLoader {
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
+
+            // Verificar tamanho do arquivo
+            const contentLength = response.headers.get('content-length');
+            const isLargeFile = contentLength && parseInt(contentLength) > 1024 * 1024; // > 1MB
             
-            const csvText = await response.text();
-            const parsedData = this.parseCSV(csvText);
+            let parsedData;
+            if (isLargeFile && !loadAll) {
+                console.log(`📊 Arquivo grande detectado (${Math.round(contentLength/1024/1024)}MB), carregando primeiras ${pageSize} linhas...`);
+                parsedData = await this.loadCSVPaginated(response, pageSize, startRow);
+            } else if (isLargeFile) {
+                console.log(`📊 Arquivo grande detectado (${Math.round(contentLength/1024/1024)}MB), usando carregamento otimizado...`);
+                parsedData = await this.loadLargeCSV(response);
+            } else {
+                const csvText = await response.text();
+                parsedData = this.parseCSV(csvText);
+            }
             
-            // Atualizar cache
-            this.cache[cacheKey] = parsedData;
-            this.cache.lastUpdate = Date.now();
+            // Atualizar cache apenas se carregou tudo
+            if (loadAll) {
+                this.cache[cacheKey] = parsedData;
+                this.cache.lastUpdate = Date.now();
+            }
             
             console.log(`✅ ${filename} carregado: ${parsedData.length} registros`);
             
@@ -84,6 +105,185 @@ class CSVLoader {
         } finally {
             this.isLoading = false;
         }
+    }
+
+    /**
+     * Carrega CSV de forma paginada para arquivos grandes
+     */
+    async loadCSVPaginated(response, pageSize = 100, startRow = 0) {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let csvText = '';
+        let receivedLength = 0;
+        const contentLength = parseInt(response.headers.get('content-length') || '0');
+
+        // Carregar o arquivo completo primeiro (necessário para paginação)
+        while (true) {
+            const { done, value } = await reader.read();
+            
+            if (done) break;
+            
+            receivedLength += value.length;
+            csvText += decoder.decode(value, { stream: true });
+            
+            // Mostrar progresso
+            if (contentLength > 0) {
+                const progress = Math.round((receivedLength / contentLength) * 100);
+                if (progress % 25 === 0) {
+                    console.log(`📊 Download: ${progress}%`);
+                }
+            }
+        }
+
+        // Processar apenas a página solicitada
+        return await this.parseCSVPaginated(csvText, pageSize, startRow);
+    }
+
+    /**
+     * Parse CSV paginado para mostrar dados rapidamente
+     * Agora com ordenação cronológica - dados mais recentes primeiro
+     */
+    async parseCSVPaginated(csvText, pageSize, startRow) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                console.log(`🔄 Processando página ${Math.floor(startRow/pageSize) + 1}...`);
+                
+                const lines = csvText.split('\n');
+                const headers = lines[0].split(';');
+                
+                // Encontrar índice da coluna de data
+                const dateColumnIndex = headers.findIndex(header => 
+                    header.toLowerCase().includes('created at') || 
+                    header.toLowerCase().includes('data') ||
+                    header.toLowerCase().includes('inclusao')
+                );
+                
+                console.log(`📅 Coluna de data encontrada no índice: ${dateColumnIndex} (${headers[dateColumnIndex]})`);
+                
+                // Processar todas as linhas de dados (exceto cabeçalho)
+                const dataLines = lines.slice(1).filter(line => line.trim());
+                
+                // Ordenar por data (mais recentes primeiro)
+                if (dateColumnIndex !== -1) {
+                    dataLines.sort((a, b) => {
+                        const dateA = this.parseDate(a.split(';')[dateColumnIndex]);
+                        const dateB = this.parseDate(b.split(';')[dateColumnIndex]);
+                        return dateB - dateA; // Ordem decrescente (mais recente primeiro)
+                    });
+                    console.log(`📊 Dados ordenados cronologicamente (${dataLines.length} registros)`);
+                }
+                
+                // Aplicar paginação após ordenação
+                const startIndex = startRow;
+                const endIndex = startIndex + pageSize;
+                const pageLines = dataLines.slice(startIndex, endIndex);
+                
+                // Converter para objetos
+                const result = pageLines.map(line => {
+                    const values = this.parseCSVLine(line);
+                    const obj = {};
+                    headers.forEach((header, index) => {
+                        obj[header.trim()] = values[index] || '';
+                    });
+                    return obj;
+                });
+                
+                console.log(`✅ Página processada: ${result.length} registros (${startIndex + 1}-${startIndex + result.length} de ${dataLines.length})`);
+                
+                // Adicionar metadados sobre paginação
+                result._pagination = {
+                    currentPage: Math.floor(startRow/pageSize) + 1,
+                    pageSize: pageSize,
+                    totalRecords: dataLines.length,
+                    hasMore: endIndex < dataLines.length,
+                    isChronological: dateColumnIndex !== -1
+                };
+                
+                resolve(result);
+            }, 0);
+        });
+    }
+
+    /**
+     * Converte string de data para objeto Date para ordenação
+     */
+    parseDate(dateString) {
+        if (!dateString || dateString.trim() === '') {
+            return new Date(0); // Data muito antiga para registros sem data
+        }
+        
+        // Tentar diferentes formatos de data
+        const formats = [
+            // ISO format: 2024-07-31 09:42:49
+            /(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2}):(\d{2})/,
+            // Brazilian format: 31/07/2024
+            /(\d{2})\/(\d{2})\/(\d{4})/,
+            // Other formats
+            /(\d{4})\/(\d{2})\/(\d{2})/
+        ];
+        
+        for (const format of formats) {
+            const match = dateString.match(format);
+            if (match) {
+                if (format === formats[0]) { // ISO format
+                    return new Date(dateString);
+                } else if (format === formats[1]) { // Brazilian format
+                    return new Date(`${match[3]}-${match[2]}-${match[1]}`);
+                } else if (format === formats[2]) { // YYYY/MM/DD
+                    return new Date(dateString.replace(/\//g, '-'));
+                }
+            }
+        }
+        
+        // Fallback: tentar parse direto
+        const date = new Date(dateString);
+        return isNaN(date.getTime()) ? new Date(0) : date;
+    }
+
+    /**
+     * Carrega arquivos CSV grandes usando streaming
+     */
+    async loadLargeCSV(response) {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let csvText = '';
+        let receivedLength = 0;
+        const contentLength = parseInt(response.headers.get('content-length') || '0');
+
+        while (true) {
+            const { done, value } = await reader.read();
+            
+            if (done) break;
+            
+            receivedLength += value.length;
+            csvText += decoder.decode(value, { stream: true });
+            
+            // Mostrar progresso para arquivos grandes
+            if (contentLength > 0) {
+                const progress = Math.round((receivedLength / contentLength) * 100);
+                if (progress % 20 === 0) { // Log a cada 20%
+                    console.log(`📊 Progresso: ${progress}%`);
+                }
+            }
+        }
+
+        // Processar em chunks para não travar o browser
+        return await this.parseCSVAsync(csvText);
+    }
+
+    /**
+     * Parse CSV de forma assíncrona para não bloquear a UI
+     */
+    async parseCSVAsync(csvText) {
+        return new Promise((resolve) => {
+            // Usar setTimeout para não bloquear a UI
+            setTimeout(() => {
+                console.log('🔄 Processando dados CSV...');
+                const data = this.parseCSV(csvText);
+                console.log('✅ Processamento concluído');
+                resolve(data);
+            }, 10);
+        });
     }
 
     /**

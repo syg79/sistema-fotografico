@@ -1,6 +1,9 @@
 // Configuração do Sistema Fotográfico - GitHub Pages
 const CONFIG = {
-    // Google Sheets API Configuration
+    // Data Source Configuration - Escolha entre 'csv' ou 'google-sheets'
+    DATA_SOURCE: 'csv', // 'csv' para arquivos locais, 'google-sheets' para Google Sheets API
+    
+    // Google Sheets API Configuration (usado apenas quando DATA_SOURCE = 'google-sheets')
     GOOGLE_SHEETS: {
         SPREADSHEET_ID: '1ABC123DEF456GHI789JKL', // ⚠️ SUBSTITUIR pelo ID real da planilha
         API_KEY: 'AIzaSyB_EXAMPLE_API_KEY_HERE', // ⚠️ SUBSTITUIR pela chave real da API
@@ -13,6 +16,17 @@ const CONFIG = {
             CLIENTES: 'Clientes',
             REDES: 'Redes',
             CONFIGURACAO: 'Configuracao'
+        }
+    },
+    
+    // CSV Files Configuration (usado apenas quando DATA_SOURCE = 'csv')
+    CSV_FILES: {
+        BASE_PATH: './data/',
+        FILES: {
+            SOLICITACOES: 'Solicitacao.csv',
+            FOTOGRAFOS: 'Fotografos.csv',
+            CLIENTES: 'Clientes.csv',
+            REDES: 'Rede.csv'
         }
     },
     

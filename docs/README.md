@@ -100,17 +100,61 @@ bundle exec jekyll serve
 
 ## 🔧 Configuração
 
+### Fontes de Dados (Novo Sistema Híbrido)
+
+O sistema agora suporta **dois modos de operação**:
+
+#### 📁 **CSV Local** (Recomendado para GitHub Pages)
+```javascript
+// config/config.js
+DATA_SOURCE: 'csv'
+```
+- ✅ Funciona offline
+- ✅ Mais rápido e confiável
+- ✅ Sem configuração de APIs necessária
+
+#### 📊 **Google Sheets API** (Para colaboração em tempo real)
+```javascript
+// config/config.js
+DATA_SOURCE: 'google-sheets'
+```
+- ✅ Dados sempre atualizados
+- ✅ Edição colaborativa
+- ❗ Requer configuração de API
+
+### Google Sheets API (Opcional)
+
+1. **Criar projeto no Google Cloud Console**
+2. **Habilitar Google Sheets API**
+3. **Criar credenciais (API Key)**
+4. **Configurar no arquivo `config/config.js`**
+
 ### Variáveis de Ambiente
 
-Configure as seguintes variáveis no arquivo `config/sheets-config.js`:
-
 ```javascript
+// config/config.js
 const CONFIG = {
-    GOOGLE_SHEETS_API_KEY: 'sua-api-key-aqui',
-    SPREADSHEET_ID: 'id-da-sua-planilha',
-    // ... outras configurações
+    // Escolha da fonte de dados
+    DATA_SOURCE: 'csv', // ou 'google-sheets'
+    
+    // Configuração do Google Sheets (se usar google-sheets)
+    GOOGLE_SHEETS: {
+        SPREADSHEET_ID: 'seu-spreadsheet-id-aqui',
+        API_KEY: 'sua-api-key-aqui'
+    },
+    
+    // Configuração dos arquivos CSV (se usar csv)
+    CSV_FILES: {
+        BASE_PATH: './data/',
+        SOLICITACOES: 'Solicitacao.csv',
+        FOTOGRAFOS: 'Fotografos.csv',
+        CLIENTES: 'Clientes.csv',
+        REDE: 'Rede.csv'
+    }
 };
 ```
+
+📖 **Para mais detalhes, consulte:** [CONFIGURACAO_FONTES_DADOS.md](CONFIGURACAO_FONTES_DADOS.md)
 
 ### Personalização
 

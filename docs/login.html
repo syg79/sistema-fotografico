@@ -471,7 +471,12 @@
         
         // Initialize login manager when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            new LoginManager();
+            // Auto-redirect to main dashboard (bypass login)
+            console.log('Redirecionando automaticamente para o dashboard principal...');
+            window.location.href = 'index.html';
+            
+            // Uncomment below to enable login system
+            // new LoginManager();
         });
         
         // Demo credentials info

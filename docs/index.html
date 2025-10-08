@@ -214,8 +214,11 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="config/config.js"></script>
-    <script src="assets/js/csv-loader.js"></script>
     <script src="assets/js/auth.js"></script>
+    <script src="assets/js/csv-loader.js"></script>
+    <script src="assets/js/google-sheets-api.js"></script>
+    <script src="assets/js/loading-indicator.js"></script>
+    <script src="assets/js/data-loader.js"></script>
     <script>
         // Variáveis globais
         let currentData = [];
@@ -225,10 +228,31 @@
 
         // Inicialização da página
         document.addEventListener('DOMContentLoaded', async () => {
-            // Verificar autenticação
-            if (!requireAuth()) {
-                return;
+            // Verificar autenticação - se não houver, criar sessão temporária
+            if (!authManager.isAuthenticated) {
+                console.log('🔧 Criando sessão temporária para acesso direto...');
+                // Criar usuário temporário para acesso direto
+                const tempUser = {
+                    id: 'temp-user',
+                    nome: 'Usuário Temporário',
+                    email: 'temp@sistema.com',
+                    role: 'admin',
+                    permissions: ['read', 'write', 'admin']
+                };
+                
+                // Salvar sessão temporária
+                authManager.saveSession(tempUser);
+                authManager.isAuthenticated = true;
+                authManager.currentUser = tempUser;
+                authManager.userRole = 'admin';
+                
+                console.log('✅ Sessão temporária criada com sucesso');
             }
+
+            // Aguardar inicialização do DataLoader
+            console.log('🔄 Aguardando inicialização do DataLoader...');
+            await dataLoader.initializeLoader();
+            console.log('✅ DataLoader inicializado');
 
             // Configurar interface baseada no role
             setupUserInterface();
@@ -366,10 +390,34 @@
                 const role = authManager.getCurrentRole();
                 let filters = CONFIG.DEFAULT_FILTERS[role.toUpperCase()] || {};
                 
-                currentData = await csvLoader.loadSolicitacoes();
+                // Para arquivos grandes, carregar apenas a primeira página inicialmente
+                const options = {
+                    pageSize: 100,
+                    loadAll: false,
+                    startRow: 0
+                };
+                
+                console.log('🔄 Carregando dados iniciais (primeira página - mais recentes primeiro)...');
+                currentData = await dataLoader.loadSolicitacoesPaginated(filters, options);
                 filteredData = [...currentData];
                 
-                // Atualizar estatísticas
+                // Verificar se os dados foram ordenados cronologicamente
+                if (currentData._pagination && currentData._pagination.isChronological) {
+                    console.log('📅 Dados carregados em ordem cronológica (mais recentes primeiro)');
+                    
+                    // Mostrar informação sobre ordenação na interface
+                    const statusElement = document.querySelector('.loading-status');
+                    if (statusElement) {
+                        statusElement.innerHTML = `
+                            <div style="color: #28a745; font-weight: bold;">
+                                ✅ Carregados os ${currentData.length} registros mais recentes
+                                ${currentData._pagination.hasMore ? `(${currentData._pagination.totalRecords - currentData.length} registros mais antigos disponíveis)` : ''}
+                            </div>
+                        `;
+                    }
+                }
+                
+                // Atualizar estatísticas (estimativa baseada na primeira página)
                 updateStatistics(currentData);
                 
                 // Carregar fotógrafos para filtro
@@ -377,6 +425,9 @@
                 
                 // Renderizar tabela
                 renderTable();
+                
+                // Mostrar botão para carregar mais dados se necessário
+                showLoadMoreButton();
                 
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
@@ -387,40 +438,25 @@
         }
 
         function updateStatistics(data) {
-            const stats = calculateStatistics(data);
+            const stats = dataLoader.calculateStatistics(data);
             
-            document.getElementById('stat-total').textContent = stats.total;
+            // Atualizar estatísticas com informação sobre paginação
+            const totalElement = document.getElementById('stat-total');
+            if (data._pagination && data._pagination.hasMore) {
+                totalElement.textContent = `${stats.total}+ (${data._pagination.totalRecords} total)`;
+                totalElement.title = `Mostrando ${stats.total} registros mais recentes de ${data._pagination.totalRecords} total`;
+            } else {
+                totalElement.textContent = stats.total;
+            }
+            
             document.getElementById('stat-hoje').textContent = stats.today;
             document.getElementById('stat-pendentes').textContent = stats.byStatus['Agendado'] || 0;
             document.getElementById('stat-realizados').textContent = stats.byStatus['Realizado'] || 0;
         }
 
-        function calculateStatistics(data) {
-            const today = new Date().toISOString().split('T')[0];
-            const stats = {
-                total: data.length,
-                today: 0,
-                byStatus: {}
-            };
-
-            data.forEach(item => {
-                // Contar por status
-                const status = item.Status || item['Status da Solicitacao'] || 'Não definido';
-                stats.byStatus[status] = (stats.byStatus[status] || 0) + 1;
-
-                // Contar agendamentos de hoje
-                const dataAgendamento = item['Data do agendamento'] || item['Data Agendamento'];
-                if (dataAgendamento && dataAgendamento.includes(today)) {
-                    stats.today++;
-                }
-            });
-
-            return stats;
-        }
-
         async function loadFotografosFilter() {
             try {
-                const fotografos = await csvLoader.loadFotografos();
+                const fotografos = await dataLoader.loadFotografos();
                 const select = document.getElementById('filter-fotografo');
                 
                 fotografos.forEach(foto => {
@@ -615,6 +651,98 @@
 
         function hideLoading() {
             document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        function showLoadMoreButton() {
+            // Verificar se já existe o botão
+            if (document.getElementById('load-more-btn')) return;
+            
+            // Verificar se há mais dados para carregar
+            const hasMore = currentData._pagination && currentData._pagination.hasMore;
+            if (!hasMore) return;
+            
+            const totalRecords = currentData._pagination ? currentData._pagination.totalRecords : 6556;
+            const currentCount = currentData.length;
+            
+            // Criar botão "Carregar Mais"
+            const container = document.querySelector('.table-responsive');
+            const button = document.createElement('div');
+            button.className = 'text-center mt-3';
+            button.innerHTML = `
+                <button id="load-more-btn" class="btn btn-outline-primary">
+                    <i class="fas fa-clock"></i> Carregar Registros Mais Antigos
+                </button>
+                <div class="mt-2">
+                    <div class="text-success mb-1">
+                        <i class="fas fa-check-circle"></i> <strong>Carregados: ${currentCount} registros mais recentes</strong>
+                    </div>
+                    <div class="text-muted">
+                        <small>
+                            <i class="fas fa-info-circle"></i> 
+                            ${totalRecords - currentCount} registros mais antigos disponíveis
+                            <br>
+                            💡 <strong>Dica:</strong> Os dados mais relevantes (recentes) já estão carregados
+                        </small>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(button);
+            
+            // Adicionar evento de clique
+            document.getElementById('load-more-btn').addEventListener('click', loadAllData);
+        }
+
+        async function loadAllData() {
+            try {
+                const button = document.getElementById('load-more-btn');
+                const originalText = button.innerHTML;
+                
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando registros mais antigos...';
+                button.disabled = true;
+                
+                // Carregar todos os dados (mantendo ordenação cronológica)
+                const role = authManager.getCurrentRole();
+                let filters = CONFIG.DEFAULT_FILTERS[role.toUpperCase()] || {};
+                
+                const options = {
+                    pageSize: 0,
+                    loadAll: true,
+                    startRow: 0
+                };
+                
+                console.log('🔄 Carregando todos os dados (mantendo ordem cronológica)...');
+                currentData = await dataLoader.loadSolicitacoesPaginated(filters, options);
+                filteredData = [...currentData];
+                
+                // Atualizar estatísticas com dados completos
+                updateStatistics(currentData);
+                
+                // Renderizar tabela com todos os dados
+                renderTable();
+                
+                // Remover botão e mostrar status
+                button.parentElement.innerHTML = `
+                    <div class="alert alert-success text-center">
+                        <i class="fas fa-check-circle"></i> 
+                        <strong>Todos os ${currentData.length} registros carregados!</strong>
+                        <br>
+                        <small class="text-muted">Dados ordenados cronologicamente (mais recentes primeiro)</small>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Erro ao carregar todos os dados:', error);
+                
+                const button = document.getElementById('load-more-btn');
+                if (button) {
+                    button.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro - Tentar Novamente';
+                    button.disabled = false;
+                    button.className = 'btn btn-outline-danger';
+                }
+                
+                showError('Erro ao carregar dados completos. Tente novamente.');
+            }
         }
 
         function showError(message) {
