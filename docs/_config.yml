@@ -59,7 +59,6 @@ exclude:
   - config/
   - tadabase_pages/
   - "*.xlsx"
-  - "*.csv"
   - "*.txt"
   - "*.ps1"
 
