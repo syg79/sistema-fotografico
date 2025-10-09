@@ -11,10 +11,21 @@ class CSVLoader {
             throw new Error('CONFIG não está disponível');
         }
         
-        // Usar caminho absoluto em ambos os ambientes
+        // ================================================================
+        // ATENÇÃO: NÃO MODIFICAR ESTA SEÇÃO - FUNCIONAMENTO OFFLINE ESTÁVEL
+        // ================================================================
+        // Esta configuração garante o funcionamento correto tanto no ambiente
+        // local (localhost/127.0.0.1) quanto no GitHub Pages.
+        // 
+        // Detalhes importantes:
+        // 1. Usa caminho absoluto (/data/) em ambos os ambientes
+        // 2. Mantém compatibilidade com Jekyll no GitHub Pages
+        // 3. Garante carregamento offline dos arquivos CSV
+        // ================================================================
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         this.baseUrl = isLocalhost ? '' : (CONFIG.GITHUB_PAGES.BASE_URL || '');
-        this.dataPath = '/data/'; // Usar caminho absoluto em ambos os ambientes
+        this.dataPath = '/data/'; // Caminho absoluto para ambos os ambientes
+        // ================================================================
         
         // Cache para melhorar performance
         this.cache = {
