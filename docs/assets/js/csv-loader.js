@@ -27,11 +27,8 @@ class CSVLoader {
         if (isLocalhost) {
             this.baseUrl = '';
         } else {
-            const pathSegments = window.location.pathname.split('/').filter(Boolean);
-            const repoSegment = pathSegments.length ? pathSegments[0] : '';
-            const inferredBaseUrl = repoSegment
-                ? `${window.location.origin}/${repoSegment}`
-                : window.location.origin;
+            const inferredDirectory = new URL('.', window.location.href);
+            const inferredBaseUrl = inferredDirectory.href.replace(/\/+$/, '');
 
             const configuredBaseUrl = (CONFIG.GITHUB_PAGES && CONFIG.GITHUB_PAGES.BASE_URL)
                 ? CONFIG.GITHUB_PAGES.BASE_URL.trim()
@@ -44,7 +41,7 @@ class CSVLoader {
                     const configuredUrl = new URL(configuredBaseUrl, window.location.origin);
                     const sameHost = configuredUrl.host === window.location.host;
                     const configuredPath = configuredUrl.pathname.replace(/\/+$/, '');
-                    const inferredPath = repoSegment ? `/${repoSegment}` : '';
+                    const inferredPath = inferredDirectory.pathname.replace(/\/+$/, '');
 
                     const allowCrossOrigin = CONFIG.GITHUB_PAGES && CONFIG.GITHUB_PAGES.ALLOW_REMOTE_BASE_URL;
 
