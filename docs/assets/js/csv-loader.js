@@ -23,7 +23,45 @@ class CSVLoader {
         // 3. Garante carregamento offline dos arquivos CSV
         // ================================================================
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        this.baseUrl = isLocalhost ? '' : (CONFIG.GITHUB_PAGES.BASE_URL || '');
+
+        if (isLocalhost) {
+            this.baseUrl = '';
+        } else {
+            const pathSegments = window.location.pathname.split('/').filter(Boolean);
+            const repoSegment = pathSegments.length ? pathSegments[0] : '';
+            const inferredBaseUrl = repoSegment
+                ? `${window.location.origin}/${repoSegment}`
+                : window.location.origin;
+
+            const configuredBaseUrl = (CONFIG.GITHUB_PAGES && CONFIG.GITHUB_PAGES.BASE_URL)
+                ? CONFIG.GITHUB_PAGES.BASE_URL.trim()
+                : '';
+
+            let resolvedBaseUrl = inferredBaseUrl;
+
+            if (configuredBaseUrl) {
+                try {
+                    const configuredUrl = new URL(configuredBaseUrl, window.location.origin);
+                    const sameHost = configuredUrl.host === window.location.host;
+                    const configuredPath = configuredUrl.pathname.replace(/\/+$/, '');
+                    const inferredPath = repoSegment ? `/${repoSegment}` : '';
+
+                    if (!sameHost) {
+                        resolvedBaseUrl = configuredUrl.href.replace(/\/+$/, '');
+                    } else if (!inferredPath) {
+                        resolvedBaseUrl = configuredUrl.origin + configuredPath;
+                    } else if (configuredPath.startsWith(inferredPath)) {
+                        resolvedBaseUrl = configuredUrl.origin + configuredPath;
+                    }
+                    // Se o host for o mesmo e o caminho nǜo corresponder, manter inferredBaseUrl
+                } catch (error) {
+                    console.warn('�s���? BASE_URL configurado inv��lido, usando caminho inferido automaticamente.', error);
+                }
+            }
+
+            this.baseUrl = resolvedBaseUrl.replace(/\/+$/, '');
+        }
+
         this.dataPath = '/data/'; // Caminho absoluto para ambos os ambientes
         // ================================================================
         
