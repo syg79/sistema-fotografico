@@ -46,8 +46,14 @@ class CSVLoader {
                     const configuredPath = configuredUrl.pathname.replace(/\/+$/, '');
                     const inferredPath = repoSegment ? `/${repoSegment}` : '';
 
+                    const allowCrossOrigin = CONFIG.GITHUB_PAGES && CONFIG.GITHUB_PAGES.ALLOW_REMOTE_BASE_URL;
+
                     if (!sameHost) {
-                        resolvedBaseUrl = configuredUrl.href.replace(/\/+$/, '');
+                        if (allowCrossOrigin) {
+                            resolvedBaseUrl = configuredUrl.href.replace(/\/+$/, '');
+                        } else {
+                            console.warn('BASE_URL configurado para outro dominio ignorado. Usando dominio atual. Ative CONFIG.GITHUB_PAGES.ALLOW_REMOTE_BASE_URL para forcar o uso.', configuredUrl.href);
+                        }
                     } else if (!inferredPath) {
                         resolvedBaseUrl = configuredUrl.origin + configuredPath;
                     } else if (configuredPath.startsWith(inferredPath)) {
