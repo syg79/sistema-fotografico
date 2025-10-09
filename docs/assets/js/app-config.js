@@ -1,0 +1,105 @@
+// Configuração do Sistema Fotográfico - Versão incorporada em assets/js
+// Este arquivo substitui o antigo config/config.js para evitar erros de carregamento no GitHub Pages.
+
+(function initConfig() {
+    if (typeof window.CONFIG !== 'undefined') {
+        // Já definido (provavelmente por outro script). Não sobrescrever.
+        return;
+    }
+
+    const CONFIG = {
+        DATA_SOURCE: 'csv',
+        GOOGLE_SHEETS: {
+            SPREADSHEET_ID: '1ABC123DEF456GHI789JKL',
+            API_KEY: 'AIzaSyB_EXAMPLE_API_KEY_HERE',
+            SCOPES: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+            SHEETS: {
+                SOLICITACOES: 'Solicitacoes',
+                FOTOGRAFOS: 'Fotografos',
+                CLIENTES: 'Clientes',
+                REDES: 'Redes',
+                CONFIGURACAO: 'Configuracao'
+            }
+        },
+        CSV_FILES: {
+            BASE_PATH: './data/',
+            FILES: {
+                SOLICITACOES: 'Solicitacao.csv',
+                FOTOGRAFOS: 'Fotografos.csv',
+                CLIENTES: 'Clientes.csv',
+                REDES: 'Rede.csv'
+            }
+        },
+        GITHUB_PAGES: {
+            BASE_URL: 'https://syg79.github.io/sistema-fotografico',
+            REPO: 'syg79/sistema-fotografico'
+        },
+        CACHE: {
+            TIMEOUT: 5 * 60 * 1000,
+            ENABLED: true,
+            PREFIX: 'sistema_foto_'
+        },
+        AUTH: {
+            ENABLED: true,
+            PROVIDER: 'simple',
+            REDIRECT_AFTER_LOGIN: true,
+            SESSION_TIMEOUT: 8 * 60 * 60 * 1000,
+            ROLES: {
+                FOTOGRAFO: 'fotografo',
+                EDITOR: 'editor',
+                GESTOR: 'gestor',
+                ADMIN: 'admin'
+            },
+            ROLE_HIERARCHY: {
+                fotografo: 1,
+                editor: 2,
+                gestor: 3,
+                admin: 4
+            }
+        },
+        UI: {
+            ITEMS_PER_PAGE: 20,
+            AUTO_REFRESH_INTERVAL: 30000,
+            SHOW_DEBUG_INFO: false,
+            STATUS_COLORS: {
+                Agendado: '#007bff',
+                Confirmado: '#28a745',
+                Realizado: '#ffc107',
+                Editado: '#17a2b8',
+                Entregue: '#6f42c1',
+                Cancelado: '#dc3545'
+            }
+        },
+        DEFAULT_FILTERS: {
+            FOTOGRAFOS: {
+                status: ['Agendado', 'Confirmado'],
+                dataInicio: 'today'
+            },
+            EDITORES: {
+                status: 'Realizado',
+                editado: ['', 'Nao', null]
+            },
+            GESTORES: {}
+        },
+        DEV: {
+            MOCK_DATA: false,
+            LOG_LEVEL: 'info',
+            BYPASS_AUTH: false
+        }
+    };
+
+    // Ajustes dinâmicos para localhost
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        CONFIG.DEV.LOG_LEVEL = 'debug';
+        CONFIG.UI.SHOW_DEBUG_INFO = true;
+        console.log('Modo de desenvolvimento ativado');
+    }
+
+    window.CONFIG = CONFIG;
+    console.log('Configuração padrão carregada (app-config.js)');
+})();
+
+// Suporte a CommonJS (tests/scripts)
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = window.CONFIG;
+}

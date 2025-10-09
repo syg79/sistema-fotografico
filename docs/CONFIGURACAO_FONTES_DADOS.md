@@ -33,7 +33,7 @@ O Sistema Fotográfico suporta **dois modos de operação** para carregamento de
 
 ### Alternar para CSV Local (Recomendado para GitHub Pages)
 
-1. Abra o arquivo `config/config.js`
+1. Abra o arquivo `assets/js/app-config.js`
 2. Altere a configuração:
 ```javascript
 DATA_SOURCE: 'csv'
@@ -47,7 +47,7 @@ DATA_SOURCE: 'csv'
 
 ### Alternar para Google Sheets
 
-1. Abra o arquivo `config/config.js`
+1. Abra o arquivo `assets/js/app-config.js`
 2. Altere a configuração:
 ```javascript
 DATA_SOURCE: 'google-sheets'

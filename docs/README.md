@@ -106,7 +106,7 @@ O sistema agora suporta **dois modos de operação**:
 
 #### 📁 **CSV Local** (Recomendado para GitHub Pages)
 ```javascript
-// config/config.js
+// assets/js/app-config.js
 DATA_SOURCE: 'csv'
 ```
 - ✅ Funciona offline
@@ -115,7 +115,7 @@ DATA_SOURCE: 'csv'
 
 #### 📊 **Google Sheets API** (Para colaboração em tempo real)
 ```javascript
-// config/config.js
+// assets/js/app-config.js
 DATA_SOURCE: 'google-sheets'
 ```
 - ✅ Dados sempre atualizados
@@ -127,12 +127,12 @@ DATA_SOURCE: 'google-sheets'
 1. **Criar projeto no Google Cloud Console**
 2. **Habilitar Google Sheets API**
 3. **Criar credenciais (API Key)**
-4. **Configurar no arquivo `config/config.js`**
+4. **Configurar no arquivo `assets/js/app-config.js`**
 
 ### Variáveis de Ambiente
 
 ```javascript
-// config/config.js
+// assets/js/app-config.js
 const CONFIG = {
     // Escolha da fonte de dados
     DATA_SOURCE: 'csv', // ou 'google-sheets'
