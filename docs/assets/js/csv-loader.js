@@ -5,8 +5,16 @@
 
 class CSVLoader {
     constructor() {
-        this.baseUrl = CONFIG.GITHUB_PAGES.BASE_URL || '';
-        this.dataPath = '/data/';
+        // Verificar se CONFIG está disponível
+        if (typeof CONFIG === 'undefined') {
+            console.error('❌ CONFIG não está disponível. Verifique se config.js foi carregado.');
+            throw new Error('CONFIG não está disponível');
+        }
+        
+        // Usar caminho relativo em localhost, URL completa no GitHub Pages
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        this.baseUrl = isLocalhost ? '' : (CONFIG.GITHUB_PAGES.BASE_URL || '');
+        this.dataPath = isLocalhost ? 'data/' : '/data/';
         
         // Cache para melhorar performance
         this.cache = {
@@ -25,7 +33,7 @@ class CSVLoader {
         this.onLoadComplete = null;
         this.onError = null;
         
-        console.log('📋 CSV Loader inicializado');
+        console.log('📋 CSV Loader inicializado', { baseUrl: this.baseUrl, dataPath: this.dataPath });
     }
 
     /**
@@ -54,7 +62,7 @@ class CSVLoader {
             this.isLoading = true;
             if (this.onLoadStart) this.onLoadStart(filename);
             
-            console.log(`🔄 Carregando ${filename}...`);
+            console.log(`🔄 Carregando ${filename} de: ${url}`);
             
             const response = await fetch(url);
             
