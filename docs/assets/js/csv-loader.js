@@ -321,7 +321,7 @@ class CSVLoader {
     }
 
     /**
-     * Parse uma linha CSV considerando aspas e vírgulas
+     * Parse uma linha CSV considerando aspas e ponto e vírgula
      * @param {string} line - Linha CSV
      * @returns {Array} Array de valores
      */
@@ -340,7 +340,7 @@ class CSVLoader {
                 } else {
                     inQuotes = !inQuotes;
                 }
-            } else if (char === ',' && !inQuotes) {
+            } else if (char === ';' && !inQuotes) {
                 result.push(current.trim());
                 current = '';
             } else {
