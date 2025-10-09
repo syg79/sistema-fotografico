@@ -11,10 +11,10 @@ class CSVLoader {
             throw new Error('CONFIG não está disponível');
         }
         
-        // Usar caminho relativo em localhost, URL completa no GitHub Pages
+        // Usar caminho absoluto em ambos os ambientes
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         this.baseUrl = isLocalhost ? '' : (CONFIG.GITHUB_PAGES.BASE_URL || '');
-        this.dataPath = isLocalhost ? 'data/' : '/data/';
+        this.dataPath = '/data/'; // Usar caminho absoluto em ambos os ambientes
         
         // Cache para melhorar performance
         this.cache = {
