@@ -66,6 +66,7 @@ exclude:
 include:
   - .htaccess
   - _pages
+  - config/
 
 # Configurações de permalink
 permalink: /:categories/:year/:month/:day/:title/
