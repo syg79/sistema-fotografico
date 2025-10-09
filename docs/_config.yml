@@ -21,6 +21,10 @@ incremental: false
 profile: false
 strict_front_matter: false
 
+# Incluir arquivos CSV no build
+include:
+  - data/*.csv
+
 # Configurações de servidor local
 host: 127.0.0.1
 port: 4000
