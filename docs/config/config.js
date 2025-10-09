@@ -32,8 +32,8 @@ const CONFIG = {
     
     // GitHub Pages Configuration
     GITHUB_PAGES: {
-        BASE_URL: 'https://syg79.github.io/Excel',
-        REPO: 'syg79/Excel'
+        BASE_URL: 'https://syg79.github.io/sistema-fotografico',
+        REPO: 'syg79/sistema-fotografico'
     },
     
     // Cache Configuration
