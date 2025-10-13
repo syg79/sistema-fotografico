@@ -8,11 +8,13 @@
     }
 
     const CONFIG = {
-        DATA_SOURCE: 'csv',
+        DATA_SOURCE: 'google-sheets',
         GOOGLE_SHEETS: {
-            SPREADSHEET_ID: '1ABC123DEF456GHI789JKL',
-            API_KEY: 'AIzaSyB_EXAMPLE_API_KEY_HERE',
+            SPREADSHEET_ID: '1f73WWypg6iZ5KZ644f2dZD-HTCgm707wgpEIDVo4cpk',
+            API_KEY: 'AIzaSyCXfAKAN5BNNaspkjFembfJYfthYwlrLq0',
             SCOPES: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+            APP_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzfR9pc_kAb5RGZu8fb6cjArVLaX2vtAbeL-K2NQMmnmTpnV6WZw-VzUkW00mlDY0QZ/exec', // Defina após publicar o Apps Script
+            APP_SCRIPT_TOKEN: 'a6d942c7-f3b1-4e8d-80f3-6ba9f1e3cc12', // Token secreto compartilhado com o Apps Script
             SHEETS: {
                 SOLICITACOES: 'Solicitacoes',
                 FOTOGRAFOS: 'Fotografos',

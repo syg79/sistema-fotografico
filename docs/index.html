@@ -217,6 +217,7 @@
     <script src="assets/js/auth.js"></script>
     <script src="assets/js/csv-loader.js"></script>
     <script src="assets/js/google-sheets-api.js"></script>
+    <script src="assets/js/google-sheets-writer.js"></script>
     <script src="assets/js/loading-indicator.js"></script>
     <script src="assets/js/data-loader.js"></script>
     <script>
@@ -382,35 +383,39 @@
             });
         }
 
-        async function loadInitialData() {
+        async function loadInitialData(options = {}) {
+            const { showOverlay = true } = options;
             try {
-                showLoading();
+                if (showOverlay) {
+                    showLoading();
+                }
                 
                 // Carregar dados baseado no role
                 const role = authManager.getCurrentRole();
-                let filters = CONFIG.DEFAULT_FILTERS[role.toUpperCase()] || {};
+                const roleKey = role ? role.toUpperCase() : '';
+                let filters = CONFIG.DEFAULT_FILTERS[roleKey] || {};
                 
                 // Para arquivos grandes, carregar apenas a primeira página inicialmente
-                const options = {
+                const optionsLoader = {
                     pageSize: 100,
                     loadAll: false,
                     startRow: 0
                 };
                 
-                console.log('🔄 Carregando dados iniciais (primeira página - mais recentes primeiro)...');
-                currentData = await dataLoader.loadSolicitacoesPaginated(filters, options);
+                console.log('[INFO] Carregando dados iniciais (primeira página - mais recentes primeiro)...');
+                currentData = await dataLoader.loadSolicitacoesPaginated(filters, optionsLoader);
                 filteredData = [...currentData];
                 
                 // Verificar se os dados foram ordenados cronologicamente
                 if (currentData._pagination && currentData._pagination.isChronological) {
-                    console.log('📅 Dados carregados em ordem cronológica (mais recentes primeiro)');
+                    console.log('[INFO] Dados carregados em ordem cronológica (mais recentes primeiro)');
                     
                     // Mostrar informação sobre ordenação na interface
                     const statusElement = document.querySelector('.loading-status');
                     if (statusElement) {
                         statusElement.innerHTML = `
                             <div style="color: #28a745; font-weight: bold;">
-                                ✅ Carregados os ${currentData.length} registros mais recentes
+                                Carregados os ${currentData.length} registros mais recentes
                                 ${currentData._pagination.hasMore ? `(${currentData._pagination.totalRecords - currentData.length} registros mais antigos disponíveis)` : ''}
                             </div>
                         `;
@@ -431,16 +436,16 @@
                 
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
-                showError('Erro ao carregar dados. Verifique sua conexão.');
+                const detail = error && error.message ? ` Detalhe: ${error.message}` : '';
+                showError(`Erro ao carregar dados. Verifique sua conexão.${detail}`);
             } finally {
-                hideLoading();
+                if (showOverlay) {
+                    hideLoading();
+                }
             }
         }
-
         function updateStatistics(data) {
             const stats = dataLoader.calculateStatistics(data);
-            
-            // Atualizar estatísticas com informação sobre paginação
             const totalElement = document.getElementById('stat-total');
             if (data._pagination && data._pagination.hasMore) {
                 totalElement.textContent = `${stats.total}+ (${data._pagination.totalRecords} total)`;
@@ -448,7 +453,6 @@
             } else {
                 totalElement.textContent = stats.total;
             }
-            
             document.getElementById('stat-hoje').textContent = stats.today;
             document.getElementById('stat-pendentes').textContent = stats.byStatus['Agendado'] || 0;
             document.getElementById('stat-realizados').textContent = stats.byStatus['Realizado'] || 0;
@@ -458,7 +462,6 @@
             try {
                 const fotografos = await dataLoader.loadFotografos();
                 const select = document.getElementById('filter-fotografo');
-                
                 fotografos.forEach(foto => {
                     const option = document.createElement('option');
                     option.value = foto.Nome || foto.nome;
@@ -469,24 +472,15 @@
                 console.warn('Erro ao carregar fotógrafos:', error);
             }
         }
-
         function renderTable() {
             const role = authManager.getCurrentRole();
-            
-            // Definir colunas baseado no role
             const columns = getColumnsForRole(role);
-            
-            // Renderizar headers
             const headerRow = document.getElementById('table-headers');
             headerRow.innerHTML = columns.map(col => `<th>${col.title}</th>`).join('');
-            
-            // Renderizar dados
-            renderTableData(columns);
-            
-            // Renderizar paginação
+            renderTableData(columns, role);
             renderPagination();
         }
-
+        
         function getColumnsForRole(role) {
             const baseColumns = [
                 { key: 'Record ID', title: 'ID' },
@@ -495,30 +489,43 @@
                 { key: 'Endereco do Imovel', title: 'Endereço' },
                 { key: 'Nome Cliente', title: 'Cliente' }
             ];
-
+            const actionsColumn = { key: '__actions', title: 'Ações' };
+            if (!role) {
+                return [
+                    ...baseColumns,
+                    { key: 'Fotografo', title: 'Fotógrafo' },
+                    { key: 'Editado', title: 'Editado' }
+                ];
+            }
+        
             switch (role) {
                 case 'fotografo':
                     return [
                         ...baseColumns,
                         { key: 'Horario da Sessao', title: 'Horário' },
-                        { key: 'Referencia do Cliente', title: 'Contato' }
+                        { key: 'Referencia do Cliente', title: 'Contato' },
+                        actionsColumn
                     ];
                 case 'editor':
                     return [
                         ...baseColumns,
                         { key: 'Fotografo', title: 'Fotógrafo' },
-                        { key: 'Editado', title: 'Editado' }
+                        { key: 'Editado', title: 'Editado' },
+                        actionsColumn
                     ];
+                case 'gestor':
+                case 'admin':
                 default:
                     return [
                         ...baseColumns,
                         { key: 'Fotografo', title: 'Fotógrafo' },
-                        { key: 'Editado', title: 'Editado' }
+                        { key: 'Editado', title: 'Editado' },
+                        actionsColumn
                     ];
             }
         }
-
-        function renderTableData(columns) {
+        
+        function renderTableData(columns, role) {
             const tbody = document.getElementById('table-body');
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
@@ -537,20 +544,101 @@
             
             tbody.innerHTML = pageData.map(item => {
                 const cells = columns.map(col => {
+                    if (col.key === '__actions') {
+                        return `<td>${renderActions(role, item)}</td>`;
+                    }
                     let value = item[col.key] || '';
-                    
-                    // Formatação especial para status
                     if (col.key === 'Status') {
                         const color = CONFIG.UI.STATUS_COLORS[value] || '#6c757d';
                         value = `<span class="badge" style="background-color: ${color}">${value}</span>`;
                     }
-                    
                     return `<td>${value}</td>`;
                 }).join('');
-                
                 return `<tr>${cells}</tr>`;
             }).join('');
         }
+        
+        function renderActions(role, item) {
+            const recordId = item["Record ID"];
+            if (!recordId) {
+                return '<span class="text-muted">—</span>';
+            }
+            const status = (item["Status"] || "").toString().toLowerCase();
+            const editado = (item["Editado"] || "").toString().toLowerCase();
+            const buttons = [];
+            const encodedId = encodeURIComponent(recordId);
+
+            const addButton = (label, action, style = "outline-primary", icon = "fa-check") => {
+                buttons.push(`
+                    <button type="button" class="btn btn-${style} btn-sm me-1"
+                        onclick="handleSolicitacaoAction('${action}','${encodedId}')">
+                        <i class="fas ${icon} me-1"></i>${label}
+                    </button>
+                `);
+            };
+
+            if (role === "fotografo") {
+                if (["publicado", "agendado", "confirmado"].includes(status)) {
+                    addButton("Confirmar Realizado", "realizado", "outline-success", "fa-camera");
+                }
+            } else if (role === "editor") {
+                if (status === "realizado" && editado !== "sim") {
+                    addButton("Marcar Editado", "editado", "outline-info", "fa-edit");
+                }
+            } else if (role) {
+                if (!["publicado", "realizado", "editado"].includes(status)) {
+                    addButton("Publicar", "publicado", "outline-primary", "fa-bullhorn");
+                }
+                if (!["realizado", "editado"].includes(status)) {
+                    addButton("Marcar Realizado", "realizado", "outline-success", "fa-check-circle");
+                }
+                if (status === "realizado" && editado !== "sim") {
+                    addButton("Marcar Editado", "editado", "outline-info", "fa-edit");
+                }
+            }
+
+            return buttons.length
+                ? `<div class="d-flex flex-wrap gap-1">${buttons.join("")}</div>`
+                : '<span class="text-muted">—</span>';
+        }
+
+        async function handleSolicitacaoAction(action, encodedRecordId) {
+            const recordId = decodeURIComponent(encodedRecordId || "");
+            if (!recordId) {
+                showError("Registro inválido: ID não encontrado.");
+                return;
+            }
+            let successMessage = "Solicitação atualizada com sucesso.";
+            try {
+                showLoading();
+                switch (action) {
+                    case "publicado":
+                        await googleSheetsWriter.marcarPublicado(recordId);
+                        successMessage = "Solicitação publicada para agenda.";
+                        break;
+                    case "realizado":
+                        await googleSheetsWriter.gerarCodigoVitrine(recordId);
+                        successMessage = "Status marcado como Realizado e código vitrine gerado.";
+                        break;
+                    case "editado":
+                        await googleSheetsWriter.marcarEditado(recordId);
+                        successMessage = "Solicitação marcada como Editada.";
+                        break;
+                    default:
+                        console.warn("Ação desconhecida:", action);
+                        hideLoading();
+                        return;
+                }
+                await loadInitialData({ showOverlay: false });
+                alert(successMessage);
+            } catch (error) {
+                console.error("Erro ao atualizar solicitação:", error);
+                showError("Erro ao atualizar solicitação. Verifique o console para detalhes.");
+            } finally {
+                hideLoading();
+            }
+        }
+        
 
         function renderPagination() {
             const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -678,10 +766,10 @@
                     </div>
                     <div class="text-muted">
                         <small>
-                            <i class="fas fa-info-circle"></i> 
+                            <i class="fas fa-info-circle"></i>
                             ${totalRecords - currentCount} registros mais antigos disponíveis
                             <br>
-                            💡 <strong>Dica:</strong> Os dados mais relevantes (recentes) já estão carregados
+                            <strong>Dica:</strong> Os dados mais relevantes (recentes) já estão carregados
                         </small>
                     </div>
                 </div>
@@ -746,7 +834,6 @@
         }
 
         function showError(message) {
-            // Implementar toast ou modal de erro
             alert(message);
         }
     </script>
