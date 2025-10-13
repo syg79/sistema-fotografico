@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serviços Realizados - Sistema Fotográfico</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS personalizado -->
+    <link href="css/style.css" rel="stylesheet">
+    
+    <style>
+        .realizados-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #28a745;
+        }
+        
+        .realizados-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .info-item i {
+            width: 20px;
+            margin-right: 8px;
+            color: #6c757d;
+        }
+        
+        .preview-gallery {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            overflow: hidden;
+        }
+        
+        .preview-item {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid #e9ecef;
+        }
+        
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .preview-item .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .preview-item:hover .overlay {
+            opacity: 1;
+        }
+        
+        .quality-indicator {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .quality-excelente {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .quality-boa {
+            background-color: #cce7ff;
+            color: #004085;
+        }
+        
+        .quality-regular {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .quality-ruim {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .timeline-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+        
+        .filtros-avancados {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stats-realizados {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .periodo-badge {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        
+        .loading-realizados {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .sem-realizados {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        
+        .export-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .galeria-completa {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .galeria-completa .preview-item {
+            width: 100%;
+            height: 120px;
+        }
+        
+        @media (max-width: 768px) {
+            .preview-gallery {
+                justify-content: center;
+            }
+            
+            .export-options {
+                justify-content: center;
+            }
+            
+            .filtros-avancados {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-camera me-2"></i>Sistema Fotográfico
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="fas fa-home"></i> Início</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-plus"></i> Novos Pedidos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="novos-pedidos.html">Novo Pedido Completo</a></li>
+                            <li><a class="dropdown-item" href="novos-pedidos.html">Edição de Imagens</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pendentes.html"><i class="fas fa-clock"></i> Pendentes</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-calendar"></i> Agendamentos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="agendamentos.html">Interno</a></li>
+                            <li><a class="dropdown-item" href="agendamentos-publico.html">Fotógrafos</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="registro.html"><i class="fas fa-book"></i> Registro</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="conferencia.html"><i class="fas fa-check-double"></i> Conferência</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="realizados.html"><i class="fas fa-history"></i> Realizados</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Cabeçalho -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2><i class="fas fa-check-circle me-2 text-success"></i>Serviços Realizados</h2>
+                <p class="text-muted mb-0">Consulta de todos os serviços realizados</p>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary" onclick="atualizarDados()">
+                    <i class="fas fa-sync-alt me-1"></i>Atualizar
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-download me-1"></i>Exportar
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="exportarExcel()">
+                            <i class="fas fa-file-excel me-2"></i>Excel
+                        </a></li>
+                        <li><a class="dropdown-item" href="#" onclick="exportarPDF()">
+                            <i class="fas fa-file-pdf me-2"></i>PDF
+                        </a></li>
+                        <li><a class="dropdown-item" href="#" onclick="exportarCSV()">
+                            <i class="fas fa-file-csv me-2"></i>CSV
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="stats-realizados">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3 id="totalRealizados">0</h3>
+                        <small>Total Realizados</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3 id="realizadosHoje">0</h3>
+                        <small>Hoje</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3 id="realizadosSemana">0</h3>
+                        <small>Esta Semana</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3 id="realizadosMes">0</h3>
+                        <small>Este Mês</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros Avançados -->
+        <div class="filtros-avancados">
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="form-label">Período</label>
+                    <select class="form-select" id="filtroPeriodo">
+                        <option value="">Todos</option>
+                        <option value="hoje">Hoje</option>
+                        <option value="semana">Esta Semana</option>
+                        <option value="mes">Este Mês</option>
+                        <option value="trimestre">Último Trimestre</option>
+                        <option value="ano">Este Ano</option>
+                        <option value="personalizado">Período Personalizado</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="form-label">Fotógrafo</label>
+                    <select class="form-select" id="filtroFotografo">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="form-label">Tipo</label>
+                    <select class="form-select" id="filtroTipo">
+                        <option value="">Todos</option>
+                        <option value="Residencial">Residencial</option>
+                        <option value="Apartamento">Apartamento</option>
+                        <option value="Comercial">Comercial</option>
+                        <option value="Casa">Casa</option>
+                        <option value="Terreno">Terreno</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="form-label">Qualidade</label>
+                    <select class="form-select" id="filtroQualidade">
+                        <option value="">Todas</option>
+                        <option value="Excelente">Excelente</option>
+                        <option value="Boa">Boa</option>
+                        <option value="Regular">Regular</option>
+                        <option value="Ruim">Ruim</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-4">
+                    <label class="form-label">Busca Rápida</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="buscaRapida" 
+                               placeholder="Cliente, endereço, observações...">
+                        <button class="btn btn-outline-secondary" onclick="limparFiltros()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Período Personalizado -->
+            <div class="row mt-3" id="periodoPersonalizado" style="display: none;">
+                <div class="col-md-3">
+                    <label class="form-label">Data Inicial</label>
+                    <input type="date" class="form-control" id="dataInicial">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Data Final</label>
+                    <input type="date" class="form-control" id="dataFinal">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button class="btn btn-primary" onclick="aplicarPeriodoPersonalizado()">
+                        <i class="fas fa-filter me-1"></i>Aplicar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informações de Filtro -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <span id="totalFiltrados" class="text-muted">0 serviços</span>
+                <span id="periodoAtivo" class="periodo-badge"></span>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="atualizacaoAutomatica" checked>
+                    <label class="form-check-label" for="atualizacaoAutomatica">
+                        Atualização automática
+                    </label>
+                </div>
+                
+                <select class="form-select form-select-sm" id="itensPorPagina" style="width: auto;">
+                    <option value="10">10 por página</option>
+                    <option value="25">25 por página</option>
+                    <option value="50">50 por página</option>
+                    <option value="100">100 por página</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div id="loadingRealizados" class="loading-realizados">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="mt-2">Carregando serviços realizados...</p>
+        </div>
+
+        <!-- Lista de Realizados -->
+        <div id="listaRealizados"></div>
+
+        <!-- Sem Realizados -->
+        <div id="semRealizados" class="sem-realizados">
+            <i class="fas fa-search fa-3x mb-3"></i>
+            <h5>Nenhum serviço encontrado</h5>
+            <p>Não há serviços realizados que correspondam aos filtros aplicados.</p>
+            <button class="btn btn-primary" onclick="limparFiltros()">
+                <i class="fas fa-filter me-1"></i>Limpar Filtros
+            </button>
+        </div>
+
+        <!-- Paginação -->
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <div>
+                <span id="infoPaginacao" class="text-muted"></span>
+            </div>
+            <nav>
+                <ul class="pagination mb-0" id="paginacao"></ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Modal Detalhes do Serviço -->
+    <div class="modal fade" id="modalDetalhes" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-info-circle me-2"></i>Detalhes do Serviço
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Informações do Serviço -->
+                        <div class="col-md-6">
+                            <h6 class="mb-3"><i class="fas fa-info me-2"></i>Informações Gerais</h6>
+                            <div id="infoServicoDetalhes"></div>
+                        </div>
+                        
+                        <!-- Timeline -->
+                        <div class="col-md-6">
+                            <h6 class="mb-3"><i class="fas fa-history me-2"></i>Histórico</h6>
+                            <div id="timelineServicoDetalhes" style="max-height: 300px; overflow-y: auto;"></div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Galeria Completa -->
+                    <h6 class="mb-3"><i class="fas fa-images me-2"></i>Galeria Completa</h6>
+                    <div id="galeriaCompleta" class="galeria-completa"></div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="baixarTodasImagens()">
+                        <i class="fas fa-download me-1"></i>Baixar Todas as Imagens
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="gerarRelatorioServico()">
+                        <i class="fas fa-file-pdf me-1"></i>Gerar Relatório
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Visualização de Imagem -->
+    <div class="modal fade" id="modalImagem" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tituloImagem">Imagem</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                
+                <div class="modal-body text-center">
+                    <img id="imagemVisualizacao" class="img-fluid" alt="Imagem">
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="baixarImagem()">
+                        <i class="fas fa-download me-1"></i>Baixar
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JavaScript personalizado -->
+    <script src="js/excel-integration.js"></script>
+    <script src="js/excel-writer.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/realizados.js"></script>
+</body>
+</html>

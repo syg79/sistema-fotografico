@@ -289,15 +289,28 @@
             // Links específicos por role
             const roleLinks = {
                 'fotografo': [
-                    { href: 'fotografos/agenda.html', icon: 'calendar', text: 'Minha Agenda' }
+                    { href: 'fotografos/agenda.html', icon: 'calendar', text: 'Minha Agenda' },
+                    { href: 'operacao/registro.html', icon: 'clipboard-check', text: 'Confirmar Realizado' }
                 ],
                 'editor': [
+                    { href: 'editores/nao-editados.html', icon: 'tasks', text: 'Não Editados' },
                     { href: 'editores/trabalhos.html', icon: 'edit', text: 'Trabalhos' }
                 ],
                 'gestor': [
+                    { href: 'cadastros/novos-pedidos.html', icon: 'plus-circle', text: 'Nova Solicitação' },
+                    { href: 'agendamentos/pendentes.html', icon: 'clock', text: 'Pendentes' },
+                    { href: 'agendamentos/agendados.html', icon: 'calendar-check', text: 'Agendados' },
+                    { href: 'financeiro/nao-faturados.html', icon: 'file-invoice-dollar', text: 'Não Faturados' },
                     { href: 'conferencia/dashboard.html', icon: 'chart-bar', text: 'Relatórios' }
                 ],
                 'admin': [
+                    { href: 'cadastros/novos-pedidos.html', icon: 'plus-circle', text: 'Nova Solicitação' },
+                    { href: 'agendamentos/pendentes.html', icon: 'clock', text: 'Pendentes' },
+                    { href: 'agendamentos/agendados.html', icon: 'calendar-check', text: 'Agendados' },
+                    { href: 'fotografos/agenda.html', icon: 'calendar-alt', text: 'Agenda Fotógrafos' },
+                    { href: 'operacao/registro.html', icon: 'clipboard-check', text: 'Registrar Realizado' },
+                    { href: 'editores/nao-editados.html', icon: 'tasks', text: 'Não Editados' },
+                    { href: 'financeiro/nao-faturados.html', icon: 'file-invoice-dollar', text: 'Não Faturados' },
                     { href: 'conferencia/dashboard.html', icon: 'chart-bar', text: 'Relatórios' },
                     { href: '#', icon: 'cog', text: 'Configurações' }
                 ]
@@ -321,22 +334,57 @@
                 'fotografo': [
                     { 
                         title: 'Minha Agenda', 
-                        desc: 'Ver agendamentos de hoje', 
+                        desc: 'Ver agendamentos publicados', 
                         icon: 'calendar-day', 
                         color: 'primary',
                         href: 'fotografos/agenda.html'
+                    },
+                    { 
+                        title: 'Confirmar Realizado', 
+                        desc: 'Livro de registro e envio do código', 
+                        icon: 'clipboard-check', 
+                        color: 'success',
+                        href: 'operacao/registro.html'
                     }
                 ],
                 'editor': [
                     { 
-                        title: 'Trabalhos Pendentes', 
-                        desc: 'Ver trabalhos para editar', 
-                        icon: 'edit', 
+                        title: 'Não Editados', 
+                        desc: 'Solicitações realizadas aguardando edição', 
+                        icon: 'tasks', 
                         color: 'warning',
+                        href: 'editores/nao-editados.html'
+                    },
+                    { 
+                        title: 'Trabalhos', 
+                        desc: 'Histórico e revisões concluídas', 
+                        icon: 'edit', 
+                        color: 'info',
                         href: 'editores/trabalhos.html'
                     }
                 ],
                 'gestor': [
+                    { 
+                        title: 'Pendentes', 
+                        desc: 'Solicitações aguardando agendamento', 
+                        icon: 'clock', 
+                        color: 'warning',
+                        href: 'agendamentos/pendentes.html'
+                    },
+                    { 
+                        title: 'Agendados', 
+                        desc: 'Controle dos agendamentos', 
+                        icon: 'calendar-check', 
+                        color: 'primary',
+                        href: 'agendamentos/agendados.html'
+                    },
+                    { 
+                        title: 'Não Faturados', 
+                        desc: 'Imóveis entregues aguardando faturamento', 
+                        icon: 'file-invoice-dollar', 
+                        color: 'success',
+                        href: 'financeiro/nao-faturados.html'
+                    },
                     { 
                         title: 'Dashboard Completo', 
                         desc: 'Ver relatórios detalhados', 
@@ -347,11 +395,32 @@
                 ],
                 'admin': [
                     { 
-                        title: 'Dashboard Completo', 
-                        desc: 'Ver relatórios detalhados', 
-                        icon: 'chart-bar', 
+                        title: 'Nova Solicitação', 
+                        desc: 'Cadastrar um novo pedido', 
+                        icon: 'plus-circle', 
+                        color: 'primary',
+                        href: 'cadastros/novos-pedidos.html'
+                    },
+                    { 
+                        title: 'Pendentes', 
+                        desc: 'Controle dos pedidos em aberto', 
+                        icon: 'clock', 
+                        color: 'warning',
+                        href: 'agendamentos/pendentes.html'
+                    },
+                    { 
+                        title: 'Agenda por Fotógrafo', 
+                        desc: 'Disponibilizar agendamentos publicados', 
+                        icon: 'calendar-alt', 
+                        color: 'success',
+                        href: 'fotografos/agenda.html'
+                    },
+                    { 
+                        title: 'Não Faturados', 
+                        desc: 'Entregas que aguardam faturamento', 
+                        icon: 'file-invoice-dollar', 
                         color: 'info',
-                        href: 'conferencia/dashboard.html'
+                        href: 'financeiro/nao-faturados.html'
                     },
                     { 
                         title: 'Configurações', 
