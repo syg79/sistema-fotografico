@@ -105,6 +105,7 @@ class PedidosPendentes {
                 .filter(item => item.status.toLowerCase() === 'pendente');
 
             this.pedidos = pendentes;
+            this.pedidos.sort((a, b) => (b.data_solicitacao || '').localeCompare(a.data_solicitacao || ''));
             this.pedidosFiltrados = [...this.pedidos];
 
             this.popularFiltrosDinamicos();

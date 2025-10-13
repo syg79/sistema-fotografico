@@ -173,7 +173,7 @@ class AgendamentosInternos {
     }
 
     filtrarAgendamentos() {
-        return this.agendamentos.filter(a => {
+        const dados = this.agendamentos.filter(a => {
             if (this.filtros.dataInicio && a.dataAgendamento && a.dataAgendamento < this.filtros.dataInicio) return false;
             if (this.filtros.dataFim && a.dataAgendamento && a.dataAgendamento > this.filtros.dataFim) return false;
             if (this.filtros.fotografo && a.fotografo !== this.filtros.fotografo) return false;
@@ -183,6 +183,12 @@ class AgendamentosInternos {
                 if (!alvo.includes(this.filtros.busca)) return false;
             }
             return true;
+        });
+
+        return dados.sort((a, b) => {
+            const strA = `${a.dataAgendamento || ''} ${a.horaAgendamento || ''}`;
+            const strB = `${b.dataAgendamento || ''} ${b.horaAgendamento || ''}`;
+            return strA.localeCompare(strB);
         });
     }
 
