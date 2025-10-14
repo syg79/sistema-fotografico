@@ -210,14 +210,24 @@ class GoogleSheetsAPI {
 
         const [, spreadsheetId, gid] = urlMatch;
         
-        // Construir URL da API usando o spreadsheet ID específico
-        const url = `${this.baseUrl}/${spreadsheetId}/values/A:Z?key=${this.apiKey}`;
+        // Mapear o nome da aba baseado no sheetName
+        let actualSheetName;
+        if (sheetName.toLowerCase() === 'rede') {
+            actualSheetName = 'Rede';
+        } else if (sheetName.toLowerCase() === 'clientes') {
+            actualSheetName = 'Clientes';
+        } else {
+            actualSheetName = sheetName;
+        }
+        
+        // Construir URL da API usando o spreadsheet ID e aba específica
+        const url = `${this.baseUrl}/${spreadsheetId}/values/${actualSheetName}!${range}?key=${this.apiKey}`;
         
         try {
             this.isLoading = true;
             if (this.onLoadStart) this.onLoadStart(sheetName);
             
-            console.log(`🔄 Carregando ${sheetName} do Google Sheets (URL específica)...`);
+            console.log(`🔄 Carregando ${sheetName} (${actualSheetName}) do Google Sheets (URL específica)...`);
             
             const response = await fetch(url);
             
