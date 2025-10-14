@@ -402,6 +402,8 @@ class PedidosPendentes {
                 this.verDetalhes(pedido);
                 break;
             case 'agendar':
+                this.abrirPaginaAgendamento(pedidoId);
+                break;
             case 'editar':
                 alert('Recurso em desenvolvimento para integração completa.');
                 break;
@@ -544,6 +546,16 @@ class PedidosPendentes {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+
+    abrirPaginaAgendamento(pedidoId) {
+        if (!pedidoId) {
+            alert('ID do pedido não encontrado.');
+            return;
+        }
+        
+        // Redirecionar para a página de novo agendamento com o ID do pedido
+        window.location.href = `../agendamentos/novo-agendamento.html?id=${pedidoId}`;
     }
 
     async aguardarAPI() {
