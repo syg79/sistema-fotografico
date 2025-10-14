@@ -36,6 +36,9 @@ class NovoAgendamento {
                 await this.carregarInformacoesPedido();
             }
             
+            // Tentar carregar rascunho salvo
+            this.carregarRascunho();
+            
         } catch (error) {
             console.error('Erro ao inicializar novo agendamento:', error);
             this.mostrarErro('Erro ao carregar a página. Tente novamente.');
@@ -448,12 +451,111 @@ class NovoAgendamento {
     }
 
     salvarRascunho() {
-        const dados = this.coletarDadosFormulario();
-        
-        // Salvar no localStorage
-        localStorage.setItem(`agendamento_rascunho_${this.pedidoId}`, JSON.stringify(dados));
-        
-        this.mostrarSucesso('Rascunho salvo com sucesso!', false);
+        try {
+            // Validar se há dados mínimos para salvar
+            const dataAgendamento = document.getElementById('dataAgendamento').value;
+            const fotografo = document.getElementById('fotografo').value;
+            
+            if (!dataAgendamento && !fotografo) {
+                this.mostrarErro('Preencha pelo menos a data ou o fotógrafo para salvar o rascunho.');
+                return;
+            }
+
+            const dados = this.coletarDadosFormulario();
+            
+            // Adicionar timestamp do salvamento
+            dados.timestampSalvamento = new Date().toISOString();
+            dados.pedidoId = this.pedidoId;
+            
+            // Salvar no localStorage
+            const chaveRascunho = `agendamento_rascunho_${this.pedidoId || 'novo'}`;
+            localStorage.setItem(chaveRascunho, JSON.stringify(dados));
+            
+            // Salvar também uma lista de rascunhos para facilitar recuperação
+            const rascunhosSalvos = JSON.parse(localStorage.getItem('agendamentos_rascunhos') || '[]');
+            const rascunhoExistente = rascunhosSalvos.findIndex(r => r.pedidoId === (this.pedidoId || 'novo'));
+            
+            const infoRascunho = {
+                pedidoId: this.pedidoId || 'novo',
+                chave: chaveRascunho,
+                timestamp: dados.timestampSalvamento,
+                dataAgendamento: dados.dataAgendamento,
+                fotografo: dados.fotografo,
+                cliente: this.pedidoData ? this.pedidoData['Nome Cliente'] : 'Novo agendamento'
+            };
+            
+            if (rascunhoExistente >= 0) {
+                rascunhosSalvos[rascunhoExistente] = infoRascunho;
+            } else {
+                rascunhosSalvos.push(infoRascunho);
+            }
+            
+            localStorage.setItem('agendamentos_rascunhos', JSON.stringify(rascunhosSalvos));
+            
+            this.mostrarSucesso('Rascunho salvo com sucesso! Você pode recuperá-lo a qualquer momento.', false);
+            
+        } catch (error) {
+            console.error('Erro ao salvar rascunho:', error);
+            this.mostrarErro('Erro ao salvar rascunho. Tente novamente.');
+        }
+    }
+
+    carregarRascunho() {
+        try {
+            const chaveRascunho = `agendamento_rascunho_${this.pedidoId || 'novo'}`;
+            const rascunhoSalvo = localStorage.getItem(chaveRascunho);
+            
+            if (rascunhoSalvo) {
+                const dados = JSON.parse(rascunhoSalvo);
+                
+                // Preencher campos do formulário
+                if (dados.dataAgendamento) {
+                    document.getElementById('dataAgendamento').value = dados.dataAgendamento;
+                }
+                if (dados.horarioSessao) {
+                    const horarioSessao = document.getElementById('horarioSessao');
+                    if (horarioSessao) {
+                        horarioSessao.value = dados.horarioSessao;
+                        // Disparar evento change para mostrar campo personalizado se necessário
+                        horarioSessao.dispatchEvent(new Event('change'));
+                    }
+                }
+                if (dados.fotografo) {
+                    document.getElementById('fotografo').value = dados.fotografo;
+                }
+                if (dados.observacoesFotografo) {
+                    document.getElementById('observacoesFotografo').value = dados.observacoesFotografo;
+                }
+                if (dados.possuiObsEditor) {
+                    const checkbox = document.getElementById('possuiObsEditor');
+                    checkbox.checked = dados.possuiObsEditor;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+                if (dados.observacoesEditor) {
+                    document.getElementById('observacoesEditor').value = dados.observacoesEditor;
+                }
+                if (dados.fazerAreaComum !== undefined) {
+                    document.getElementById('fazerAreaComum').checked = dados.fazerAreaComum;
+                }
+                if (dados.publicarAgenda !== undefined) {
+                    document.getElementById('publicarAgenda').checked = dados.publicarAgenda;
+                }
+                if (dados.referenciasCopiadas) {
+                    document.getElementById('referenciasCopiadas').value = dados.referenciasCopiadas;
+                }
+                
+                // Mostrar notificação de rascunho carregado
+                this.mostrarSucesso('Rascunho carregado com sucesso!', false);
+                
+                return true;
+            }
+            
+            return false;
+            
+        } catch (error) {
+            console.error('Erro ao carregar rascunho:', error);
+            return false;
+        }
     }
 
     formatarData(data) {
@@ -537,30 +639,3 @@ document.addEventListener('DOMContentLoaded', async () => {
     await new Promise(resolve => setTimeout(resolve, 100)); // garante carregamento dos scripts
     new NovoAgendamento();
 });
-
-    async inicializar() {
-        try {
-            await this.aguardarAPI();
-            await this.carregarDados();
-            await this.carregarInformacoesPedido();
-            this.configurarEventos();
-            this.configurarLocalizacao();
-        } catch (error) {
-            console.error('Erro ao inicializar página:', error);
-            this.mostrarErro('Erro ao carregar dados da página');
-        }
-    }
-
-    configurarLocalizacao() {
-        // Configurar localização para português brasileiro
-        const dataInput = document.getElementById('dataAgendamento');
-        if (dataInput) {
-            // Definir localização para o input de data
-            dataInput.setAttribute('lang', 'pt-BR');
-            
-            // Configurar data mínima como hoje
-            const hoje = new Date();
-            const dataMinima = hoje.toISOString().split('T')[0];
-            dataInput.setAttribute('min', dataMinima);
-        }
-    }
