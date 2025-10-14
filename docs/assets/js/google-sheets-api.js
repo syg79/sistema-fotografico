@@ -99,12 +99,15 @@ class GoogleSheetsAPI {
             return [];
         }
 
-        const [headers, ...rows] = response.values;
+        const [rawHeaders, ...rows] = response.values;
+        const headers = rawHeaders.map(h => (h || '').trim());
         
         return rows.map(row => {
             const obj = {};
             headers.forEach((header, index) => {
-                obj[header] = row[index] || '';
+                if (header) { // Apenas adicionar se o cabeçalho não for vazio
+                    obj[header] = row[index] || '';
+                }
             });
             return obj;
         });
