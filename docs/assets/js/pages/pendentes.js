@@ -144,7 +144,20 @@ class PedidosPendentes {
             cliente: (registro['Nome Cliente'] || registro['Cliente'] || '').trim(),
             corretor: (registro['Corretor Responsavel'] || registro['Corretor'] || '').trim(),
             endereco: (registro['Endereco do Imovel'] || registro['Endereço'] || '').trim(),
-            tipo_servico: (registro['Tipo do Servico'] || registro['Tipo de Serviço'] || '').trim(),
+            tipo_servico: (() => {
+                let servico = registro['Tipo do Servico'] || registro['Tipo de Serviço'] || '';
+                if (typeof servico === 'string' && servico.startsWith('[') && servico.endsWith(']')) {
+                    try {
+                        // Tenta interpretar como JSON e, se for um array, junta os itens.
+                        const servicoArray = JSON.parse(servico);
+                        return Array.isArray(servicoArray) ? servicoArray.join(', ') : servico;
+                    } catch (e) {
+                        // Se não for um JSON válido, retorna o valor original para não quebrar a exibição.
+                        return servico;
+                    }
+                }
+                return servico;
+            })(),
             contato: (registro['Contato para agendar 01'] || registro['Contato'] || '').trim(),
             status: (registro['Status'] || '').trim(),
             referencia: (registro['Referencia do Cliente'] || registro['Referência'] || '').trim(),
