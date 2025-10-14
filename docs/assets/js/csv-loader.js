@@ -23,48 +23,7 @@ class CSVLoader {
         // 3. Garante carregamento offline dos arquivos CSV
         // ================================================================
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-        if (isLocalhost) {
-            this.baseUrl = '';
-        } else {
-            const inferredDirectory = new URL('.', window.location.href);
-            const inferredBaseUrl = inferredDirectory.href.replace(/\/+$/, '');
-
-            const configuredBaseUrl = (CONFIG.GITHUB_PAGES && CONFIG.GITHUB_PAGES.BASE_URL)
-                ? CONFIG.GITHUB_PAGES.BASE_URL.trim()
-                : '';
-
-            let resolvedBaseUrl = inferredBaseUrl;
-
-            if (configuredBaseUrl) {
-                try {
-                    const configuredUrl = new URL(configuredBaseUrl, window.location.origin);
-                    const sameHost = configuredUrl.host === window.location.host;
-                    const configuredPath = configuredUrl.pathname.replace(/\/+$/, '');
-                    const inferredPath = inferredDirectory.pathname.replace(/\/+$/, '');
-
-                    const allowCrossOrigin = CONFIG.GITHUB_PAGES && CONFIG.GITHUB_PAGES.ALLOW_REMOTE_BASE_URL;
-
-                    if (!sameHost) {
-                        if (allowCrossOrigin) {
-                            resolvedBaseUrl = configuredUrl.href.replace(/\/+$/, '');
-                        } else {
-                            console.warn('BASE_URL configurado para outro dominio ignorado. Usando dominio atual. Ative CONFIG.GITHUB_PAGES.ALLOW_REMOTE_BASE_URL para forcar o uso.', configuredUrl.href);
-                        }
-                    } else if (!inferredPath) {
-                        resolvedBaseUrl = configuredUrl.origin + configuredPath;
-                    } else if (configuredPath.startsWith(inferredPath)) {
-                        resolvedBaseUrl = configuredUrl.origin + configuredPath;
-                    }
-                    // Se o host for o mesmo e o caminho nǜo corresponder, manter inferredBaseUrl
-                } catch (error) {
-                    console.warn('�s���? BASE_URL configurado inv��lido, usando caminho inferido automaticamente.', error);
-                }
-            }
-
-            this.baseUrl = resolvedBaseUrl.replace(/\/+$/, '');
-        }
-
+        this.baseUrl = isLocalhost ? '' : (CONFIG.GITHUB_PAGES.BASE_URL || '');
         this.dataPath = '/data/'; // Caminho absoluto para ambos os ambientes
         // ================================================================
         

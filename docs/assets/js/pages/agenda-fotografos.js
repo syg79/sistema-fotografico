@@ -52,9 +52,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 fotografo: (reg['Fotografo'] || '').trim(),
                 status: (reg['Status'] || '').trim().toLowerCase(),
                 publicar: (reg['Publicar Agenda'] || '').toString().toLowerCase() === 'sim'
-            })).filter(a => 
-                a.fotografo.toLowerCase() === fotografo.toLowerCase() && a.status === 'publicado'
-            );
+            })).filter(a => {
+                const fotografoMatch = a.fotografo.toLowerCase() === fotografo.toLowerCase();
+                const statusMatch = a.status === 'agendado' || a.status === 'publicado';
+                return fotografoMatch && statusMatch;
+            });
 
             agendamentos.sort((a, b) => {
                 const strA = `${a.dataAgendamento || ''} ${a.horaAgendamento || ''}`;

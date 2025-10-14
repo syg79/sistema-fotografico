@@ -148,6 +148,7 @@ class PedidosPendentes {
             contato: (registro['Contato para agendar 01'] || registro['Contato'] || '').trim(),
             status: (registro['Status'] || '').trim(),
             referencia: (registro['Referencia do Cliente'] || registro['Referência'] || '').trim(),
+            complemento: (registro['Compl.'] || registro['Complemento'] || '').trim(),
             observacoes: (registro['Observacao para o Agendamento'] || registro['Observações'] || '').trim(),
             dias_pendente: diasPendente > 0 ? diasPendente : 0
         };
@@ -243,7 +244,7 @@ class PedidosPendentes {
                 <td>${pedido.cliente || '-'}</td>
                 <td>${pedido.referencia || '-'}</td>
                 <td>${pedido.endereco || '-'}</td>
-                <td>${'-'}</td>
+                <td>${pedido.complemento || '-'}</td>
                 <td>${pedido.tipo_servico || '-'}</td>
                 <td>
                     <div class="btn-group btn-group-sm">
