@@ -1,58 +1,39 @@
 /**
- * Data Loader Híbrido
- * Carrega dados de CSV local ou Google Sheets baseado na configuração
+ * Data Loader para Google Sheets
+ * Carrega dados exclusivamente do Google Sheets
  */
 
 class DataLoader {
     constructor() {
-        this.dataSource = CONFIG.DATA_SOURCE || 'csv';
-        this.csvLoader = null;
+        this.dataSource = 'google-sheets'; // Forçar apenas Google Sheets
         this.googleSheetsAPI = null;
         
         console.log(`🔄 Data Loader inicializado com fonte: ${this.dataSource}`);
         
-        // Inicializar o loader apropriado
+        // Inicializar o Google Sheets API
         this.initializeLoader();
     }
     
     async initializeLoader() {
-        if (this.dataSource === 'csv') {
-            // Usar CSV Loader
-            if (typeof window.csvLoader !== 'undefined') {
-                this.csvLoader = window.csvLoader;
-            } else {
-                console.warn('⚠️ CSV Loader não encontrado, tentando carregar...');
-            }
-        } else if (this.dataSource === 'google-sheets') {
-            // Usar Google Sheets API
-            if (typeof window.googleSheetsAPI !== 'undefined') {
-                this.googleSheetsAPI = window.googleSheetsAPI;
-            } else {
-                console.warn('⚠️ Google Sheets API não encontrada, tentando carregar...');
-            }
+        // Usar apenas Google Sheets API
+        if (typeof window.googleSheetsAPI !== 'undefined') {
+            this.googleSheetsAPI = window.googleSheetsAPI;
+        } else {
+            console.warn('⚠️ Google Sheets API não encontrada, tentando carregar...');
         }
     }
     
     /**
-     * Carrega solicitações da fonte configurada
+     * Carrega solicitações do Google Sheets
      * @param {Object} filters - Filtros opcionais
      * @returns {Promise<Array>} Array de solicitações
      */
     async loadSolicitacoes(filters = {}) {
         try {
-            if (this.dataSource === 'csv') {
-                if (!this.csvLoader) {
-                    throw new Error('CSV Loader não disponível');
-                }
-                return await this.csvLoader.loadSolicitacoes();
-            } else if (this.dataSource === 'google-sheets') {
-                if (!this.googleSheetsAPI) {
-                    throw new Error('Google Sheets API não disponível');
-                }
-                return await this.googleSheetsAPI.getSolicitacoes(filters);
+            if (!this.googleSheetsAPI) {
+                throw new Error('Google Sheets API não disponível');
             }
-            
-            throw new Error(`Fonte de dados não suportada: ${this.dataSource}`);
+            return await this.googleSheetsAPI.getSolicitacoes(filters);
         } catch (error) {
             console.error('❌ Erro ao carregar solicitações:', error);
             throw error;
@@ -60,24 +41,15 @@ class DataLoader {
     }
     
     /**
-     * Carrega fotógrafos da fonte configurada
+     * Carrega fotógrafos do Google Sheets
      * @returns {Promise<Array>} Array de fotógrafos
      */
     async loadFotografos() {
         try {
-            if (this.dataSource === 'csv') {
-                if (!this.csvLoader) {
-                    throw new Error('CSV Loader não disponível');
-                }
-                return await this.csvLoader.loadFotografos();
-            } else if (this.dataSource === 'google-sheets') {
-                if (!this.googleSheetsAPI) {
-                    throw new Error('Google Sheets API não disponível');
-                }
-                return await this.googleSheetsAPI.getFotografos();
+            if (!this.googleSheetsAPI) {
+                throw new Error('Google Sheets API não disponível');
             }
-            
-            throw new Error(`Fonte de dados não suportada: ${this.dataSource}`);
+            return await this.googleSheetsAPI.getFotografos();
         } catch (error) {
             console.error('❌ Erro ao carregar fotógrafos:', error);
             throw error;
@@ -85,52 +57,33 @@ class DataLoader {
     }
     
     /**
-     * Carrega solicitações da fonte configurada com paginação
+     * Carrega solicitações do Google Sheets com paginação
      * @param {Object} filters - Filtros a aplicar
      * @param {Object} options - Opções de paginação
      * @returns {Promise<Array>} Array de solicitações
      */
     async loadSolicitacoesPaginated(filters = {}, options = {}) {
         try {
-            if (this.dataSource === 'csv') {
-                if (!this.csvLoader) {
-                    throw new Error('CSV Loader não disponível');
-                }
-                return await this.csvLoader.loadCSV('Solicitacao.csv', options);
-            } else if (this.dataSource === 'google-sheets') {
-                if (!this.googleSheetsAPI) {
-                    throw new Error('Google Sheets API não disponível');
-                }
-                // Google Sheets não suporta paginação nativa, carregar tudo
-                return await this.googleSheetsAPI.getSolicitacoes();
+            if (!this.googleSheetsAPI) {
+                throw new Error('Google Sheets API não disponível');
             }
-            
-            throw new Error(`Fonte de dados não suportada: ${this.dataSource}`);
+            return await this.googleSheetsAPI.getSolicitacoes(filters, options);
         } catch (error) {
             console.error('❌ Erro ao carregar solicitações paginadas:', error);
             throw error;
         }
     }
-
+    
     /**
-     * Carrega clientes da fonte configurada
+     * Carrega clientes do Google Sheets
      * @returns {Promise<Array>} Array de clientes
      */
     async loadClientes() {
         try {
-            if (this.dataSource === 'csv') {
-                if (!this.csvLoader) {
-                    throw new Error('CSV Loader não disponível');
-                }
-                return await this.csvLoader.loadClientes();
-            } else if (this.dataSource === 'google-sheets') {
-                if (!this.googleSheetsAPI) {
-                    throw new Error('Google Sheets API não disponível');
-                }
-                return await this.googleSheetsAPI.getClientes();
+            if (!this.googleSheetsAPI) {
+                throw new Error('Google Sheets API não disponível');
             }
-            
-            throw new Error(`Fonte de dados não suportada: ${this.dataSource}`);
+            return await this.googleSheetsAPI.getClientes();
         } catch (error) {
             console.error('❌ Erro ao carregar clientes:', error);
             throw error;
@@ -138,24 +91,15 @@ class DataLoader {
     }
     
     /**
-     * Carrega redes da fonte configurada
+     * Carrega redes do Google Sheets
      * @returns {Promise<Array>} Array de redes
      */
     async loadRedes() {
         try {
-            if (this.dataSource === 'csv') {
-                if (!this.csvLoader) {
-                    throw new Error('CSV Loader não disponível');
-                }
-                return await this.csvLoader.loadRedes();
-            } else if (this.dataSource === 'google-sheets') {
-                if (!this.googleSheetsAPI) {
-                    throw new Error('Google Sheets API não disponível');
-                }
-                return await this.googleSheetsAPI.getRedes();
+            if (!this.googleSheetsAPI) {
+                throw new Error('Google Sheets API não disponível');
             }
-            
-            throw new Error(`Fonte de dados não suportada: ${this.dataSource}`);
+            return await this.googleSheetsAPI.getRedes();
         } catch (error) {
             console.error('❌ Erro ao carregar redes:', error);
             throw error;
@@ -163,23 +107,21 @@ class DataLoader {
     }
     
     /**
-     * Atualiza um registro (apenas para Google Sheets)
+     * Atualiza um registro no Google Sheets
      * @param {string} recordId - ID do registro
      * @param {Object} data - Dados para atualizar
      * @returns {Promise<Object>} Resultado da atualização
      */
     async updateRecord(recordId, data) {
-        if (this.dataSource === 'csv') {
-            console.warn('⚠️ Atualização de registros não suportada para CSV local');
-            return { success: false, message: 'Atualização não suportada para CSV local' };
-        } else if (this.dataSource === 'google-sheets') {
+        try {
             if (!this.googleSheetsAPI) {
                 throw new Error('Google Sheets API não disponível');
             }
             return await this.googleSheetsAPI.updateRecord(recordId, data);
+        } catch (error) {
+            console.error('❌ Erro ao atualizar registro:', error);
+            throw error;
         }
-        
-        throw new Error(`Fonte de dados não suportada: ${this.dataSource}`);
     }
     
     /**
@@ -217,15 +159,15 @@ class DataLoader {
     getDataSourceInfo() {
         return {
             source: this.dataSource,
-            available: this.dataSource === 'csv' ? !!this.csvLoader : !!this.googleSheetsAPI,
-            config: this.dataSource === 'csv' ? CONFIG.CSV_FILES : CONFIG.GOOGLE_SHEETS
+            available: !!this.googleSheetsAPI,
+            config: CONFIG.GOOGLE_SHEETS
         };
     }
 }
 
 // Inicializar o Data Loader global
 window.dataLoader = new DataLoader();
-console.log('🚀 Data Loader híbrido pronto para uso');
+console.log('🚀 Data Loader para Google Sheets pronto para uso');
 
 // Compatibilidade com módulos Node.js
 if (typeof module !== 'undefined' && module.exports) {

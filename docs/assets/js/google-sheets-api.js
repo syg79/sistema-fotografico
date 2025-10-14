@@ -163,19 +163,96 @@ class GoogleSheetsAPI {
     }
 
     /**
-     * Carrega lista de clientes
+     * Carrega lista de clientes usando URL específica
      * @returns {Promise<Array>}
      */
     async getClientes() {
+        // Usar URL específica se configurada
+        if (CONFIG.GOOGLE_SHEETS.SHEET_URLS && CONFIG.GOOGLE_SHEETS.SHEET_URLS.CLIENTES) {
+            return await this.loadSheetDataFromUrl(CONFIG.GOOGLE_SHEETS.SHEET_URLS.CLIENTES, 'CLIENTES');
+        }
         return await this.loadSheetData(CONFIG.GOOGLE_SHEETS.SHEETS.CLIENTES);
     }
 
     /**
-     * Carrega lista de redes
+     * Carrega lista de redes usando URL específica
      * @returns {Promise<Array>}
      */
     async getRedes() {
+        // Usar URL específica se configurada
+        if (CONFIG.GOOGLE_SHEETS.SHEET_URLS && CONFIG.GOOGLE_SHEETS.SHEET_URLS.REDE) {
+            return await this.loadSheetDataFromUrl(CONFIG.GOOGLE_SHEETS.SHEET_URLS.REDE, 'REDE');
+        }
         return await this.loadSheetData(CONFIG.GOOGLE_SHEETS.SHEETS.REDES);
+    }
+
+    /**
+     * Carrega dados de uma planilha usando URL específica
+     * @param {string} sheetUrl - URL da planilha específica
+     * @param {string} sheetName - Nome da aba para cache
+     * @param {string} range - Range de células (padrão: A:Z)
+     * @returns {Promise<Array>} Array de objetos com os dados
+     */
+    async loadSheetDataFromUrl(sheetUrl, sheetName, range = 'A:Z') {
+        const cacheKey = sheetName.toLowerCase();
+        
+        // Verificar cache
+        if (this.isCacheValid(cacheKey)) {
+            console.log(`📋 Dados de ${sheetName} carregados do cache`);
+            return this.cache[cacheKey];
+        }
+
+        // Extrair spreadsheet ID e gid da URL
+        const urlMatch = sheetUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+).*gid=([0-9]+)/);
+        if (!urlMatch) {
+            throw new Error(`URL inválida para ${sheetName}: ${sheetUrl}`);
+        }
+
+        const [, spreadsheetId, gid] = urlMatch;
+        
+        // Construir URL da API usando o spreadsheet ID específico
+        const url = `${this.baseUrl}/${spreadsheetId}/values/A:Z?key=${this.apiKey}`;
+        
+        try {
+            this.isLoading = true;
+            if (this.onLoadStart) this.onLoadStart(sheetName);
+            
+            console.log(`🔄 Carregando ${sheetName} do Google Sheets (URL específica)...`);
+            
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            const parsedData = this.parseSheetResponse(data);
+            
+            // Atualizar cache
+            this.cache[cacheKey] = parsedData;
+            this.cache.lastUpdate = Date.now();
+            
+            console.log(`✅ ${sheetName} carregado: ${parsedData.length} registros`);
+            
+            if (this.onLoadComplete) this.onLoadComplete(sheetName, parsedData);
+            
+            return parsedData;
+            
+        } catch (error) {
+            console.error(`❌ Erro ao carregar ${sheetName}:`, error);
+            
+            if (this.onError) this.onError(sheetName, error);
+            
+            // Retornar dados do cache se disponível, mesmo expirado
+            if (this.cache[cacheKey]) {
+                console.warn(`⚠️ Usando dados em cache (possivelmente desatualizados) para ${sheetName}`);
+                return this.cache[cacheKey];
+            }
+            
+            throw error;
+        } finally {
+            this.isLoading = false;
+        }
     }
 
     /**

@@ -13,23 +13,19 @@
             SPREADSHEET_ID: '1f73WWypg6iZ5KZ644f2dZD-HTCgm707wgpEIDVo4cpk',
             API_KEY: 'AIzaSyCXfAKAN5BNNaspkjFembfJYfthYwlrLq0',
             SCOPES: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-            APP_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzfR9pc_kAb5RGZu8fb6cjArVLaX2vtAbeL-K2NQMmnmTpnV6WZw-VzUkW00mlDY0QZ/exec', // Defina após publicar o Apps Script
-            APP_SCRIPT_TOKEN: 'a6d942c7-f3b1-4e8d-80f3-6ba9f1e3cc12', // Token secreto compartilhado com o Apps Script
+            APP_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzfR9pc_kAb5RGZu8fb6cjArVLaX2vtAbeL-K2NQMmnmTpnV6WZw-VzUkW00mlDY0QZ/exec',
+            APP_SCRIPT_TOKEN: 'a6d942c7-f3b1-4e8d-80f3-6ba9f1e3cc12',
             SHEETS: {
                 SOLICITACOES: 'Solicitacoes',
                 FOTOGRAFOS: 'Fotografos',
                 CLIENTES: 'Clientes',
-                REDES: 'Redes',
+                REDES: 'Rede',
                 CONFIGURACAO: 'Configuracao'
-            }
-        },
-        CSV_FILES: {
-            BASE_PATH: './data/',
-            FILES: {
-                SOLICITACOES: 'Solicitacao.csv',
-                FOTOGRAFOS: 'Fotografos.csv',
-                CLIENTES: 'Clientes.csv',
-                REDES: 'Rede.csv'
+            },
+            // URLs específicas das abas do Google Sheets
+            SHEET_URLS: {
+                REDE: 'https://docs.google.com/spreadsheets/d/1f73WWypg6iZ5KZ644f2dZD-HTCgm707wgpEIDVo4cpk/edit?gid=1604739870#gid=1604739870',
+                CLIENTES: 'https://docs.google.com/spreadsheets/d/1f73WWypg6iZ5KZ644f2dZD-HTCgm707wgpEIDVo4cpk/edit?gid=459587616#gid=459587616'
             }
         },
         GITHUB_PAGES: {
