@@ -6,7 +6,7 @@
 
 class ExcelIntegration {
     constructor() {
-        this.basePath = '../csv_output/';
+        this.basePath = '../data/';
         this.cache = new Map();
         this.cacheTimeout = 5 * 60 * 1000; // 5 minutos
         this.lastUpdate = new Map();
