@@ -137,21 +137,33 @@ class NovoAgendamento {
 
     preencherSelectFotografos() {
         const select = document.getElementById('fotografo');
-        if (!select || !this.fotografos.length) return;
+        if (!select || !this.fotografos.length) {
+            console.log('❌ Select não encontrado ou lista de fotógrafos vazia:', {
+                select: !!select,
+                fotografosLength: this.fotografos.length
+            });
+            return;
+        }
 
         // Limpar opções existentes
         select.innerHTML = '<option value="">Selecione um fotógrafo</option>';
 
+        console.log('📋 Fotógrafos carregados:', this.fotografos);
+
         // Filtrar fotógrafos ativos (excluir os especificados no arquivo original)
         const fotografosExcluidos = ['Vitor Imoto', 'Fernanda', 'Ronald', 'Dankan', 'Marcio'];
         const fotografosAtivos = this.fotografos.filter(f => {
-            const nome = f.Nome || f.nome || '';
+            // Tentar diferentes campos possíveis para o nome
+            const nome = f.nome_do_fotografo || f.Nome || f.nome || f.fotografo_name || '';
             return nome && !fotografosExcluidos.includes(nome);
         });
 
+        console.log('✅ Fotógrafos ativos filtrados:', fotografosAtivos);
+
         // Adicionar opções
         fotografosAtivos.forEach(fotografo => {
-            const nome = fotografo.Nome || fotografo.nome || '';
+            // Tentar diferentes campos possíveis para o nome
+            const nome = fotografo.nome_do_fotografo || fotografo.Nome || fotografo.nome || fotografo.fotografo_name || '';
             if (nome) {
                 const option = document.createElement('option');
                 option.value = nome;
@@ -159,6 +171,8 @@ class NovoAgendamento {
                 select.appendChild(option);
             }
         });
+
+        console.log(`✅ ${fotografosAtivos.length} fotógrafos adicionados ao select`);
     }
 
     async carregarInformacoesPedido() {
