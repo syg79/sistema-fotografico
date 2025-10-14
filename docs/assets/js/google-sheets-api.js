@@ -36,7 +36,7 @@ class GoogleSheetsAPI {
      * @param {string} range - Range de células (padrão: A:Z)
      * @returns {Promise<Array>} Array de objetos com os dados
      */
-    async loadSheetData(sheetName, range = 'A:Z') {
+    async loadSheetData(sheetName, range = 'A:ZZ') {
         const cacheKey = sheetName.toLowerCase();
         
         // Verificar cache
