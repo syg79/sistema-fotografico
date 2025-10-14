@@ -53,9 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 status: (reg['Status'] || '').trim().toLowerCase(),
                 publicar: (reg['Publicar Agenda'] || '').toString().toLowerCase() === 'sim'
             })).filter(a => 
-                a.fotografo.toLowerCase() === fotografo.toLowerCase() &&
-                a.status === 'agendado' &&
-                a.publicar
+                a.fotografo.toLowerCase() === fotografo.toLowerCase() && a.status === 'publicado'
             );
 
             agendamentos.sort((a, b) => {

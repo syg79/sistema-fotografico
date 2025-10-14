@@ -238,28 +238,23 @@ class PedidosPendentes {
         tbody.innerHTML = pagina.map(pedido => `
             <tr>
                 <td>
-                    <input type="checkbox" class="form-check-input pedido-checkbox" value="${pedido.id}" data-id="${pedido.id}">
-                </td>
-                <td>${this.formatarData(pedido.data_solicitacao)}</td>
-                <td>${pedido.rede || '-'}</td>
-                <td>${pedido.cliente || '-'}</td>
-                <td>${pedido.corretor || '-'}</td>
-                <td>${pedido.endereco || '-'}</td>
-                <td>${pedido.tipo_servico || '-'}</td>
-                <td>${pedido.contato || '-'}</td>
-                <td>
                     <span class="badge ${this.getStatusClass(pedido.status, pedido.dias_pendente)}">${pedido.status}</span>
                 </td>
+                <td>${pedido.cliente || '-'}</td>
+                <td>${pedido.referencia || '-'}</td>
+                <td>${pedido.endereco || '-'}</td>
+                <td>${'-'}</td>
+                <td>${pedido.tipo_servico || '-'}</td>
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-primary" data-action="detalhes" data-id="${pedido.id}">
+                        <button class="btn btn-outline-primary" data-action="detalhes" data-id="${pedido.id}" title="Detalhes">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-outline-success" data-action="agendar" data-id="${pedido.id}">
-                            <i class="fas fa-calendar-plus"></i>
-                        </button>
-                        <button class="btn btn-outline-secondary" data-action="editar" data-id="${pedido.id}">
+                        <button class="btn btn-outline-secondary" data-action="editar" data-id="${pedido.id}" title="Editar">
                             <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline-success" data-action="agendar" data-id="${pedido.id}" title="Agendar">
+                            <i class="fas fa-calendar-plus"></i>
                         </button>
                     </div>
                 </td>
