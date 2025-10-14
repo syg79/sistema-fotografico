@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendar Pedido - Sistema Fotográfico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../assets/css/main.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html"><i class="fas fa-camera me-2"></i>Sistema Fotográfico</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="../index.html"><i class="fas fa-home"></i> Início</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../agendamentos/pendentes.html"><i class="fas fa-clock"></i> Pendentes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../agendamentos/agendados.html"><i class="fas fa-calendar-check"></i> Agendados</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../operacao/registro.html"><i class="fas fa-book"></i> Registro</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-calendar-plus text-success me-2"></i>Agendar Pedido</h2>
+            <a href="pendentes.html" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Voltar para Pendentes</a>
+        </div>
+
+        <div id="loading" class="text-center p-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="mt-2 text-muted">Carregando informações do pedido...</p>
+        </div>
+
+        <div id="conteudoPagina" class="d-none">
+            <div class="row">
+                <!-- Coluna de Informações do Pedido -->
+                <div class="col-lg-5 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-file-invoice me-2"></i>Resumo do Pedido</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Cliente:</strong> <span id="infoCliente">-</span></p>
+                            <p><strong>Endereço:</strong> <span id="infoEndereco">-</span></p>
+                            <p><strong>Referência:</strong> <span id="infoReferencia">-</span></p>
+                            <p><strong>Serviços Solicitados:</strong> <span id="infoServicos">-</span></p>
+                            <p><strong>Observações do Pedido:</strong></p>
+                            <div class="p-2 bg-light rounded">
+                                <small id="infoObservacoes">-</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coluna do Formulário de Agendamento -->
+                <div class="col-lg-7 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Preencher Agendamento</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="formAgendamento">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="dataAgendamento" class="form-label"><strong>Data do Agendamento</strong></label>
+                                        <input type="date" class="form-control" id="dataAgendamento" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="horarioSessao" class="form-label"><strong>Horário da Sessão</strong></label>
+                                        <input type="time" class="form-control" id="horarioSessao" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="fotografo" class="form-label"><strong>Fotógrafo</strong></label>
+                                        <select id="fotografo" class="form-select" required>
+                                            <option value="">Carregando fotógrafos...</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="observacoesAgendamento" class="form-label">Observações para o Fotógrafo</label>
+                                        <textarea class="form-control" id="observacoesAgendamento" rows="3" placeholder="Instruções especiais, como acesso ao imóvel, etc."></textarea>
+                                    </div>
+                                    <hr>
+                                    <div class="col-12">
+                                        <p class="text-muted mb-2">Ao salvar, os seguintes campos serão atualizados:</p>
+                                        <ul>
+                                            <li><strong>Status:</strong> <span class="badge bg-success">Agendado</span></li>
+                                            <li><strong>Agenda:</strong> <span class="badge bg-info">Privado</span></li>
+                                            <li><strong>Cobrança:</strong> <span class="badge bg-warning text-dark">A Faturar</span></li>
+                                            <li><strong>Editado:</strong> <span class="badge bg-secondary">Não</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer text-end">
+                            <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancelar</button>
+                            <button type="submit" form="formAgendamento" class="btn btn-success"><i class="fas fa-save me-1"></i>Salvar Agendamento</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/app-config.js"></script>
+    <script src="../assets/js/google-sheets-api.js"></script>
+    <script src="../assets/js/pages/agendar.js"></script>
+</body>
+</html>
