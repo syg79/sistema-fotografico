@@ -295,20 +295,30 @@
                                 <label for="quantidadeTour360" class="form-label">Tour 360°</label>
                                 <input type="number" class="form-control" id="quantidadeTour360" name="quantidadeTour360" min="0" value="0">
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <label for="cobranca" class="form-label">Cobrança</label>
-                                <input type="text" class="form-control" id="cobranca" name="cobranca">
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="cobranca" id="aFaturar" value="A faturar" checked>
+                                        <label class="form-check-label" for="aFaturar">A faturar</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="cobranca" id="faturado" value="Faturado">
+                                        <label class="form-check-label" for="faturado">Faturado</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div class="row g-3 mt-2">
                             <div class="col-md-6">
                                 <label for="publicarAgenda" class="form-label">Publicar Agenda</label>
-                                <select class="form-select" id="publicarAgenda" name="publicarAgenda">
-                                    <option value="">Selecione...</option>
-                                    <option value="Sim">Sim</option>
-                                    <option value="Não">Não</option>
-                                </select>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="publicarAgenda" name="publicarAgenda" role="switch">
+                                    <label class="form-check-label" for="publicarAgenda">
+                                        <span id="publicarAgendaLabel">NÃO</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
@@ -431,5 +441,27 @@
     <script src="../assets/js/google-sheets-writer.js"></script>
     <script src="../assets/js/loading-indicator.js"></script>
     <script src="../assets/js/pages/editar-registro.js"></script>
+    
+    <script>
+        // Controle do toggle switch para Publicar Agenda
+        document.addEventListener('DOMContentLoaded', function() {
+            const publicarAgendaToggle = document.getElementById('publicarAgenda');
+            const publicarAgendaLabel = document.getElementById('publicarAgendaLabel');
+            
+            if (publicarAgendaToggle && publicarAgendaLabel) {
+                // Função para atualizar o label
+                function updateLabel() {
+                    publicarAgendaLabel.textContent = publicarAgendaToggle.checked ? 'SIM' : 'NÃO';
+                }
+                
+                // Event listener para mudanças no toggle
+                publicarAgendaToggle.addEventListener('change', updateLabel);
+                
+                // Inicializar com o estado padrão (NÃO)
+                publicarAgendaToggle.checked = false;
+                updateLabel();
+            }
+        });
+    </script>
 </body>
 </html>
