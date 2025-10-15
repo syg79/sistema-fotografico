@@ -1,5 +1,6 @@
 /**
  * Classe para gerenciar a edição de registros
+ * Responsável por carregar, editar e salvar registros de solicitações
  */
 class EditarRegistro {
     constructor() {
@@ -12,6 +13,10 @@ class EditarRegistro {
         this.init();
     }
 
+    /**
+     * Inicializa a classe e configura todos os componentes necessários
+     * @returns {Promise<void>}
+     */
     async init() {
         try {
             // Inicializar APIs
@@ -30,6 +35,9 @@ class EditarRegistro {
             // Configurar eventos
             this.setupEventListeners();
             
+            // Carregar dados de clientes primeiro
+            await this.carregarClientes();
+            
             // Carregar dados do registro
             await this.loadRecordData();
             
@@ -39,11 +47,169 @@ class EditarRegistro {
         }
     }
 
+    /**
+     * Carrega dados de clientes do Google Sheets com sistema de fallback
+     * Utiliza a estrutura: Coluna E (nome cliente) e Coluna F (rede)
+     * @returns {Promise<void>}
+     */
+    async carregarClientes() {
+        try {
+            console.log('🔄 Iniciando carregamento de clientes...');
+            
+            // Aguardar a API estar disponível
+            let tentativas = 0;
+            while (!window.googleSheetsAPI && tentativas < 10) {
+                await new Promise(resolve => setTimeout(resolve, 200));
+                tentativas++;
+            }
+            
+            if (!window.googleSheetsAPI) {
+                throw new Error('A API do Google Sheets não foi inicializada.');
+            }
+
+            console.log('✅ API do Google Sheets disponível');
+            const api = window.googleSheetsAPI;
+            const clientesData = await api.loadSheetData('clientes');
+            
+            console.log('📊 Dados de clientes carregados:', clientesData ? clientesData.length : 0, 'registros');
+            
+            if (clientesData && clientesData.length > 0) {
+                // Log detalhado da estrutura dos dados
+                console.log('🔍 ESTRUTURA DOS DADOS DO GOOGLE SHEETS:');
+                console.log('Primeiro cliente completo:', clientesData[0]);
+                console.log('Chaves disponíveis:', Object.keys(clientesData[0]));
+                
+                // Verificar especificamente campos relacionados à rede
+                const primeiroCliente = clientesData[0];
+                console.log('🏢 CAMPOS RELACIONADOS À REDE:');
+                Object.keys(primeiroCliente).forEach(key => {
+                    if (key.toLowerCase().includes('rede') || 
+                        key.toLowerCase().includes('empresa') || 
+                        key.toLowerCase().includes('nome')) {
+                        console.log(`- ${key}: "${primeiroCliente[key]}"`);
+                    }
+                });
+                
+                // Armazenar todos os clientes para filtrar posteriormente
+                this.todosClientes = clientesData;
+                console.log('💾 Clientes armazenados em this.todosClientes:', this.todosClientes.length);
+                this.preencherSelectClientes(clientesData);
+            }
+            
+        } catch (error) {
+            console.error('❌ Erro ao carregar clientes:', error);
+        }
+    }
+
+    /**
+     * Preenche o select de clientes com dados filtrados por rede
+     * Utiliza sistema de fallback para compatibilidade com diferentes estruturas de dados
+     * @param {Array} clientes - Array de objetos com dados dos clientes
+     * @param {string|null} redeFiltro - Nome da rede para filtrar (opcional)
+     */
+    preencherSelectClientes(clientes, redeFiltro = null) {
+        const selectCliente = document.getElementById('nomeCliente');
+        
+        // Limpar opções existentes (exceto a primeira)
+        while (selectCliente.children.length > 1) {
+            selectCliente.removeChild(selectCliente.lastChild);
+        }
+        
+        console.log('🔍 Filtro de rede aplicado:', redeFiltro);
+        console.log('📊 Total de clientes recebidos:', clientes.length);
+        
+        // Filtrar clientes por rede se especificado
+        let clientesFiltrados = clientes;
+        if (redeFiltro && redeFiltro !== '') {
+            console.log('🎯 Iniciando filtro por rede:', redeFiltro);
+            clientesFiltrados = clientes.filter(cliente => {
+                // Usar os campos corretos do Google Sheets:
+                // Coluna E = nome cliente, Coluna F = nome da rede
+                const redeCliente = cliente['Coluna F'] || cliente['F'] || cliente['Rede'] || '';
+                const nomeCliente = cliente['Coluna E'] || cliente['E'] || cliente['Nome Empresa'] || '';
+                
+                // Normalizar o texto removendo quebras de linha e espaços extras
+                const dadosNormalizados = redeCliente.replace(/\n/g, ' ').replace(/\s+/g, ' ').toLowerCase().trim();
+                const filtroNormalizado = redeFiltro.toLowerCase().trim();
+                
+                console.log('👤 Cliente:', nomeCliente);
+                console.log('🏢 Rede do cliente (Coluna F):', redeCliente);
+                console.log('🔧 Dados normalizados:', dadosNormalizados);
+                console.log('🎯 Filtro normalizado:', filtroNormalizado);
+                
+                const match = dadosNormalizados.includes(filtroNormalizado);
+                console.log('✅ Match resultado:', match);
+                console.log('---');
+                return match;
+            });
+            console.log('🎉 Total de clientes após filtro:', clientesFiltrados.length);
+        }
+        
+        // Adicionar opção "(sem rede)" para clientes sem informação de rede
+        if (!redeFiltro || redeFiltro === '') {
+            const clientesSemRede = clientes.filter(cliente => {
+                const redeCliente = cliente['Coluna F'] || cliente['F'] || cliente['Rede'] || '';
+                return redeCliente.trim() === '';
+            });
+            
+            if (clientesSemRede.length > 0) {
+                const optionSemRede = document.createElement('option');
+                optionSemRede.value = '(sem rede)';
+                optionSemRede.textContent = `(sem rede) - ${clientesSemRede.length} cliente(s)`;
+                selectCliente.appendChild(optionSemRede);
+            }
+        }
+        
+        // Ordenar clientes por nome (Coluna E)
+        const clientesOrdenados = clientesFiltrados
+            .filter(cliente => cliente['Coluna E'] || cliente['E'] || cliente['Nome Empresa'])
+            .sort((a, b) => {
+                const nomeA = (a['Coluna E'] || a['E'] || a['Nome Empresa'] || '').toLowerCase();
+                const nomeB = (b['Coluna E'] || b['E'] || b['Nome Empresa'] || '').toLowerCase();
+                return nomeA.localeCompare(nomeB);
+            });
+        
+        // Adicionar opções
+        clientesOrdenados.forEach(cliente => {
+            const nomeCliente = cliente['Coluna E'] || cliente['E'] || cliente['Nome Empresa'];
+            if (nomeCliente) {
+                const option = document.createElement('option');
+                option.value = cliente['Record ID'] || cliente['ID'] || cliente['A'];
+                option.textContent = nomeCliente;
+                selectCliente.appendChild(option);
+            }
+        });
+    }
+
+    /**
+     * Filtra clientes por rede selecionada
+     * Reseta o campo Nome Cliente e recarrega a lista filtrada
+     * @param {string} redeSelecionada - Nome da rede para filtrar
+     */
+    filtrarClientesPorRede(redeSelecionada) {
+        if (this.todosClientes && this.todosClientes.length > 0) {
+            // Resetar o campo Nome Cliente para a opção padrão
+            const selectCliente = document.getElementById('nomeCliente');
+            selectCliente.value = '';
+            
+            // Recarregar clientes com filtro por rede
+            this.preencherSelectClientes(this.todosClientes, redeSelecionada);
+        }
+    }
+
+    /**
+     * Extrai o Record ID da URL atual
+     * @returns {string|null} Record ID ou null se não encontrado
+     */
     getRecordIdFromURL() {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get('id');
     }
 
+    /**
+     * Configura todos os event listeners da página
+     * Inclui botões, formulários, checkboxes e filtros
+     */
     setupEventListeners() {
         // Botões de cancelar
         document.getElementById('btnCancelar').addEventListener('click', () => {
@@ -77,8 +243,21 @@ class EditarRegistro {
                 this.updateQuantidadeFields();
             });
         });
+
+        // Event listener para filtrar clientes por rede
+        document.getElementById('rede').addEventListener('change', (e) => {
+            console.log('🔄 Event listener do campo rede ativado!');
+            console.log('📋 Valor selecionado:', e.target.value);
+            console.log('🏢 Total de clientes disponíveis:', this.todosClientes ? this.todosClientes.length : 0);
+            this.filtrarClientesPorRede(e.target.value);
+        });
     }
 
+    /**
+     * Carrega dados do registro específico do Google Sheets
+     * Busca pelo Record ID e preenche o formulário
+     * @returns {Promise<void>}
+     */
     async loadRecordData() {
         try {
             this.showLoading('Carregando dados do registro...');
@@ -125,6 +304,11 @@ class EditarRegistro {
         }
     }
 
+    /**
+     * Preenche o formulário com dados do registro
+     * Mapeia campos do Google Sheets para campos do formulário
+     * @param {Object} record - Objeto com dados do registro
+     */
     populateForm(record) {
         // DEBUG: Log específico para o registro xPjXEq7rKG
         if (this.recordId === 'xPjXEq7rKG') {
@@ -223,6 +407,13 @@ class EditarRegistro {
         this.setFieldValue('observacaoFotografo', record['Observação para o Fotógrafo']);
     }
 
+    /**
+     * Define o valor de um campo do formulário
+     * @param {string} fieldId - ID do campo HTML
+     * @param {string|boolean|number} value - Valor a ser definido
+     * @description Função utilitária que define valores em campos do formulário,
+     * tratando checkboxes de forma especial (converte para boolean)
+     */
     setFieldValue(fieldId, value) {
         const field = document.getElementById(fieldId);
         if (field) {
@@ -234,6 +425,12 @@ class EditarRegistro {
         }
     }
 
+    /**
+     * Define o valor de um grupo de radio buttons
+     * @param {string} name - Nome do grupo de radio buttons
+     * @param {string} value - Valor a ser selecionado
+     * @description Seleciona o radio button correspondente ao valor fornecido
+     */
     setRadioValue(name, value) {
         if (value) {
             const radio = document.querySelector(`input[name="${name}"][value="${value}"]`);
@@ -243,6 +440,12 @@ class EditarRegistro {
         }
     }
 
+    /**
+     * Define os tipos de serviço baseado nos dados do registro
+     * @param {Object} record - Dados do registro carregado
+     * @description Marca os checkboxes de tipo de serviço baseado na coluna
+     * "Tipo do Servico" e nas quantidades específicas de cada serviço
+     */
     setServiceTypes(record) {
         // Resetar todos os checkboxes
         document.querySelectorAll('input[name="tipoServico"]').forEach(cb => cb.checked = false);
@@ -369,6 +572,11 @@ class EditarRegistro {
         }
     }
 
+    /**
+     * Atualiza as informações do registro exibidas na interface
+     * @param {Object} record - Dados do registro carregado
+     * @description Exibe informações básicas do registro (ID, cliente, endereço) na parte superior da página
+     */
     updateRecordInfo(record) {
         const recordInfo = document.getElementById('recordInfo');
         if (recordInfo) {
@@ -380,6 +588,13 @@ class EditarRegistro {
         }
     }
 
+    /**
+     * Salva as alterações do registro no Google Sheets
+     * @async
+     * @returns {Promise<void>}
+     * @description Valida o formulário, coleta os dados, atualiza o registro via API e redireciona para a página de pendentes
+     * @throws {Error} Quando há erro na validação ou na API de escrita
+     */
     async saveRecord() {
         try {
             this.showLoading('Salvando alterações...');
@@ -418,6 +633,11 @@ class EditarRegistro {
         }
     }
 
+    /**
+     * Valida os campos obrigatórios do formulário
+     * @returns {boolean} True se todos os campos obrigatórios estão preenchidos, false caso contrário
+     * @description Verifica se os campos Rede, Nome Cliente e Endereço do Imóvel estão preenchidos
+     */
     validateForm() {
         const requiredFields = [
             { id: 'rede', name: 'Rede' },
@@ -437,6 +657,11 @@ class EditarRegistro {
         return true;
     }
 
+    /**
+     * Coleta todos os dados do formulário para envio
+     * @returns {Object} Objeto com todos os dados do formulário formatados para o Google Sheets
+     * @description Extrai valores de todos os campos do formulário e os formata adequadamente
+     */
     collectFormData() {
         const formData = {};
 
@@ -500,16 +725,34 @@ class EditarRegistro {
         return formData;
     }
 
+    /**
+     * Obtém o valor de um campo do formulário pelo ID
+     * @param {string} fieldId - ID do campo a ser consultado
+     * @returns {string} Valor do campo ou string vazia se não encontrado
+     * @description Função utilitária para extrair valores de campos de input
+     */
     getFieldValue(fieldId) {
         const field = document.getElementById(fieldId);
         return field ? field.value : '';
     }
 
+    /**
+     * Obtém o valor selecionado de um grupo de radio buttons
+     * @param {string} name - Nome do grupo de radio buttons
+     * @returns {string} Valor do radio button selecionado ou string vazia
+     * @description Função utilitária para extrair valores de radio buttons selecionados
+     */
     getRadioValue(name) {
         const radio = document.querySelector(`input[name="${name}"]:checked`);
         return radio ? radio.value : '';
     }
 
+    /**
+     * Formata uma data do formato DD/MM/YYYY para YYYY-MM-DD (formato de input date)
+     * @param {string} dateString - Data no formato DD/MM/YYYY
+     * @returns {string} Data formatada para input ou string vazia em caso de erro
+     * @description Converte datas do Google Sheets para o formato aceito pelos inputs HTML
+     */
     formatDateForInput(dateString) {
         if (!dateString) return '';
         
@@ -526,6 +769,12 @@ class EditarRegistro {
         }
     }
 
+    /**
+     * Formata uma data do formato YYYY-MM-DD para DD/MM/YYYY (formato para salvar)
+     * @param {string} dateString - Data no formato YYYY-MM-DD
+     * @returns {string} Data formatada para salvar ou string original em caso de erro
+     * @description Converte datas dos inputs HTML para o formato usado no Google Sheets
+     */
     formatDateForSave(dateString) {
         if (!dateString) return '';
         
@@ -542,6 +791,10 @@ class EditarRegistro {
         }
     }
 
+    /**
+     * Cancela a edição do registro e retorna à página anterior
+     * @description Verifica se há alterações não salvas e solicita confirmação antes de cancelar
+     */
     cancelEdit() {
         if (this.hasChanges()) {
             if (confirm('Você tem alterações não salvas. Deseja realmente cancelar?')) {
@@ -552,6 +805,11 @@ class EditarRegistro {
         }
     }
 
+    /**
+     * Verifica se o formulário possui alterações não salvas
+     * @returns {boolean} True se há alterações, false caso contrário
+     * @description Compara os dados originais com os dados atuais do formulário
+     */
     hasChanges() {
         if (!this.originalData) return false;
         
@@ -567,6 +825,11 @@ class EditarRegistro {
         return false;
     }
 
+    /**
+     * Exibe o overlay de carregamento com mensagem personalizada
+     * @param {string} message - Mensagem a ser exibida (padrão: 'Carregando...')
+     * @description Mostra indicador visual de carregamento para operações assíncronas
+     */
     showLoading(message = 'Carregando...') {
         const overlay = document.getElementById('loadingOverlay');
         if (overlay) {
@@ -576,6 +839,10 @@ class EditarRegistro {
         }
     }
 
+    /**
+     * Oculta o overlay de carregamento
+     * @description Remove o indicador visual de carregamento
+     */
     hideLoading() {
         const overlay = document.getElementById('loadingOverlay');
         if (overlay) {
@@ -583,10 +850,20 @@ class EditarRegistro {
         }
     }
 
+    /**
+     * Exibe mensagem de erro para o usuário
+     * @param {string} message - Mensagem de erro a ser exibida
+     * @description Mostra alerta com mensagem de erro formatada
+     */
     showError(message) {
         alert(`Erro: ${message}`);
     }
 
+    /**
+     * Exibe mensagem de sucesso para o usuário
+     * @param {string} message - Mensagem de sucesso a ser exibida
+     * @description Mostra alerta com mensagem de sucesso formatada
+     */
     showSuccess(message) {
         alert(`Sucesso: ${message}`);
     }

@@ -4,7 +4,17 @@
  * Mantém compatibilidade com o código existente
  */
 
+/**
+ * Classe principal para integração com Google Sheets API
+ * Fornece funcionalidades de carregamento, cache e fallback para dados de planilhas
+ * @class GoogleSheetsAPI
+ */
 class GoogleSheetsAPI {
+    /**
+     * Construtor da classe GoogleSheetsAPI
+     * Inicializa configurações, cache e callbacks para integração com Google Sheets
+     * @constructor
+     */
     constructor() {
         this.spreadsheetId = CONFIG.GOOGLE_SHEETS.SPREADSHEET_ID;
         this.apiKey = CONFIG.GOOGLE_SHEETS.API_KEY;
@@ -36,12 +46,20 @@ class GoogleSheetsAPI {
      * @param {string} range - Range de células (padrão: A:Z)
      * @returns {Promise<Array>} Array de objetos com os dados
      */
+    /**
+     * Carrega dados de uma planilha com sistema de fallback híbrido
+     * Prioridade: Google Sheets → Backup Local → CSV estático (docs/data/) → Cache expirado
+     * @param {string} sheetName - Nome da aba/planilha
+     * @param {string} range - Intervalo de células (padrão: A:ZZ)
+     * @returns {Promise<Array>} Array de objetos com os dados
+     */
     async loadSheetData(sheetName, range = 'A:ZZ') {
         const cacheKey = sheetName.toLowerCase();
         
-        // Verificar cache
+        // Verificar cache válido
         if (this.isCacheValid(cacheKey)) {
             console.log(`📋 Dados de ${sheetName} carregados do cache`);
+            this.updateDataSourceIndicator('cache');
             return this.cache[cacheKey];
         }
 
@@ -66,27 +84,135 @@ class GoogleSheetsAPI {
             this.cache[cacheKey] = parsedData;
             this.cache.lastUpdate = Date.now();
             
-            console.log(`✅ ${sheetName} carregado: ${parsedData.length} registros`);
+            console.log(`✅ ${sheetName} carregado do Google Sheets: ${parsedData.length} registros`);
+            
+            this.updateDataSourceIndicator('google-sheets');
             
             if (this.onLoadComplete) this.onLoadComplete(sheetName, parsedData);
             
             return parsedData;
             
         } catch (error) {
-            console.error(`❌ Erro ao carregar ${sheetName}:`, error);
+            console.error(`❌ Erro ao carregar ${sheetName} do Google Sheets:`, error);
             
-            if (this.onError) this.onError(sheetName, error);
-            
-            // Retornar dados do cache se disponível, mesmo expirado
-            if (this.cache[cacheKey]) {
-                console.warn(`⚠️ Usando dados em cache (possivelmente desatualizados) para ${sheetName}`);
-                return this.cache[cacheKey];
+            // FALLBACK 1: Tentar carregar backup local do Data Sync Manager
+            if (window.dataSyncManager) {
+                try {
+                    console.log(`🔄 Tentando fallback para backup local: ${sheetName}`);
+                    const backupData = await window.dataSyncManager.loadBackupData(sheetName);
+                    
+                    if (backupData && backupData.length > 0) {
+                        // Atualizar cache com dados do backup
+                        this.cache[cacheKey] = backupData;
+                        this.cache.lastUpdate = Date.now();
+                        
+                        console.log(`✅ ${sheetName} carregado do backup local: ${backupData.length} registros`);
+                        
+                        this.updateDataSourceIndicator('backup');
+                        
+                        if (this.onLoadComplete) this.onLoadComplete(sheetName, backupData);
+                        
+                        return backupData;
+                    }
+                } catch (backupError) {
+                    console.error(`❌ Erro ao carregar backup local para ${sheetName}:`, backupError);
+                }
             }
             
-            throw error;
+            // FALLBACK 2: Tentar carregar CSV estático de docs/data/
+            try {
+                console.log(`🔄 Tentando fallback para CSV estático: ${sheetName}.csv`);
+                const csvData = await this.loadStaticCSV(sheetName);
+                
+                // Atualizar cache com dados do CSV
+                this.cache[cacheKey] = csvData;
+                this.cache.lastUpdate = Date.now();
+                
+                console.log(`✅ ${sheetName} carregado do CSV estático: ${csvData.length} registros`);
+                
+                this.updateDataSourceIndicator('csv-static');
+                
+                if (this.onLoadComplete) this.onLoadComplete(sheetName, csvData);
+                
+                return csvData;
+                
+            } catch (csvError) {
+                console.error(`❌ Erro ao carregar CSV estático para ${sheetName}:`, csvError);
+                
+                // FALLBACK 3: Usar cache expirado se disponível
+                if (this.cache[cacheKey]) {
+                    console.warn(`⚠️ Usando dados em cache expirado para ${sheetName}`);
+                    this.updateDataSourceIndicator('cache');
+                    return this.cache[cacheKey];
+                }
+                
+                if (this.onError) this.onError(sheetName, error);
+                throw new Error(`Falha em todas as fontes de dados para ${sheetName}: Google Sheets, CSV estático e cache`);
+            }
         } finally {
             this.isLoading = false;
         }
+    }
+
+    /**
+     * Atualiza o indicador visual da fonte de dados
+     * @param {string} source - Fonte atual ('google-sheets', 'backup', 'csv-static', 'cache')
+     */
+    updateDataSourceIndicator(source) {
+        if (window.dataSyncManager && window.dataSyncManager.updateDataSourceIndicator) {
+            const indicator = document.getElementById('data-source-indicator');
+            if (indicator) {
+                window.dataSyncManager.updateDataSourceIndicator(indicator, source);
+            }
+        }
+    }
+
+    /**
+     * Carrega dados de um arquivo CSV estático em docs/data/
+     * @param {string} sheetName - Nome da planilha (usado como nome do arquivo)
+     * @returns {Promise<Array>} Array de objetos com os dados do CSV
+     */
+    async loadStaticCSV(sheetName) {
+        const csvUrl = `./data/${sheetName}.csv`;
+        
+        const response = await fetch(csvUrl);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText} para ${csvUrl}`);
+        }
+        
+        const csvText = await response.text();
+        return this.parseCSV(csvText);
+    }
+
+    /**
+     * Converte texto CSV em array de objetos
+     * @param {string} csvText - Texto do arquivo CSV
+     * @returns {Array} Array de objetos
+     */
+    parseCSV(csvText) {
+        const lines = csvText.trim().split('\n');
+        
+        if (lines.length === 0) {
+            return [];
+        }
+        
+        // Primeira linha são os cabeçalhos
+        const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+        
+        // Processar linhas de dados
+        return lines.slice(1).map(line => {
+            const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+            const obj = {};
+            
+            headers.forEach((header, index) => {
+                if (header) {
+                    obj[header] = values[index] || '';
+                }
+            });
+            
+            return obj;
+        });
     }
 
     /**
@@ -164,7 +290,8 @@ class GoogleSheetsAPI {
 
     /**
      * Carrega lista de clientes usando URL específica
-     * @returns {Promise<Array>}
+     * Utiliza URL específica se configurada, caso contrário usa a configuração padrão
+     * @returns {Promise<Array>} Array de objetos com dados dos clientes
      */
     async getClientes() {
         // Usar URL específica se configurada
@@ -176,7 +303,8 @@ class GoogleSheetsAPI {
 
     /**
      * Carrega lista de redes usando URL específica
-     * @returns {Promise<Array>}
+     * Utiliza URL específica se configurada, caso contrário usa a configuração padrão
+     * @returns {Promise<Array>} Array de objetos com dados das redes
      */
     async getRedes() {
         // Usar URL específica se configurada
@@ -188,6 +316,7 @@ class GoogleSheetsAPI {
 
     /**
      * Carrega dados de uma planilha usando URL específica
+     * Extrai o spreadsheet ID da URL e faz a requisição para a aba específica
      * @param {string} sheetUrl - URL da planilha específica
      * @param {string} sheetName - Nome da aba para cache
      * @param {string} range - Range de células (padrão: A:Z)
@@ -266,10 +395,11 @@ class GoogleSheetsAPI {
     }
 
     /**
-     * Aplica filtros aos dados
+     * Aplica filtros aos dados carregados
+     * Suporta filtros por array (OR), data, string (case insensitive) e valores exatos
      * @param {Array} data - Dados para filtrar
      * @param {Object} filters - Filtros a aplicar
-     * @returns {Array}
+     * @returns {Array} Dados filtrados
      */
     applyFilters(data, filters) {
         if (!filters || Object.keys(filters).length === 0) {
@@ -309,10 +439,11 @@ class GoogleSheetsAPI {
     }
 
     /**
-     * Filtro específico para datas
-     * @param {string} itemDate - Data do item
-     * @param {string} filterValue - Valor do filtro
-     * @returns {boolean}
+     * Filtro específico para campos de data
+     * Suporta filtros predefinidos (today, tomorrow, this_week) e datas específicas
+     * @param {string} itemDate - Data do item a ser filtrado
+     * @param {string|Date} filterValue - Valor do filtro de data
+     * @returns {boolean} True se o item passa no filtro
      */
     filterByDate(itemDate, filterValue) {
         if (!itemDate) return false;

@@ -1,0 +1,58 @@
+<!-- Carregar API do Google -->
+<script src="https://maps.googleapis.com/maps/api/js?key=SUA_API_KEY_AQUI&libraries=places&language=pt-BR"></script>
+
+---------------------
+
+<!-- Se seu input não tem ID, adicione: -->
+<input id="autocomplete" type="text" name="endereco" placeholder="Digite o endereço">
+
+-------------------
+
+<script>
+  // Inicializar Google Places Autocomplete
+  const inputEndereco = document.getElementById('autocomplete'); // Use o ID do seu campo
+  const autocomplete = new google.maps.places.Autocomplete(inputEndereco, {
+    componentRestrictions: { country: 'br' },
+    fields: ['address_components'],
+    types: ['address']
+  });
+
+  // Quando usuário selecionar um endereço
+  autocomplete.addListener('place_changed', function() {
+    const place = autocomplete.getPlace();
+    
+    // Preencher seus campos (ajuste os IDs conforme seu formulário)
+    for (const component of place.address_components) {
+      const type = component.types[0];
+
+      switch (type) {
+        case 'route':
+          document.getElementById('rua').value = component.long_name;
+          break;
+        case 'sublocality_level_1':
+          document.getElementById('bairro').value = component.long_name;
+          break;
+        case 'administrative_area_level_2':
+          document.getElementById('cidade').value = component.long_name;
+          break;
+        case 'administrative_area_level_1':
+          document.getElementById('estado').value = component.short_name;
+          break;
+        case 'postal_code':
+          document.getElementById('cep').value = component.long_name;
+          break;
+      }
+    }
+  });
+</script>
+
+--------------------------
+
+'rua' → ID do seu campo de rua
+'bairro' → ID do seu campo de bairro
+'cidade' → ID do seu campo de cidade
+'estado' → ID do seu campo de estado
+'cep' → ID do seu campo de CEP
+
+-------------------------
+
