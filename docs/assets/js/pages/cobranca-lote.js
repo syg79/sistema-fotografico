@@ -80,15 +80,44 @@ document.addEventListener('DOMContentLoaded', async () => {
             const filtroMes = document.getElementById('filtroMes').value;
             const filtroStatus = document.getElementById('filtroStatus').value;
             const filtroFotografo = document.getElementById('filtroFotografo').value;
+            
+            // Filtros avançados
+            const dataInicio = document.getElementById('dataInicio').value;
+            const dataFim = document.getElementById('dataFim').value;
+            const codigoVitrineInicio = document.getElementById('codigoVitrineInicio').value;
+            const codigoVitrineFim = document.getElementById('codigoVitrineFim').value;
 
             this.registrosFiltrados = this.registros.filter(registro => {
-                // Filtro por mês
-                if (filtroMes) {
+                // Filtro por mês (só aplicar se não houver filtros avançados de data)
+                if (filtroMes && !dataInicio && !dataFim) {
                     const dataRegistro = this.extrairData(registro);
                     if (dataRegistro) {
                         const mesRegistro = dataRegistro.getFullYear() + '-' + String(dataRegistro.getMonth() + 1).padStart(2, '0');
                         if (mesRegistro !== filtroMes) return false;
                     }
+                }
+
+                // Filtro por intervalo de datas (tem prioridade sobre filtro de mês)
+                if (dataInicio || dataFim) {
+                    const dataRegistro = this.extrairData(registro);
+                    if (dataRegistro) {
+                        if (dataInicio) {
+                            const inicio = new Date(dataInicio);
+                            if (dataRegistro < inicio) return false;
+                        }
+                        if (dataFim) {
+                            const fim = new Date(dataFim);
+                            fim.setHours(23, 59, 59, 999); // Incluir todo o dia final
+                            if (dataRegistro > fim) return false;
+                        }
+                    }
+                }
+
+                // Filtro por intervalo de código vitrine
+                if (codigoVitrineInicio || codigoVitrineFim) {
+                    const codigoVitrine = registro['Codigo Vitrine'] || registro['Record ID'] || '';
+                    if (codigoVitrineInicio && codigoVitrine < codigoVitrineInicio) return false;
+                    if (codigoVitrineFim && codigoVitrine > codigoVitrineFim) return false;
                 }
 
                 // Filtro por status de cobrança
