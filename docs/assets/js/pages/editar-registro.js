@@ -151,10 +151,16 @@ class EditarRegistro {
         // Tipo de serviço (checkboxes)
         this.setServiceTypes(record);
 
-        // Quantidades
-        this.setFieldValue('quantidadeFoto', record['Quantidade FOTO'] || 0);
-        this.setFieldValue('quantidadeVideo', record['Quantidade VÍDEO'] || 0);
-        this.setFieldValue('quantidadeDrone', record['Quantidade DRONE'] || 0);
+        // Quantidades - usando os nomes corretos das colunas da planilha
+        this.setFieldValue('quantidadeFoto', record['AL'] || 0); // Quantidade de fotos
+        this.setFieldValue('quantidadeInclusoes', record['AM'] || 0); // Quantidade de inclusões
+        this.setFieldValue('quantidadeDroneVideo', record['AN'] || 0); // Quantidade Drone (video)
+        this.setFieldValue('quantidadeVideo', record['AO'] || 0); // Quantidade video
+        this.setFieldValue('quantidadeTour360', record['AK'] || 0); // Tour 360
+        
+        // Campos adicionais
+        this.setFieldValue('cobranca', record['AQ'] || ''); // Cobrança
+        this.setFieldValue('publicarAgenda', record['AT'] || ''); // Publicar Agenda
 
         // Dados do Agendamento
         this.setFieldValue('contatoAgendar01', record['Contato para agendar 01']);
@@ -195,25 +201,26 @@ class EditarRegistro {
         // Resetar todos os checkboxes
         document.querySelectorAll('input[name="tipoServico"]').forEach(cb => cb.checked = false);
 
-        // Marcar os serviços baseado nas quantidades
-        if (record['Quantidade FOTO'] && parseInt(record['Quantidade FOTO']) > 0) {
+        // Marcar os serviços baseado nas quantidades usando as colunas corretas
+        if (record['AL'] && parseInt(record['AL']) > 0) { // Quantidade de fotos
             const fotoCheckbox = document.getElementById('servicoFoto');
             if (fotoCheckbox) fotoCheckbox.checked = true;
         }
-        if (record['Quantidade VÍDEO'] && parseInt(record['Quantidade VÍDEO']) > 0) {
+        if (record['AO'] && parseInt(record['AO']) > 0) { // Quantidade video
             const videoCheckbox = document.getElementById('servicoVideo');
             if (videoCheckbox) videoCheckbox.checked = true;
         }
-        if (record['Quantidade DRONE'] && parseInt(record['Quantidade DRONE']) > 0) {
-            const droneCheckbox = document.getElementById('servicoDrone');
+        if (record['AN'] && parseInt(record['AN']) > 0) { // Quantidade Drone (video)
+            const droneCheckbox = document.getElementById('servicoDroneVideo');
             if (droneCheckbox) droneCheckbox.checked = true;
         }
-        
-        // Verificar se há planta baixa (assumindo que existe no registro)
-        if (record['Planta Baixa'] === 'Sim') {
-            const plantaCheckbox = document.getElementById('servicoPlantaBaixa');
-            if (plantaCheckbox) plantaCheckbox.checked = true;
+        if (record['AK'] && parseInt(record['AK']) > 0) { // Tour 360
+            const tour360Checkbox = document.getElementById('servicoTour360');
+            if (tour360Checkbox) tour360Checkbox.checked = true;
         }
+        
+        // Verificar outros serviços baseados em dados específicos se disponíveis
+        // Drone fotos, Video Reels, Edição podem precisar de lógica adicional
     }
 
     toggleObsEditor(show) {
@@ -226,33 +233,49 @@ class EditarRegistro {
         // Atualizar campos de quantidade baseado nos checkboxes selecionados
         const fotoCheckbox = document.getElementById('servicoFoto');
         const videoCheckbox = document.getElementById('servicoVideo');
-        const droneCheckbox = document.getElementById('servicoDrone');
+        const droneVideoCheckbox = document.getElementById('servicoDroneVideo');
+        const tour360Checkbox = document.getElementById('servicoTour360');
 
-        if (fotoCheckbox && !fotoCheckbox.checked) {
+        // Implementar lógica: se serviço for foto então quantidade de foto é = 1
+        if (fotoCheckbox && fotoCheckbox.checked) {
+            const fotoField = document.getElementById('quantidadeFoto');
+            if (fotoField && (fotoField.value == 0 || fotoField.value == '')) {
+                fotoField.value = 1;
+            }
+        } else if (fotoCheckbox && !fotoCheckbox.checked) {
             const fotoField = document.getElementById('quantidadeFoto');
             if (fotoField) fotoField.value = 0;
         }
+
+        // Lógica similar para outros serviços
         if (videoCheckbox && !videoCheckbox.checked) {
             const videoField = document.getElementById('quantidadeVideo');
             if (videoField) videoField.value = 0;
-        }
-        if (droneCheckbox && !droneCheckbox.checked) {
-            const droneField = document.getElementById('quantidadeDrone');
-            if (droneField) droneField.value = 0;
+        } else if (videoCheckbox && videoCheckbox.checked) {
+            const videoField = document.getElementById('quantidadeVideo');
+            if (videoField && (videoField.value == 0 || videoField.value == '')) {
+                videoField.value = 1;
+            }
         }
 
-        // Se o serviço estiver marcado e a quantidade for 0, definir como 1
-        if (fotoCheckbox && fotoCheckbox.checked) {
-            const fotoField = document.getElementById('quantidadeFoto');
-            if (fotoField && fotoField.value == 0) fotoField.value = 1;
+        if (droneVideoCheckbox && !droneVideoCheckbox.checked) {
+            const droneVideoField = document.getElementById('quantidadeDroneVideo');
+            if (droneVideoField) droneVideoField.value = 0;
+        } else if (droneVideoCheckbox && droneVideoCheckbox.checked) {
+            const droneVideoField = document.getElementById('quantidadeDroneVideo');
+            if (droneVideoField && (droneVideoField.value == 0 || droneVideoField.value == '')) {
+                droneVideoField.value = 1;
+            }
         }
-        if (videoCheckbox && videoCheckbox.checked) {
-            const videoField = document.getElementById('quantidadeVideo');
-            if (videoField && videoField.value == 0) videoField.value = 1;
-        }
-        if (droneCheckbox && droneCheckbox.checked) {
-            const droneField = document.getElementById('quantidadeDrone');
-            if (droneField && droneField.value == 0) droneField.value = 1;
+
+        if (tour360Checkbox && !tour360Checkbox.checked) {
+            const tour360Field = document.getElementById('quantidadeTour360');
+            if (tour360Field) tour360Field.value = 0;
+        } else if (tour360Checkbox && tour360Checkbox.checked) {
+            const tour360Field = document.getElementById('quantidadeTour360');
+            if (tour360Field && (tour360Field.value == 0 || tour360Field.value == '')) {
+                tour360Field.value = 1;
+            }
         }
     }
 

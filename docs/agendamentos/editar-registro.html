@@ -224,28 +224,50 @@
                             <div class="col-12">
                                 <label class="form-label">Tipo do Serviço</label>
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="servicoFoto" name="tipoServico" value="Foto">
-                                            <label class="form-check-label" for="servicoFoto">Fotografia</label>
+                                            <label class="form-check-label" for="servicoFoto">Foto</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="servicoVideo" name="tipoServico" value="Video">
-                                            <label class="form-check-label" for="servicoVideo">Vídeo</label>
+                                            <input class="form-check-input" type="checkbox" id="servicoDroneVideo" name="tipoServico" value="Drone video">
+                                            <label class="form-check-label" for="servicoDroneVideo">Drone vídeo</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="servicoDrone" name="tipoServico" value="Drone">
-                                            <label class="form-check-label" for="servicoDrone">Drone</label>
+                                            <input class="form-check-input" type="checkbox" id="servicoDroneFotos" name="tipoServico" value="Drone fotos">
+                                            <label class="form-check-label" for="servicoDroneFotos">Drone fotos</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-4">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="servicoPlantaBaixa" name="tipoServico" value="Planta Baixa">
-                                            <label class="form-check-label" for="servicoPlantaBaixa">Planta Baixa</label>
+                                            <input class="form-check-input" type="checkbox" id="servicoVideoYoutube" name="tipoServico" value="Video Youtube">
+                                            <label class="form-check-label" for="servicoVideoYoutube">Vídeo em Solo (formato Youtube)</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="servicoVideoReels" name="tipoServico" value="Video Reels">
+                                            <label class="form-check-label" for="servicoVideoReels">Vídeo em Solo (formato Reels)</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="servicoTour360" name="tipoServico" value="Tour 360">
+                                            <label class="form-check-label" for="servicoTour360">Tour 360°</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="servicoEdicao" name="tipoServico" value="Edicao">
+                                            <label class="form-check-label" for="servicoEdicao">Edição</label>
                                         </div>
                                     </div>
                                 </div>
@@ -253,17 +275,40 @@
                         </div>
 
                         <div class="row g-3 mt-2">
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <label for="quantidadeFoto" class="form-label">Quantidade FOTO</label>
                                 <input type="number" class="form-control" id="quantidadeFoto" name="quantidadeFoto" min="0" value="0">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
+                                <label for="quantidadeInclusoes" class="form-label">Quantidade INCLUSÕES</label>
+                                <input type="number" class="form-control" id="quantidadeInclusoes" name="quantidadeInclusoes" min="0" value="0">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="quantidadeDroneVideo" class="form-label">Quantidade DRONE (vídeo)</label>
+                                <input type="number" class="form-control" id="quantidadeDroneVideo" name="quantidadeDroneVideo" min="0" value="0">
+                            </div>
+                            <div class="col-md-2">
                                 <label for="quantidadeVideo" class="form-label">Quantidade VÍDEO</label>
                                 <input type="number" class="form-control" id="quantidadeVideo" name="quantidadeVideo" min="0" value="0">
                             </div>
-                            <div class="col-md-4">
-                                <label for="quantidadeDrone" class="form-label">Quantidade DRONE</label>
-                                <input type="number" class="form-control" id="quantidadeDrone" name="quantidadeDrone" min="0" value="0">
+                            <div class="col-md-2">
+                                <label for="quantidadeTour360" class="form-label">Tour 360°</label>
+                                <input type="number" class="form-control" id="quantidadeTour360" name="quantidadeTour360" min="0" value="0">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="cobranca" class="form-label">Cobrança</label>
+                                <input type="text" class="form-control" id="cobranca" name="cobranca">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label for="publicarAgenda" class="form-label">Publicar Agenda</label>
+                                <select class="form-select" id="publicarAgenda" name="publicarAgenda">
+                                    <option value="">Selecione...</option>
+                                    <option value="Sim">Sim</option>
+                                    <option value="Não">Não</option>
+                                </select>
                             </div>
                         </div>
 
