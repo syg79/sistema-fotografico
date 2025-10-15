@@ -598,14 +598,21 @@ class GoogleSheetsAPI {
     }
 }
 
-// Inicialização automática quando o DOM estiver pronto
+// Inicialização automática com verificação de dependências
 document.addEventListener('DOMContentLoaded', () => {
-    if (typeof CONFIG !== 'undefined') {
-        window.googleSheetsAPI = new GoogleSheetsAPI();
-        console.log('🚀 Google Sheets API pronta para uso');
-    } else {
-        console.error('❌ CONFIG não encontrado. Certifique-se de carregar config.js primeiro');
-    }
+    // Aguardar CONFIG estar disponível
+    const waitForConfig = () => {
+        if (typeof window.CONFIG !== 'undefined') {
+            if (!window.googleSheetsAPI) {
+                window.googleSheetsAPI = new GoogleSheetsAPI();
+                console.log('✅ Google Sheets API pronta para uso');
+            }
+        } else {
+            console.warn('⚠️ CONFIG não encontrado. Aguardando...');
+            setTimeout(waitForConfig, 100);
+        }
+    };
+    waitForConfig();
 });
 
 // Exportar para uso em módulos

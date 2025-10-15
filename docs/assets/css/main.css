@@ -960,3 +960,18 @@ body {
     background-color: rgba(255, 255, 255, 0.1);
   }
 }
+
+/* Google Places Autocomplete dropdown visibility */
+.pac-container {
+  z-index: var(--z-tooltip, 1070) !important; /* acima de tooltips e modais */
+}
+
+/* Ensure autocomplete items are visible and clickable */
+.pac-item {
+  cursor: pointer;
+}
+
+/* Fix dropdown inside modals or containers with overflow hidden */
+.modal, .card, .form-group, .input-group {
+  overflow: visible !important;
+}

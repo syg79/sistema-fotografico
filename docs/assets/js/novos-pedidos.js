@@ -181,7 +181,23 @@ class NovosPedidos {
     }
 }
 
-// Inicializar quando DOM estiver carregado
+// Aguardar todas as dependências estarem disponíveis
 document.addEventListener('DOMContentLoaded', () => {
-    window.novosPedidos = new NovosPedidos();
+    const waitForDependencies = () => {
+        if (typeof window.CONFIG !== 'undefined' && 
+            window.googleSheetsAPI && 
+            window.sistemaFotografico) {
+            
+            // Inicializar página de novos pedidos
+            if (!window.novosPedidos) {
+                window.novosPedidos = new NovosPedidos();
+                window.novosPedidos.init().catch(error => {
+                    console.warn('⚠️ Erro ao inicializar novos pedidos:', error);
+                });
+            }
+        } else {
+            setTimeout(waitForDependencies, 100);
+        }
+    };
+    waitForDependencies();
 });
