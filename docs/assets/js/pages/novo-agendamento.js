@@ -176,28 +176,68 @@ class NovoAgendamento {
     }
 
     async carregarInformacoesPedido() {
-        if (!this.pedidoId) return;
+        const pedidoId = this.obterPedidoId();
+        console.log('🔍 Iniciando carregamento de informações do pedido:', pedidoId);
+        
+        if (!pedidoId) {
+            console.warn('⚠️ Nenhum ID de pedido fornecido na URL');
+            this.mostrarErro('ID do pedido não fornecido na URL');
+            return;
+        }
 
         try {
-            console.log(`🔍 Carregando informações do pedido ID: ${this.pedidoId}`);
-            
-            // Carregar dados da solicitação (usando o nome correto da aba)
+            console.log('📊 Carregando dados da aba Solicitacoes...');
             const solicitacoes = await this.api.loadSheetData('Solicitacoes');
-            console.log(`📋 Total de solicitações carregadas: ${solicitacoes.length}`);
+            console.log('✅ Dados carregados:', solicitacoes.length, 'registros');
+            console.log('📋 Primeiros 3 registros:', solicitacoes.slice(0, 3));
             
-            this.pedidoData = solicitacoes.find(s => s['ID Solicitacao'] == this.pedidoId);
-            console.log('🔍 Pedido encontrado:', this.pedidoData ? 'Sim' : 'Não');
-
-            if (this.pedidoData) {
+            // Verificar se há dados
+            if (!solicitacoes || solicitacoes.length === 0) {
+                console.error('❌ Nenhum dado encontrado na aba Solicitacoes');
+                this.mostrarErro('Nenhum dado encontrado na planilha');
+                return;
+            }
+            
+            // Log dos campos disponíveis
+            if (solicitacoes.length > 0) {
+                console.log('🔑 Campos disponíveis:', Object.keys(solicitacoes[0]));
+            }
+            
+            console.log('🔍 Procurando pedido com ID:', pedidoId);
+            console.log('🔍 Tipo do ID procurado:', typeof pedidoId, 'Comprimento:', pedidoId.length);
+            
+            // Log dos primeiros 10 IDs para verificar formato
+            const idsDisponiveis = solicitacoes.map(s => s['Record ID']).slice(0, 10);
+            console.log('🆔 Primeiros 10 Record IDs disponíveis:', idsDisponiveis);
+            console.log('🆔 Tipos dos IDs:', idsDisponiveis.map(id => typeof id));
+            
+            // Verificar se existe algum ID similar
+            const idsSimilares = solicitacoes
+                .map(s => s['Record ID'])
+                .filter(id => id && id.toString().includes(pedidoId.substring(0, 5)))
+                .slice(0, 5);
+            console.log('🔍 Record IDs similares (primeiros 5 chars):', idsSimilares);
+            
+            const pedido = solicitacoes.find(s => s['Record ID'] === pedidoId);
+            
+            if (pedido) {
+                console.log('✅ Pedido encontrado:', pedido);
+                this.pedidoData = pedido;
                 this.preencherInformacoesPedido();
                 this.preencherPreferenciasImobiliaria();
             } else {
-                this.mostrarErro('Pedido não encontrado.');
+                console.error('❌ Pedido não encontrado. Record IDs disponíveis:', 
+                    solicitacoes.map(s => s['Record ID']).slice(0, 10));
+                this.mostrarErro('Pedido não encontrado');
             }
-
         } catch (error) {
-            console.error('Erro ao carregar informações do pedido:', error);
-            this.mostrarErro('Erro ao carregar informações do pedido.');
+            console.error('❌ Erro ao carregar informações do pedido:', error);
+            console.error('📊 Detalhes do erro:', {
+                message: error.message,
+                stack: error.stack,
+                name: error.name
+            });
+            this.mostrarErro('Erro ao carregar informações do pedido: ' + error.message);
         }
     }
 
@@ -213,6 +253,11 @@ class NovoAgendamento {
                     <i class="fas fa-hashtag me-1"></i>
                     Pedido #${data['ID Solicitacao'] || 'N/A'}
                 </h6>
+                
+                <div class="mb-2">
+                    <strong><i class="fas fa-key me-2"></i>Record ID:</strong>
+                    <div class="text-muted">${data['Record ID'] || 'N/A'}</div>
+                </div>
                 
                 <div class="mb-2">
                     <strong><i class="fas fa-building me-2"></i>Cliente:</strong>
