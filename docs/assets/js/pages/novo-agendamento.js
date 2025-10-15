@@ -179,9 +179,14 @@ class NovoAgendamento {
         if (!this.pedidoId) return;
 
         try {
-            // Carregar dados da solicitação
-            const solicitacoes = await this.api.loadSheetData('solicitacao');
+            console.log(`🔍 Carregando informações do pedido ID: ${this.pedidoId}`);
+            
+            // Carregar dados da solicitação (usando o nome correto da aba)
+            const solicitacoes = await this.api.loadSheetData('Solicitacoes');
+            console.log(`📋 Total de solicitações carregadas: ${solicitacoes.length}`);
+            
             this.pedidoData = solicitacoes.find(s => s['ID Solicitacao'] == this.pedidoId);
+            console.log('🔍 Pedido encontrado:', this.pedidoData ? 'Sim' : 'Não');
 
             if (this.pedidoData) {
                 this.preencherInformacoesPedido();
