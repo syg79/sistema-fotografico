@@ -126,22 +126,22 @@ class EditarRegistro {
     }
 
     populateForm(record) {
-        // Dados do Imóvel
+        // Dados do Imóvel - usando os nomes corretos das colunas
         this.setFieldValue('rede', record['Rede']);
         this.setFieldValue('nomeCliente', record['Nome Cliente']);
-        this.setFieldValue('referenciaCliente', record['Referência do Cliente']);
-        this.setFieldValue('dataSolicitacao', this.formatDateForInput(record['Data Solicitação']));
-        this.setFieldValue('linkEmail', record['Link EMAIL (solicitação)']);
-        this.setFieldValue('tipoImovel', record['Tipo do Imóvel']);
-        this.setFieldValue('enderecoImovel', record['Endereço do Imóvel']);
+        this.setFieldValue('referenciaCliente', record['Referencia do Cliente'] || record['Referência do Cliente']);
+        this.setFieldValue('dataSolicitacao', this.formatDateForInput(record['Data da Solicitacao (email)'] || record['Data Solicitação']));
+        this.setFieldValue('linkEmail', record['Link EMAIL (solicitacao)'] || record['Link EMAIL (solicitação)']);
+        this.setFieldValue('tipoImovel', record['Tipo do Imovel'] || record['Tipo do Imóvel']);
+        this.setFieldValue('enderecoImovel', record['Endereco do Imovel'] || record['Endereço do Imóvel']);
         this.setFieldValue('complemento', record['Complemento']);
         this.setFieldValue('bairroLocalidade', record['Bairro/Localidade']);
         this.setFieldValue('metrosQuadrados', record['m²']);
         this.setFieldValue('nomeCondominio', record['Nome do Condomínio']);
         this.setFieldValue('descricaoImovel', record['Descrição do Imóvel']);
 
-        // Condição de habitação (radio)
-        this.setRadioValue('condicaoHabitacao', record['Condição de Habitação']);
+        // Condição de habitação (radio) - usando nome correto
+        this.setRadioValue('condicaoHabitacao', record['Condicao de Habitacao'] || record['Condição de Habitação']);
 
         // Observações para editor
         const possuiObs = record['Possui OBS para o Editor?'] === 'Sim';
