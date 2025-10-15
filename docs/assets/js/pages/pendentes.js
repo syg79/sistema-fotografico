@@ -87,12 +87,25 @@ class PedidosPendentes {
 
         // Ações em desenvolvimento – exibem alerta temporário
         ['btnAgendar', 'btnAlterarStatus', 'btnExportarSelecionados', 'btnCancelarSelecionados',
-            'btnEditarPedido', 'btnAgendarPedido'].forEach(id => {
+            'btnAgendarPedido'].forEach(id => {
                 const btn = document.getElementById(id);
                 if (btn) {
                     btn.addEventListener('click', () => alert('Função em desenvolvimento para integração completa.'));
                 }
             });
+
+        // Botão de editar - redireciona para página de edição
+        const btnEditarPedido = document.getElementById('btnEditarPedido');
+        if (btnEditarPedido) {
+            btnEditarPedido.addEventListener('click', () => {
+                const recordId = this.getSelectedRecordId();
+                if (recordId) {
+                    window.location.href = `editar-registro.html?id=${recordId}`;
+                } else {
+                    alert('Selecione um registro para editar.');
+                }
+            });
+        }
     }
 
     async carregarDados() {
@@ -405,11 +418,21 @@ class PedidosPendentes {
                 this.abrirPaginaAgendamento(pedidoId);
                 break;
             case 'editar':
-                alert('Recurso em desenvolvimento para integração completa.');
+                // Redirecionar para página de edição com o Record ID
+                window.location.href = `editar-registro.html?id=${pedidoId}`;
                 break;
             default:
                 break;
         }
+    }
+
+    // Função para obter o Record ID selecionado (usado pelo botão modal)
+    getSelectedRecordId() {
+        // Se há apenas um item selecionado, retornar seu ID
+        if (this.pedidosSelecionados.size === 1) {
+            return Array.from(this.pedidosSelecionados)[0];
+        }
+        return null;
     }
 
     verDetalhes(pedido) {

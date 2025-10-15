@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Registro - Sistema Fotográfico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../assets/css/main.css" rel="stylesheet">
+    <style>
+        .section-header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 15px 20px;
+            margin: 20px 0 15px 0;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .required-field {
+            color: #dc3545;
+        }
+        .field-help {
+            font-size: 0.875em;
+            color: #6c757d;
+        }
+        .btn-save {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+        .btn-cancel {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="text-center text-white">
+            <div class="spinner-border mb-3" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <div>Carregando dados do registro...</div>
+        </div>
+    </div>
+
+    <!-- Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <i class="fas fa-camera me-2"></i>Sistema Fotográfico
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html"><i class="fas fa-home"></i> Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pendentes.html"><i class="fas fa-arrow-left"></i> Voltar aos Pendentes</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <!-- Cabeçalho -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2><i class="fas fa-edit text-primary me-2"></i>Editar Registro</h2>
+                        <p class="text-muted mb-0" id="recordInfo">Carregando informações do registro...</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-cancel text-white" id="btnCancelar">
+                            <i class="fas fa-times me-1"></i>Cancelar
+                        </button>
+                        <button class="btn btn-save text-white" id="btnSalvar">
+                            <i class="fas fa-save me-1"></i>Salvar Alterações
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Formulário de Edição -->
+                <form id="formEditarRegistro">
+                    <!-- Seção: Dados do Imóvel -->
+                    <div class="section-header">
+                        <i class="fas fa-home me-2"></i>Dados do Imóvel
+                    </div>
+                    <div class="form-section">
+                        <div class="row g-3">
+                            <div class="col-md-2">
+                                <label for="rede" class="form-label">Rede <span class="required-field">*</span></label>
+                                <select class="form-select" id="rede" name="rede" required>
+                                    <option value="">Selecione a rede</option>
+                                    <option value="Apolar">Apolar</option>
+                                    <option value="Bee">Bee</option>
+                                    <option value="Nexus">Nexus</option>
+                                    <option value="Rede Imoveis">Rede Imóveis</option>
+                                    <option value="Vitrine">Vitrine</option>
+                                    <option value="Experato">Experato</option>
+                                    <option value="Remax">Remax</option>
+                                    <option value="Lopes">Lopes</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="nomeCliente" class="form-label">Nome Cliente <span class="required-field">*</span></label>
+                                <input type="text" class="form-control" id="nomeCliente" name="nomeCliente" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="referenciaCliente" class="form-label">Referência do Cliente</label>
+                                <input type="text" class="form-control" id="referenciaCliente" name="referenciaCliente">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="dataSolicitacao" class="form-label">Data Solicitação</label>
+                                <input type="date" class="form-control" id="dataSolicitacao" name="dataSolicitacao">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="linkEmail" class="form-label">Link EMAIL (solicitação)</label>
+                                <input type="url" class="form-control" id="linkEmail" name="linkEmail">
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-2">
+                                <label for="tipoImovel" class="form-label">Tipo do Imóvel</label>
+                                <select class="form-select" id="tipoImovel" name="tipoImovel">
+                                    <option value="">Selecione</option>
+                                    <option value="Apartamento">Apartamento</option>
+                                    <option value="Casa">Casa</option>
+                                    <option value="Cobertura">Cobertura</option>
+                                    <option value="Loft">Loft</option>
+                                    <option value="Studio">Studio</option>
+                                    <option value="Comercial">Comercial</option>
+                                    <option value="Terreno">Terreno</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="condicaoHabitacao" class="form-label">Condição de Habitação</label>
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="condicaoHabitacao" id="habitado" value="Habitado">
+                                        <label class="form-check-label" for="habitado">Habitado</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="condicaoHabitacao" id="desabitado" value="Desabitado">
+                                        <label class="form-check-label" for="desabitado">Desabitado</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="condicaoHabitacao" id="emObra" value="Em Obra">
+                                        <label class="form-check-label" for="emObra">Em Obra</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Possui OBS para o Editor?</label>
+                                <div class="form-check form-switch mt-2">
+                                    <input class="form-check-input" type="checkbox" id="possuiObsEditor" name="possuiObsEditor">
+                                    <label class="form-check-label" for="possuiObsEditor">
+                                        <strong>Sim, possui observações especiais</strong>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label for="enderecoImovel" class="form-label">Endereço do Imóvel <span class="required-field">*</span></label>
+                                <textarea class="form-control" id="enderecoImovel" name="enderecoImovel" rows="2" required></textarea>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="complemento" class="form-label">Complemento</label>
+                                <input type="text" class="form-control" id="complemento" name="complemento">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="bairroLocalidade" class="form-label">Bairro/Localidade</label>
+                                <input type="text" class="form-control" id="bairroLocalidade" name="bairroLocalidade">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-2">
+                                <label for="metrosQuadrados" class="form-label">m²</label>
+                                <input type="number" class="form-control" id="metrosQuadrados" name="metrosQuadrados" min="0">
+                            </div>
+                            <div class="col-md-5">
+                                <label for="nomeCondominio" class="form-label">Nome do Condomínio</label>
+                                <input type="text" class="form-control" id="nomeCondominio" name="nomeCondominio">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-3">
+                            <div class="col-12">
+                                <label class="form-label">Tipo do Serviço</label>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="servicoFoto" name="tipoServico" value="Foto">
+                                            <label class="form-check-label" for="servicoFoto">Fotografia</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="servicoVideo" name="tipoServico" value="Video">
+                                            <label class="form-check-label" for="servicoVideo">Vídeo</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="servicoDrone" name="tipoServico" value="Drone">
+                                            <label class="form-check-label" for="servicoDrone">Drone</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="servicoPlantaBaixa" name="tipoServico" value="Planta Baixa">
+                                            <label class="form-check-label" for="servicoPlantaBaixa">Planta Baixa</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-4">
+                                <label for="quantidadeFoto" class="form-label">Quantidade FOTO</label>
+                                <input type="number" class="form-control" id="quantidadeFoto" name="quantidadeFoto" min="0" value="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="quantidadeVideo" class="form-label">Quantidade VÍDEO</label>
+                                <input type="number" class="form-control" id="quantidadeVideo" name="quantidadeVideo" min="0" value="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="quantidadeDrone" class="form-label">Quantidade DRONE</label>
+                                <input type="number" class="form-control" id="quantidadeDrone" name="quantidadeDrone" min="0" value="0">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-12">
+                                <label for="descricaoImovel" class="form-label">Descrição do Imóvel</label>
+                                <textarea class="form-control" id="descricaoImovel" name="descricaoImovel" rows="4" placeholder="Descreva detalhes importantes sobre o imóvel..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção: Dados do Agendamento -->
+                    <div class="section-header">
+                        <i class="fas fa-calendar-alt me-2"></i>Dados do Agendamento
+                    </div>
+                    <div class="form-section">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="contatoAgendar01" class="form-label">Contato para agendar 01</label>
+                                <input type="text" class="form-control" id="contatoAgendar01" name="contatoAgendar01" placeholder="Nome e telefone">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="contatoAgendar02" class="form-label">Contato para agendar 02</label>
+                                <input type="text" class="form-control" id="contatoAgendar02" name="contatoAgendar02" placeholder="Nome e telefone">
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3 mt-2">
+                            <div class="col-12">
+                                <label for="observacaoAgendamento" class="form-label">Observação para o Agendamento</label>
+                                <textarea class="form-control" id="observacaoAgendamento" name="observacaoAgendamento" rows="3" placeholder="Informações importantes para o agendamento..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção: Dados da Sessão -->
+                    <div class="section-header">
+                        <i class="fas fa-camera me-2"></i>Dados da Sessão
+                    </div>
+                    <div class="form-section">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Agendado">Agendado</option>
+                                    <option value="Realizado">Realizado</option>
+                                    <option value="Cancelado">Cancelado</option>
+                                    <option value="Reagendado">Reagendado</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="dataAgendamento" class="form-label">Data do Agendamento</label>
+                                <input type="date" class="form-control" id="dataAgendamento" name="dataAgendamento">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="horarioSessao" class="form-label">Horário da Sessão</label>
+                                <input type="time" class="form-control" id="horarioSessao" name="horarioSessao">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="fotografo" class="form-label">Fotógrafo</label>
+                                <select class="form-select" id="fotografo" name="fotografo">
+                                    <option value="">Selecione o fotógrafo</option>
+                                    <option value="João Silva">João Silva</option>
+                                    <option value="Maria Santos">Maria Santos</option>
+                                    <option value="Pedro Oliveira">Pedro Oliveira</option>
+                                    <option value="Ana Costa">Ana Costa</option>
+                                    <option value="Carlos Ferreira">Carlos Ferreira</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-4">
+                                <label class="form-label">Fazer Área Comum</label>
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="fazerAreaComum" id="areaComumSim" value="Sim">
+                                        <label class="form-check-label" for="areaComumSim">Sim</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="fazerAreaComum" id="areaComumNao" value="Não">
+                                        <label class="form-check-label" for="areaComumNao">Não</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <label for="referenciasCopiadas" class="form-label">Referências a serem copiadas</label>
+                                <input type="text" class="form-control" id="referenciasCopiadas" name="referenciasCopiadas" placeholder="Links ou descrições de referências">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-12">
+                                <label for="observacaoFotografo" class="form-label">Observação para o Fotógrafo</label>
+                                <textarea class="form-control" id="observacaoFotografo" name="observacaoFotografo" rows="4" placeholder="Instruções específicas para o fotógrafo..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="d-flex justify-content-end gap-3 mt-4 mb-5">
+                        <button type="button" class="btn btn-cancel text-white" id="btnCancelarForm">
+                            <i class="fas fa-times me-1"></i>Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-save text-white">
+                            <i class="fas fa-save me-1"></i>Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/app-config.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/google-sheets-api.js"></script>
+    <script src="../assets/js/google-sheets-writer.js"></script>
+    <script src="../assets/js/loading-indicator.js"></script>
+    <script src="../assets/js/pages/editar-registro.js"></script>
+</body>
+</html>
