@@ -310,6 +310,10 @@ class EditarRegistro {
      * @param {Object} record - Objeto com dados do registro
      */
     populateForm(record) {
+        console.log('🚀 INICIANDO populateForm');
+        console.log('📋 Record recebido:', record);
+        console.log('👥 Todos os clientes disponíveis:', this.todosClientes ? this.todosClientes.length : 0);
+        
         // DEBUG: Log específico para o registro xPjXEq7rKG
         if (this.recordId === 'xPjXEq7rKG') {
             console.log('=== DEBUG REGISTRO xPjXEq7rKG ===');
@@ -325,7 +329,114 @@ class EditarRegistro {
         
         // Dados do Imóvel - usando os nomes corretos das colunas
         this.setFieldValue('rede', record['Rede']);
-        this.setFieldValue('nomeCliente', record['Nome Cliente']);
+        
+        // CORREÇÃO: Filtrar clientes pela rede antes de definir o nome do cliente
+        // Isso garante que o cliente correto esteja disponível no select
+        const redeDoRegistro = record['Rede'];
+        console.log('🏢 Rede do registro:', redeDoRegistro);
+        
+        if (redeDoRegistro && this.todosClientes && this.todosClientes.length > 0) {
+            console.log('🔄 Filtrando clientes pela rede do registro:', redeDoRegistro);
+            this.preencherSelectClientes(this.todosClientes, redeDoRegistro);
+            
+            // Aguardar um pouco para o select ser preenchido
+            setTimeout(() => {
+                console.log('⏰ Verificando opções do select após filtro...');
+                const selectCliente = document.getElementById('nomeCliente');
+                if (selectCliente) {
+                    console.log('📝 Opções disponíveis no select:', Array.from(selectCliente.options).map(opt => ({value: opt.value, text: opt.text})));
+                }
+            }, 100);
+        }
+        
+        // CORREÇÃO PRINCIPAL: Buscar o Record ID do cliente pelo nome
+        // O select usa Record ID como value, não o nome do cliente
+        const nomeClienteDoRegistro = record['Nome Cliente'];
+        console.log('👤 Nome do cliente no registro:', nomeClienteDoRegistro);
+        
+        if (nomeClienteDoRegistro && this.todosClientes && this.todosClientes.length > 0) {
+            console.log('🔍 Buscando Record ID para o cliente:', nomeClienteDoRegistro);
+            
+            // Buscar o cliente pelo nome
+            const clienteEncontrado = this.todosClientes.find(cliente => {
+                const nomeCliente = cliente['Coluna E'] || cliente['E'] || cliente['Nome Empresa'] || '';
+                const match = nomeCliente.trim() === nomeClienteDoRegistro.trim();
+                if (match) {
+                    console.log('🎯 Match encontrado:', {
+                        nomeRegistro: nomeClienteDoRegistro,
+                        nomeCliente: nomeCliente,
+                        cliente: cliente
+                    });
+                }
+                return match;
+            });
+            
+            if (clienteEncontrado) {
+                const recordIdCliente = clienteEncontrado['Record ID'] || clienteEncontrado['ID'] || clienteEncontrado['A'];
+                console.log('✅ Cliente encontrado! Record ID:', recordIdCliente);
+                
+                // Função para tentar definir o valor do select com retry
+                const tentarDefinirCliente = (tentativa = 1, maxTentativas = 5) => {
+                    console.log(`⏰ Tentativa ${tentativa}/${maxTentativas} - Definindo valor do select cliente...`);
+                    
+                    const selectCliente = document.getElementById('nomeCliente');
+                    if (!selectCliente) {
+                        console.log('❌ Select não encontrado');
+                        return;
+                    }
+                    
+                    // Verificar se as opções estão disponíveis
+                    const opcoes = Array.from(selectCliente.options);
+                    console.log(`📝 Opções disponíveis (${opcoes.length}):`, opcoes.map(opt => ({value: opt.value, text: opt.text})));
+                    
+                    // Procurar a opção com o Record ID correto
+                    const opcaoCorreta = opcoes.find(opt => opt.value === recordIdCliente);
+                    
+                    if (opcaoCorreta) {
+                        console.log('🎯 Opção encontrada:', opcaoCorreta);
+                        selectCliente.value = recordIdCliente;
+                        
+                        // Disparar evento change para atualizar a interface
+                        selectCliente.dispatchEvent(new Event('change', { bubbles: true }));
+                        
+                        // Verificar se foi definido corretamente
+                        setTimeout(() => {
+                            console.log('🔍 Verificação final:');
+                            console.log('- Valor do select:', selectCliente.value);
+                            console.log('- Texto selecionado:', selectCliente.options[selectCliente.selectedIndex]?.text);
+                            console.log('- Match com Record ID:', selectCliente.value === recordIdCliente);
+                        }, 50);
+                        
+                    } else if (tentativa < maxTentativas) {
+                        console.log(`⏳ Opção não encontrada, tentando novamente em 200ms...`);
+                        setTimeout(() => tentarDefinirCliente(tentativa + 1, maxTentativas), 200);
+                    } else {
+                        console.log('❌ Não foi possível encontrar a opção após todas as tentativas');
+                        console.log('🔍 Record ID procurado:', recordIdCliente);
+                        console.log('📋 Opções disponíveis:', opcoes.map(opt => opt.value));
+                    }
+                };
+                
+                // Iniciar tentativas após um pequeno delay
+                setTimeout(() => tentarDefinirCliente(), 100);
+                
+            } else {
+                console.log('❌ Cliente não encontrado na lista:', nomeClienteDoRegistro);
+                console.log('📋 Clientes disponíveis:', this.todosClientes.map(c => ({
+                    nome: c['Coluna E'] || c['E'] || c['Nome Empresa'],
+                    rede: c['Coluna D'] || c['D'] || c['Rede'],
+                    id: c['Record ID'] || c['ID'] || c['A']
+                })));
+            }
+        } else {
+            console.log('⚠️ Condições não atendidas para busca do cliente:');
+            console.log('- Nome do cliente:', !!nomeClienteDoRegistro);
+            console.log('- Todos os clientes carregados:', !!(this.todosClientes && this.todosClientes.length > 0));
+            
+            // Fallback para o método anterior se não houver nome do cliente
+            this.setFieldValue('nomeCliente', record['Nome Cliente']);
+        }
+        
         this.setFieldValue('referenciaCliente', record['Referencia do Cliente'] || record['Referência do Cliente']);
         this.setFieldValue('dataSolicitacao', this.formatDateForInput(record['Data da Solicitacao (email)'] || record['Data Solicitação']));
         this.setFieldValue('linkEmail', record['Link EMAIL (solicitacao)'] || record['Link EMAIL (solicitação)']);
@@ -694,7 +805,7 @@ class EditarRegistro {
         formData['AK'] = this.getFieldValue('quantidadeTour360') || 0; // Tour 360
         
         // Campos adicionais
-        formData['AQ'] = this.getRadioValue('cobranca') || 'A faturar'; // Cobrança
+        formData['AQ'] = this.getFieldValue('quantidadeFoto') || 0; // Quantidade de fotos
         
         // Publicar Agenda - tratamento especial para o toggle switch
         const publicarAgendaToggle = document.getElementById('publicarAgenda');
