@@ -3,3 +3,7 @@ docs/assets/js/config/.env
 .env
 *.env
 **/.env
+
+# Dependencies
+node_modules/
+docs/node_modules/
