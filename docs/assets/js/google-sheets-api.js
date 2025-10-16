@@ -173,7 +173,12 @@ class GoogleSheetsAPI {
      * @returns {Promise<Array>} Array de objetos com os dados do CSV
      */
     async loadStaticCSV(sheetName) {
-        const csvUrl = `./data/${sheetName}.csv`;
+        // Mapear nome da planilha para arquivo CSV correto e resolver caminho absoluto do GH Pages
+        const filename = this.getCsvFilenameFromSheetName(sheetName);
+        const basePath = (CONFIG.GITHUB_PAGES && CONFIG.GITHUB_PAGES.BASE_URL)
+            ? `${CONFIG.GITHUB_PAGES.BASE_URL}/data/`
+            : (window.location.pathname.includes('/agendamentos/') ? '../data/' : './data/');
+        const csvUrl = `${basePath}${filename}`;
         
         const response = await fetch(csvUrl);
         
@@ -191,28 +196,25 @@ class GoogleSheetsAPI {
      * @returns {Array} Array de objetos
      */
     parseCSV(csvText) {
-        const lines = csvText.trim().split('\n');
+        // Parser robusto que suporta separador ';' (Excel) e aspas
+        const lines = csvText.split('\n').filter(line => line.trim());
+        if (lines.length === 0) return [];
         
-        if (lines.length === 0) {
-            return [];
+        const headers = this.parseCSVLine(lines[0]);
+        const data = [];
+        
+        for (let i = 1; i < lines.length; i++) {
+            const values = this.parseCSVLine(lines[i]);
+            if (values.length >= headers.length) {
+                const row = {};
+                headers.forEach((header, index) => {
+                    if (header) row[header] = values[index] || '';
+                });
+                data.push(row);
+            }
         }
         
-        // Primeira linha são os cabeçalhos
-        const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-        
-        // Processar linhas de dados
-        return lines.slice(1).map(line => {
-            const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
-            const obj = {};
-            
-            headers.forEach((header, index) => {
-                if (header) {
-                    obj[header] = values[index] || '';
-                }
-            });
-            
-            return obj;
-        });
+        return data;
     }
 
     /**
@@ -611,4 +613,21 @@ document.addEventListener('DOMContentLoaded', () => {
 // Exportar para uso em módulos
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = GoogleSheetsAPI;
+}
+
+
+/**
+ * Mapea nome da planilha para nome correto
+ * @param {string} sheetName - Nome da planilha
+ * @returns {string} Nome correto da planilha
+ */
+getCsvFilenameFromSheetName(sheetName) {
+    const map = {
+        [CONFIG.GOOGLE_SHEETS.SHEETS.SOLICITACOES]: 'Solicitacao.csv',
+        [CONFIG.GOOGLE_SHEETS.SHEETS.FOTOGRAFOS]: 'Fotografos.csv',
+        [CONFIG.GOOGLE_SHEETS.SHEETS.CLIENTES]: 'Clientes.csv',
+        [CONFIG.GOOGLE_SHEETS.SHEETS.REDES]: 'Rede.csv',
+        [CONFIG.GOOGLE_SHEETS.SHEETS.CONFIGURACAO]: 'Configuracao.csv'
+    };
+    return map[sheetName] || `${sheetName}.csv`;
 }
