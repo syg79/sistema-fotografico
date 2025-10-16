@@ -394,25 +394,12 @@ window.SistemaUtils = {
     }
 };
 
-// Aguardar todas as dependências estarem disponíveis
+// Inicializar sistema quando DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
-    const waitForDependencies = () => {
-        if (typeof window.CONFIG !== 'undefined' && 
-            typeof window.GoogleSheetsAPI !== 'undefined' && 
-            window.googleSheetsAPI) {
-            
-            // Inicializar sistema principal
-            if (!window.sistemaFotografico) {
-                window.sistemaFotografico = new SistemaFotografico();
-                window.sistemaFotografico.init().catch(error => {
-                    console.warn('⚠️ Erro ao inicializar sistema:', error);
-                });
-            }
-        } else {
-            setTimeout(waitForDependencies, 100);
-        }
-    };
-    waitForDependencies();
+    // Aguardar um pouco para garantir que a integração Excel foi carregada
+    setTimeout(() => {
+        window.sistemaFotografico = new SistemaFotografico();
+    }, 500);
 });
 
 // Exportar classe para uso global

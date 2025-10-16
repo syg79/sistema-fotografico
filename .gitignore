@@ -1,5 +1,5 @@
 # env files
-docs/assets/js/config/.env
+config/.env
 .env
 *.env
 **/.env

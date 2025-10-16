@@ -349,31 +349,22 @@ class DataSyncManager {
     }
 }
 
-// Aguardar CONFIG estar disponível antes de inicializar
+// Inicialização automática
 document.addEventListener('DOMContentLoaded', () => {
-    // Aguardar CONFIG estar disponível
-    const waitForConfig = () => {
-        if (typeof window.CONFIG !== 'undefined') {
-            // Aguardar Google Sheets API estar disponível
-            const waitForGoogleSheetsAPI = () => {
-                if (typeof window.GoogleSheetsAPI !== 'undefined' && window.googleSheetsAPI) {
-                    // Inicializar Data Sync Manager
-                    if (!window.dataSyncManager) {
-                        window.dataSyncManager = new DataSyncManager();
-                        window.dataSyncManager.init().catch(error => {
-                            console.warn('⚠️ Erro ao inicializar Data Sync Manager:', error);
-                        });
-                    }
-                } else {
-                    setTimeout(waitForGoogleSheetsAPI, 100);
-                }
-            };
-            waitForGoogleSheetsAPI();
-        } else {
-            setTimeout(waitForConfig, 100);
-        }
-    };
-    waitForConfig();
+    if (typeof CONFIG !== 'undefined' && CONFIG.DATA_SOURCE === 'google-sheets') {
+        window.dataSyncManager = new DataSyncManager();
+        
+        // Aguardar Google Sheets API estar pronta
+        const initSync = () => {
+            if (window.googleSheetsAPI) {
+                window.dataSyncManager.init();
+            } else {
+                setTimeout(initSync, 100);
+            }
+        };
+        
+        setTimeout(initSync, 1000);
+    }
 });
 
 // Exportar para uso em módulos
