@@ -598,7 +598,24 @@ class GoogleSheetsAPI {
             return false;
         }
     }
+
+    /**
+     * Mapeia nome da planilha para arquivo CSV correspondente
+     * @param {string} sheetName
+     * @returns {string}
+     */
+    getCsvFilenameFromSheetName(sheetName) {
+        const map = {
+            [CONFIG.GOOGLE_SHEETS.SHEETS.SOLICITACOES]: 'Solicitacao.csv',
+            [CONFIG.GOOGLE_SHEETS.SHEETS.FOTOGRAFOS]: 'Fotografos.csv',
+            [CONFIG.GOOGLE_SHEETS.SHEETS.CLIENTES]: 'Clientes.csv',
+            [CONFIG.GOOGLE_SHEETS.SHEETS.REDES]: 'Rede.csv',
+            [CONFIG.GOOGLE_SHEETS.SHEETS.CONFIGURACAO]: 'Configuracao.csv'
+        };
+        return map[sheetName] || `${sheetName}.csv`;
+    }
 }
+
 
 // Inicialização automática quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
@@ -613,21 +630,4 @@ document.addEventListener('DOMContentLoaded', () => {
 // Exportar para uso em módulos
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = GoogleSheetsAPI;
-}
-
-
-/**
- * Mapea nome da planilha para nome correto
- * @param {string} sheetName - Nome da planilha
- * @returns {string} Nome correto da planilha
- */
-getCsvFilenameFromSheetName(sheetName) {
-    const map = {
-        [CONFIG.GOOGLE_SHEETS.SHEETS.SOLICITACOES]: 'Solicitacao.csv',
-        [CONFIG.GOOGLE_SHEETS.SHEETS.FOTOGRAFOS]: 'Fotografos.csv',
-        [CONFIG.GOOGLE_SHEETS.SHEETS.CLIENTES]: 'Clientes.csv',
-        [CONFIG.GOOGLE_SHEETS.SHEETS.REDES]: 'Rede.csv',
-        [CONFIG.GOOGLE_SHEETS.SHEETS.CONFIGURACAO]: 'Configuracao.csv'
-    };
-    return map[sheetName] || `${sheetName}.csv`;
 }
