@@ -56,11 +56,106 @@ class GoogleSheetsAPI {
     async loadSheetData(sheetName, range = 'A:ZZ') {
         const cacheKey = sheetName.toLowerCase();
         
-        // Verificar cache válido
-        if (this.isCacheValid(cacheKey)) {
+        // Ler parâmetros de query para controlar fonte e cache
+        const params = new URLSearchParams(window.location.search || '');
+        const forcedSourceParam = params.get('source');
+        const forcedSource = forcedSourceParam ? forcedSourceParam.toLowerCase() : null; // 'csv' | 'backup' | 'google'
+        let noCache = params.get('nocache') === '1';
+        // Se forçado google, também ignorar cache
+        if (forcedSource === 'google') {
+            noCache = true;
+        }
+    
+        // Verificar cache válido somente quando NÃO houver força de fonte e NÃO houver nocache
+        if (!noCache && !forcedSource && this.isCacheValid(cacheKey)) {
             console.log(`📋 Dados de ${sheetName} carregados do cache`);
             this.updateDataSourceIndicator('cache');
             return this.cache[cacheKey];
+        }
+    
+        // Se fonte forçada para CSV estático
+        if (forcedSource === 'csv') {
+            try {
+                console.log(`🔄 Forçando fonte CSV estático para ${sheetName}.csv via parâmetro ?source=csv`);
+                const csvData = await this.loadStaticCSV(sheetName);
+                this.cache[cacheKey] = csvData;
+                this.cache.lastUpdate = Date.now();
+                console.log(`✅ ${sheetName} carregado do CSV estático (forçado): ${csvData.length} registros`);
+                this.updateDataSourceIndicator('csv-static');
+                if (this.onLoadComplete) this.onLoadComplete(sheetName, csvData);
+                return csvData;
+            } catch (csvError) {
+                console.error(`❌ Erro ao carregar CSV estático (forçado) para ${sheetName}:`, csvError);
+                // Tentar fallback para backup local
+                if (window.dataSyncManager) {
+                    try {
+                        console.log(`🔄 Tentando fallback para backup local após falha no CSV estático (forçado): ${sheetName}`);
+                        const backupData = await window.dataSyncManager.loadBackupData(sheetName);
+                        if (backupData && backupData.length > 0) {
+                            this.cache[cacheKey] = backupData;
+                            this.cache.lastUpdate = Date.now();
+                            console.log(`✅ ${sheetName} carregado do backup local (fallback): ${backupData.length} registros`);
+                            this.updateDataSourceIndicator('backup');
+                            if (this.onLoadComplete) this.onLoadComplete(sheetName, backupData);
+                            return backupData;
+                        }
+                    } catch (backupError) {
+                        console.error(`❌ Erro ao carregar backup local (fallback) para ${sheetName}:`, backupError);
+                    }
+                }
+                // Último recurso: cache expirado
+                if (this.cache[cacheKey]) {
+                    console.warn(`⚠️ Usando dados em cache expirado para ${sheetName} (após falha CSV forçado)`);
+                    this.updateDataSourceIndicator('cache');
+                    return this.cache[cacheKey];
+                }
+                if (this.onError) this.onError(sheetName, csvError);
+                throw new Error(`Falha em todas as fontes de dados (forçado CSV) para ${sheetName}: CSV estático, backup local e cache`);
+            }
+        }
+    
+        // Se fonte forçada para backup local
+        if (forcedSource === 'backup') {
+            // Tentar carregar backup local primeiro
+            if (window.dataSyncManager) {
+                try {
+                    console.log(`🔄 Forçando fonte backup local para ${sheetName} via parâmetro ?source=backup`);
+                    const backupData = await window.dataSyncManager.loadBackupData(sheetName);
+                    if (backupData && backupData.length > 0) {
+                        this.cache[cacheKey] = backupData;
+                        this.cache.lastUpdate = Date.now();
+                        console.log(`✅ ${sheetName} carregado do backup local (forçado): ${backupData.length} registros`);
+                        this.updateDataSourceIndicator('backup');
+                        if (this.onLoadComplete) this.onLoadComplete(sheetName, backupData);
+                        return backupData;
+                    }
+                } catch (backupError) {
+                    console.error(`❌ Erro ao carregar backup local (forçado) para ${sheetName}:`, backupError);
+                }
+            } else {
+                console.warn('⚠️ DataSyncManager não disponível para carregar backup local');
+            }
+            // Fallback para CSV estático
+            try {
+                console.log(`🔄 Tentando fallback para CSV estático após falha no backup (forçado): ${sheetName}.csv`);
+                const csvData = await this.loadStaticCSV(sheetName);
+                this.cache[cacheKey] = csvData;
+                this.cache.lastUpdate = Date.now();
+                console.log(`✅ ${sheetName} carregado do CSV estático (fallback): ${csvData.length} registros`);
+                this.updateDataSourceIndicator('csv-static');
+                if (this.onLoadComplete) this.onLoadComplete(sheetName, csvData);
+                return csvData;
+            } catch (csvError) {
+                console.error(`❌ Erro ao carregar CSV estático (fallback) para ${sheetName}:`, csvError);
+                // Último recurso: cache expirado
+                if (this.cache[cacheKey]) {
+                    console.warn(`⚠️ Usando dados em cache expirado para ${sheetName} (após falha backup forçado)`);
+                    this.updateDataSourceIndicator('cache');
+                    return this.cache[cacheKey];
+                }
+                if (this.onError) this.onError(sheetName, csvError);
+                throw new Error(`Falha em todas as fontes de dados (forçado backup) para ${sheetName}: backup local, CSV estático e cache`);
+            }
         }
 
         const url = `${this.baseUrl}/${this.spreadsheetId}/values/${sheetName}!${range}?key=${this.apiKey}`;
@@ -175,7 +270,8 @@ class GoogleSheetsAPI {
     async loadStaticCSV(sheetName) {
         // Mapear nome da planilha para arquivo CSV correto e resolver caminho absoluto do GH Pages
         const filename = this.getCsvFilenameFromSheetName(sheetName);
-        const basePath = (CONFIG.GITHUB_PAGES && CONFIG.GITHUB_PAGES.BASE_URL)
+        const isLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+        const basePath = !isLocalhost && (CONFIG.GITHUB_PAGES && CONFIG.GITHUB_PAGES.BASE_URL)
             ? `${CONFIG.GITHUB_PAGES.BASE_URL}/data/`
             : (window.location.pathname.includes('/agendamentos/') ? '../data/' : './data/');
         const csvUrl = `${basePath}${filename}`;
@@ -215,6 +311,43 @@ class GoogleSheetsAPI {
         }
         
         return data;
+    }
+
+    /**
+     * Parser para linha CSV considerando aspas, escape de aspas e separador ';' ou ','
+     * @param {string} line
+     * @returns {string[]}
+     */
+    parseCSVLine(line) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        let i = 0;
+        // Detectar separador dinamicamente: padrão ';' (Excel). Caso não haja ';', usar ','
+        const sep = line.includes(';') ? ';' : ',';
+
+        while (i < line.length) {
+            const char = line[i];
+            const nextChar = line[i + 1];
+
+            if (char === '"') {
+                if (inQuotes && nextChar === '"') {
+                    // Escapar aspas duplas dentro de campo entre aspas
+                    current += '"';
+                    i += 2;
+                    continue;
+                }
+                inQuotes = !inQuotes;
+            } else if (char === sep && !inQuotes) {
+                result.push(current.trim());
+                current = '';
+            } else {
+                current += char;
+            }
+            i++;
+        }
+        result.push(current.trim());
+        return result;
     }
 
     /**

@@ -11,10 +11,10 @@
         DATA_SOURCE: 'google-sheets',
         GOOGLE_SHEETS: {
             SPREADSHEET_ID: '1f73WWypg6iZ5KZ644f2dZD-HTCgm707wgpEIDVo4cpk',
-            API_KEY: 'AIzaSyCXfAKAN5BNNaspkjFembfJYfthYwlrLq0',
+            API_KEY: (typeof window !== 'undefined' ? (window.GOOGLE_SHEETS_API_KEY || (window.localStorage ? window.localStorage.getItem('SHEETS_API_KEY') : null)) : null) || 'YOUR_GOOGLE_SHEETS_API_KEY_HERE',
             SCOPES: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
             APP_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzfR9pc_kAb5RGZu8fb6cjArVLaX2vtAbeL-K2NQMmnmTpnV6WZw-VzUkW00mlDY0QZ/exec',
-            APP_SCRIPT_TOKEN: 'a6d942c7-f3b1-4e8d-80f3-6ba9f1e3cc12',
+            APP_SCRIPT_TOKEN: (typeof window !== 'undefined' ? (window.APP_SCRIPT_TOKEN || (window.localStorage ? window.localStorage.getItem('APP_SCRIPT_TOKEN') : null)) : null) || '',
             SHEETS: {
                 SOLICITACOES: 'Solicitacoes',
                 FOTOGRAFOS: 'Fotografos',
