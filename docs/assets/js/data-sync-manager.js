@@ -259,7 +259,7 @@ class DataSyncManager {
         indicator.id = 'data-source-indicator';
         indicator.style.cssText = `
             position: fixed;
-            bottom: 10px;
+            top: 10px;
             right: 10px;
             background: #007bff;
             color: white;

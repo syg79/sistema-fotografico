@@ -11,7 +11,7 @@
         DATA_SOURCE: 'google-sheets',
         GOOGLE_SHEETS: {
             SPREADSHEET_ID: '1f73WWypg6iZ5KZ644f2dZD-HTCgm707wgpEIDVo4cpk',
-            API_KEY: (typeof window !== 'undefined' ? (window.GOOGLE_SHEETS_API_KEY || (window.localStorage ? window.localStorage.getItem('SHEETS_API_KEY') : null)) : null) || 'YOUR_GOOGLE_SHEETS_API_KEY_HERE',
+            API_KEY: 'AIzaSyCXfAKAN5BNNaspkjFembfJYfthYwlrLq0',
             SCOPES: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
             APP_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzfR9pc_kAb5RGZu8fb6cjArVLaX2vtAbeL-K2NQMmnmTpnV6WZw-VzUkW00mlDY0QZ/exec',
             APP_SCRIPT_TOKEN: (typeof window !== 'undefined' ? (window.APP_SCRIPT_TOKEN || (window.localStorage ? window.localStorage.getItem('APP_SCRIPT_TOKEN') : null)) : null) || '',
@@ -25,9 +25,16 @@
             // URLs específicas das abas do Google Sheets
             SHEET_URLS: {
                 REDE: 'https://docs.google.com/spreadsheets/d/1f73WWypg6iZ5KZ644f2dZD-HTCgm707wgpEIDVo4cpk/edit?gid=1604739870#gid=1604739870',
-                CLIENTES: 'https://docs.google.com/spreadsheets/d/1f73WWypg6iZ5KZ644f2dZD-HTCgm707wgpEIDVo4cpk/edit?gid=459587616#gid=459587616'
+                CLIENTES: 'https://docs.google.com/spreadsheets/d/1f73WWypg6iZ5KZ644f2dZD-HTCgm707wgpEIDVo4cpk/edit?gid=459587616#gid=459587616',
+                SOLICITACOES: 'https://docs.google.com/spreadsheets/d/1f73WWypg6iZ5KZ644f2dZD-HTCgm707wgpEIDVo4cpk/edit?gid=1180385096#gid=1180385096',
+                FOTOGRAFOS: 'https://docs.google.com/spreadsheets/d/1f73WWypg6iZ5KZ644f2dZD-HTCgm707wgpEIDVo4cpk/edit?gid=137888653#gid=137888653'
             }
         },
+        GOOGLE_MAPS: {
+            API_KEY: 'AIzaSyC-k9mzokxh-Vc_8MZVbVlv2LnAXOxlKHE'
+        },
+        // Compatibilidade: permitir acesso direto via CONFIG.GOOGLE_MAPS_API_KEY
+        GOOGLE_MAPS_API_KEY: 'AIzaSyC-k9mzokxh-Vc_8MZVbVlv2LnAXOxlKHE',
         GITHUB_PAGES: {
             BASE_URL: 'https://syg79.github.io/sistema-fotografico',
             REPO: 'syg79/sistema-fotografico'

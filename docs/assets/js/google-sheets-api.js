@@ -271,19 +271,56 @@ class GoogleSheetsAPI {
         // Mapear nome da planilha para arquivo CSV correto e resolver caminho absoluto do GH Pages
         const filename = this.getCsvFilenameFromSheetName(sheetName);
         const isLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-        const basePath = !isLocalhost && (CONFIG.GITHUB_PAGES && CONFIG.GITHUB_PAGES.BASE_URL)
-            ? `${CONFIG.GITHUB_PAGES.BASE_URL}/data/`
-            : (window.location.pathname.includes('/agendamentos/') ? '../data/' : './data/');
-        const csvUrl = `${basePath}${filename}`;
-        
-        const response = await fetch(csvUrl);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText} para ${csvUrl}`);
+
+        // Construir caminhos candidatos de forma robusta para ambientes locais e GitHub Pages
+        const candidateBasePaths = [];
+        if (isLocalhost) {
+            const path = window.location.pathname || '/';
+            const segments = path.split('/').filter(Boolean);
+            // Preferir caminho absoluto raiz primeiro (onde os CSVs residem em /data/)
+            candidateBasePaths.push('/data/');
+            // Se a aplicação estiver servida a partir de /docs/, incluir caminho absoluto correspondente
+            if (path.startsWith('/docs/')) candidateBasePaths.push('/docs/data/');
+            // Caminhos relativos para páginas em subpastas (ex.: /cadastros/, /agendamentos/)
+            // Tentar subir um ou dois níveis até /data/
+            if (segments.length >= 1) candidateBasePaths.push('../data/');
+            if (segments.length >= 2) candidateBasePaths.push('../../data/');
+            // Caminho relativo ao diretório atual (último recurso; pode falhar em subpastas)
+            candidateBasePaths.push('data/');
+        } else {
+            // Produção: usar BASE_URL do GitHub Pages
+            const baseFromConfig = (CONFIG && CONFIG.GITHUB_PAGES && CONFIG.GITHUB_PAGES.BASE_URL)
+                ? CONFIG.GITHUB_PAGES.BASE_URL.replace(/\/$/, '')
+                : '';
+            if (baseFromConfig) candidateBasePaths.push(`${baseFromConfig}/data/`);
+            // Fallback adicional: caminho absoluto padrão (caso BASE_URL não esteja configurado)
+            candidateBasePaths.push('/data/');
         }
-        
-        const csvText = await response.text();
-        return this.parseCSV(csvText);
+
+        // Remover duplicados mantendo ordem de prioridade
+        const uniqueBasePaths = Array.from(new Set(candidateBasePaths));
+
+        let lastError = null;
+        for (const basePath of uniqueBasePaths) {
+            const csvUrl = `${basePath}${filename}`;
+            try {
+                console.log(`🔎 Tentando carregar CSV estático: ${csvUrl}`);
+                const response = await fetch(csvUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText} para ${csvUrl}`);
+                }
+                const csvText = await response.text();
+                console.log(`✅ CSV carregado com sucesso de ${csvUrl}`);
+                return this.parseCSV(csvText);
+            } catch (err) {
+                console.warn(`⚠️ Falha ao carregar CSV em ${csvUrl}:`, err);
+                lastError = err;
+                // Tentar próximo candidato
+            }
+        }
+
+        // Se todos os candidatos falharam, lançar último erro
+        throw lastError || new Error(`Falha ao carregar CSV para ${sheetName}`);
     }
 
     /**
@@ -411,6 +448,18 @@ class GoogleSheetsAPI {
      * @returns {Promise<Array>}
      */
     async getSolicitacoes(filters = {}) {
+        // Respeitar parâmetro de força de fonte (?source=csv|backup|google)
+        const params = new URLSearchParams(window.location.search || '');
+        const forcedSourceParam = params.get('source');
+        const forcedSource = forcedSourceParam ? forcedSourceParam.toLowerCase() : null;
+        if (!forcedSource && CONFIG.GOOGLE_SHEETS.SHEET_URLS && CONFIG.GOOGLE_SHEETS.SHEET_URLS.SOLICITACOES) {
+            try {
+                const data = await this.loadSheetDataFromUrl(CONFIG.GOOGLE_SHEETS.SHEET_URLS.SOLICITACOES, 'SOLICITACOES');
+                return this.applyFilters(data, filters);
+            } catch (error) {
+                console.warn('⚠️ Falha ao carregar SOLICITACOES via URL específica. Aplicando fallback padrão (Sheets/CSV/cache).', error);
+            }
+        }
         const data = await this.loadSheetData(CONFIG.GOOGLE_SHEETS.SHEETS.SOLICITACOES);
         return this.applyFilters(data, filters);
     }
@@ -420,6 +469,17 @@ class GoogleSheetsAPI {
      * @returns {Promise<Array>}
      */
     async getFotografos() {
+        // Respeitar parâmetro de força de fonte (?source=csv|backup|google)
+        const params = new URLSearchParams(window.location.search || '');
+        const forcedSourceParam = params.get('source');
+        const forcedSource = forcedSourceParam ? forcedSourceParam.toLowerCase() : null;
+        if (!forcedSource && CONFIG.GOOGLE_SHEETS.SHEET_URLS && CONFIG.GOOGLE_SHEETS.SHEET_URLS.FOTOGRAFOS) {
+            try {
+                return await this.loadSheetDataFromUrl(CONFIG.GOOGLE_SHEETS.SHEET_URLS.FOTOGRAFOS, 'FOTOGRAFOS');
+            } catch (error) {
+                console.warn('⚠️ Falha ao carregar FOTOGRAFOS via URL específica. Aplicando fallback padrão (Sheets/CSV/cache).', error);
+            }
+        }
         return await this.loadSheetData(CONFIG.GOOGLE_SHEETS.SHEETS.FOTOGRAFOS);
     }
 
@@ -429,9 +489,22 @@ class GoogleSheetsAPI {
      * @returns {Promise<Array>} Array de objetos com dados dos clientes
      */
     async getClientes() {
-        // Usar URL específica se configurada
+        // Respeitar parâmetro de força de fonte (?source=csv|backup|google)
+        const params = new URLSearchParams(window.location.search || '');
+        const forcedSourceParam = params.get('source');
+        const forcedSource = forcedSourceParam ? forcedSourceParam.toLowerCase() : null;
+        if (forcedSource) {
+            // Quando há fonte forçada, usar o caminho genérico que já implementa a lógica de fallback
+            return await this.loadSheetData(CONFIG.GOOGLE_SHEETS.SHEETS.CLIENTES);
+        }
+        // Usar URL específica se configurada, com fallback robusto para CSV/Sheets
         if (CONFIG.GOOGLE_SHEETS.SHEET_URLS && CONFIG.GOOGLE_SHEETS.SHEET_URLS.CLIENTES) {
-            return await this.loadSheetDataFromUrl(CONFIG.GOOGLE_SHEETS.SHEET_URLS.CLIENTES, 'CLIENTES');
+            try {
+                return await this.loadSheetDataFromUrl(CONFIG.GOOGLE_SHEETS.SHEET_URLS.CLIENTES, 'CLIENTES');
+            } catch (error) {
+                console.warn('⚠️ Falha ao carregar CLIENTES via URL específica. Aplicando fallback padrão (Sheets/CSV/cache).', error);
+                // Continua para o fallback padrão
+            }
         }
         return await this.loadSheetData(CONFIG.GOOGLE_SHEETS.SHEETS.CLIENTES);
     }
@@ -442,6 +515,14 @@ class GoogleSheetsAPI {
      * @returns {Promise<Array>} Array de objetos com dados das redes
      */
     async getRedes() {
+        // Respeitar parâmetro de força de fonte (?source=csv|backup|google)
+        const params = new URLSearchParams(window.location.search || '');
+        const forcedSourceParam = params.get('source');
+        const forcedSource = forcedSourceParam ? forcedSourceParam.toLowerCase() : null;
+        if (forcedSource) {
+            // Quando há fonte forçada, usar o caminho genérico que já implementa a lógica de fallback
+            return await this.loadSheetData(CONFIG.GOOGLE_SHEETS.SHEETS.REDES);
+        }
         // Usar URL específica se configurada
         if (CONFIG.GOOGLE_SHEETS.SHEET_URLS && CONFIG.GOOGLE_SHEETS.SHEET_URLS.REDE) {
             return await this.loadSheetDataFromUrl(CONFIG.GOOGLE_SHEETS.SHEET_URLS.REDE, 'REDE');
@@ -480,6 +561,10 @@ class GoogleSheetsAPI {
             actualSheetName = 'Rede';
         } else if (sheetName.toLowerCase() === 'clientes') {
             actualSheetName = 'Clientes';
+        } else if (sheetName.toLowerCase() === 'solicitacoes') {
+            actualSheetName = 'Solicitacoes';
+        } else if (sheetName.toLowerCase() === 'fotografos') {
+            actualSheetName = 'Fotografos';
         } else {
             actualSheetName = sheetName;
         }
